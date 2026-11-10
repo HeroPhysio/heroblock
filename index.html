@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="bk-build" content="b491b7afe1">
+<meta name="bk-build" content="8e5a7f03ca">
 <meta name="theme-color" content="#050817">
 <meta name="author" content="Baran Yavuz, Hero Uygulama Yazılım Teknolojileri Limited Şirketi">
 <meta name="color-scheme" content="dark">
@@ -147,10 +147,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
   body {
     background:
-      radial-gradient(120% 65% at 50% -12%, rgba(43, 110, 255, .30), transparent 62%),
-      radial-gradient(90% 45% at 50% 112%, rgba(255, 165, 40, .13), transparent 62%),
-      radial-gradient(55% 40% at -5% 55%, rgba(24, 212, 242, .08), transparent 70%),
-      radial-gradient(55% 40% at 105% 45%, rgba(110, 112, 255, .08), transparent 70%),
+      radial-gradient(120% 65% at 50% -12%, rgba(43, 110, 255, .21), transparent 62%),
+      radial-gradient(90% 45% at 50% 112%, rgba(255, 165, 40, .09), transparent 62%),
+      radial-gradient(55% 40% at -5% 55%, rgba(24, 212, 242, .056), transparent 70%),
+      radial-gradient(55% 40% at 105% 45%, rgba(110, 112, 255, .056), transparent 70%),
       linear-gradient(180deg, #070b22 0%, #050817 55%, #03050e 100%);
     background-color: var(--bg);
   }
@@ -191,7 +191,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     z-index: 4;
     pointer-events: none;
     opacity: 0;
-    background: radial-gradient(70% 55% at 50% 45%, rgba(255, 255, 255, .42), rgba(255, 255, 255, .1) 55%, rgba(255, 255, 255, 0) 80%);
+    background: radial-gradient(70% 55% at 50% 45%, rgba(255, 255, 255, .26), rgba(255, 255, 255, .06) 55%, rgba(255, 255, 255, 0) 80%);
     will-change: opacity;
   }
 
@@ -201,8 +201,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    border: max(2px, calc(var(--cs) * .06)) solid rgba(255, 197, 49, .9);
-    box-shadow: 0 0 calc(var(--cs) * .5) rgba(255, 170, 30, .85), inset 0 0 calc(var(--cs) * .3) rgba(255, 170, 30, .4);
+    border: max(2px, calc(var(--cs) * .06)) solid rgba(255, 197, 49, .7);
+    box-shadow: 0 0 calc(var(--cs) * .45) rgba(255, 170, 30, .5), inset 0 0 calc(var(--cs) * .3) rgba(255, 170, 30, .25);
     will-change: opacity;
     animation: ringPulse 1.05s ease-in-out infinite alternate;
   }
@@ -222,10 +222,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     font: 400 max(11px, calc(var(--u) * .046))/1 var(--display);
     letter-spacing: .02em;
     color: var(--gold);
-    text-shadow: 0 0 .45em rgba(255, 180, 40, .75), 0 .06em 0 rgba(160, 80, 0, .55);
+    text-shadow: 0 0 .45em rgba(255, 180, 40, .5), 0 .06em 0 rgba(160, 80, 0, .55);
     white-space: nowrap;
   }
-  .hud-title svg { width: 1.1em; height: 1.1em; flex: none; fill: var(--gold); filter: drop-shadow(0 0 .22em rgba(255, 197, 49, .9)); }
+  .hud-title svg { width: 1.1em; height: 1.1em; flex: none; fill: var(--gold); filter: drop-shadow(0 0 .22em rgba(255, 197, 49, .6)); }
   .hud-score {
     position: absolute;
     left: 50%;
@@ -233,7 +233,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     transform: translate(-50%, -50%);
     font: 400 44px/1 var(--display);
     color: #f2f9ff;
-    text-shadow: 0 0 .28em rgba(43, 160, 255, .95), 0 .04em 0 rgba(40, 110, 220, .8);
+    text-shadow: 0 0 .28em rgba(43, 160, 255, .6), 0 .04em 0 rgba(40, 110, 220, .8);
     white-space: nowrap;
   }
   .hud-score span { display: inline-block; will-change: transform; }
@@ -258,16 +258,16 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
   .hud-label svg { width: 1.15em; height: 1em; flex: none; fill: var(--gold); filter: drop-shadow(0 0 .2em rgba(255, 197, 49, .85)); }
   .hud-val { font: 400 max(13px, calc(var(--u) * .054))/1 var(--display); }
-  #hudBest { color: #ffd45e; text-shadow: 0 0 .35em rgba(255, 190, 40, .55); }
+  #hudBest { color: #ffd45e; text-shadow: 0 0 .35em rgba(255, 190, 40, .4); }
   .hud-cval { display: flex; align-items: center; gap: max(6px, calc(var(--u) * .02)); }
   .hud-combo .hud-label { color: #53648f; }
   .hud-combo.on .hud-label { color: #9fe9ff; }
   #hudCombo { display: inline-block; color: #34416a; transform-origin: 100% 50%; }
-  .hud-combo.on #hudCombo { color: #5ff0ff; text-shadow: 0 0 .35em rgba(43, 227, 255, .9); }
+  .hud-combo.on #hudCombo { color: #5ff0ff; text-shadow: 0 0 .35em rgba(43, 227, 255, .6); }
   .pips { display: none; gap: max(4px, calc(var(--u) * .014)); }
   .hud-combo.on .pips { display: flex; }
   .pips i { display: block; width: max(4px, calc(var(--u) * .011)); height: max(4px, calc(var(--u) * .011)); transform: rotate(45deg); border: 1px solid rgba(140, 160, 210, .5); }
-  .pips i.on { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 6px rgba(255, 197, 49, .9); }
+  .pips i.on { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 6px rgba(255, 197, 49, .6); }
 
   /* İlk açılış ipucu */
   /* Bildirim düğmesi: SES DURDU / YENİ SÜRÜM VAR (oyunu durdurmaz) */
@@ -311,7 +311,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     pointer-events: none;
     animation: hintPulse 1.6s ease-in-out infinite alternate;
   }
-  #hint b { font: 400 calc(var(--cs) * .42)/1 var(--display); color: #d6e8ff; text-shadow: 0 0 .4em rgba(43, 160, 255, .9); }
+  #hint b { font: 400 calc(var(--cs) * .42)/1 var(--display); color: #d6e8ff; text-shadow: 0 0 .4em rgba(43, 160, 255, .6); }
   #hint span { font: 600 calc(var(--cs) * .36)/1 var(--ui); color: #8fb3e8; }
 
   /* Uçan yazılar: HARİKA!, KOMBO ×12, +130 */
@@ -327,11 +327,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     will-change: transform, opacity;
     animation: floatUp .95s ease-out both;
   }
-  .float-praise { font-size: calc(var(--cs) * .95); color: #ffd040; text-shadow: 0 .06em 0 #8a4200, 0 0 .07em rgba(4, 8, 26, .95), 0 0 .3em rgba(255, 170, 30, .95), 0 0 .8em rgba(255, 130, 20, .5); }
-  .float-combo { font-size: calc(var(--cs) * .72); color: #63eeff; text-shadow: 0 .06em 0 #0b3a80, 0 0 .07em rgba(4, 8, 26, .95), 0 0 .3em rgba(43, 227, 255, .95), 0 0 .8em rgba(43, 140, 255, .5); }
-  .float-theme { font-size: calc(var(--cs) * .5); letter-spacing: .05em; color: #ffffff; text-shadow: 0 0 .07em rgba(4, 8, 26, .95), 0 0 .35em var(--accent, rgba(255, 197, 49, .9)), 0 0 .9em var(--accent, rgba(255, 197, 49, .5)); }
-  .float-count { font-size: calc(var(--cs) * 2.4); color: #ffffff; text-shadow: 0 .05em 0 #0d2c6e, 0 0 .06em rgba(4, 8, 26, .95), 0 0 .3em var(--accent, rgba(80, 190, 255, .95)), 0 0 .8em rgba(43, 140, 255, .5); }
-  .float-pts { font-size: calc(var(--cs) * .62); color: #ffffff; text-shadow: 0 .06em 0 #0d2c6e, 0 0 .07em rgba(4, 8, 26, .95), 0 0 .3em rgba(80, 190, 255, .95); }
+  .float-praise { font-size: calc(var(--cs) * .95); color: #ffd040; text-shadow: 0 .06em 0 #8a4200, 0 0 .07em rgba(4, 8, 26, .95), 0 0 .3em rgba(255, 170, 30, .65), 0 0 .8em rgba(255, 130, 20, .3); }
+  .float-combo { font-size: calc(var(--cs) * .72); color: #63eeff; text-shadow: 0 .06em 0 #0b3a80, 0 0 .07em rgba(4, 8, 26, .95), 0 0 .3em rgba(43, 227, 255, .65), 0 0 .8em rgba(43, 140, 255, .3); }
+  .float-theme { font-size: calc(var(--cs) * .5); letter-spacing: .05em; color: #ffffff; text-shadow: 0 0 .07em rgba(4, 8, 26, .95), 0 0 .35em var(--accent, rgba(255, 197, 49, .65)), 0 0 .9em var(--accent, rgba(255, 197, 49, .3)); }
+  .float-count { font-size: calc(var(--cs) * 2.4); color: #ffffff; text-shadow: 0 .05em 0 #0d2c6e, 0 0 .06em rgba(4, 8, 26, .95), 0 0 .3em var(--accent, rgba(80, 190, 255, .65)), 0 0 .8em rgba(43, 140, 255, .3); }
+  .float-pts { font-size: calc(var(--cs) * .62); color: #ffffff; text-shadow: 0 .06em 0 #0d2c6e, 0 0 .07em rgba(4, 8, 26, .95), 0 0 .3em rgba(80, 190, 255, .65); }
 
   .icon-btn {
     position: fixed;
@@ -760,10 +760,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   /* ================= Aydınlık mod ================= */
   /* Bloklar aynı renklerde kalır; zemin, tahta, raf, üst bilgi ve kartlar açık tonlara geçer */
-  html.light { --bg: #eef3fb; --text: #14213d; --muted: #5b6b8c; --line: rgba(40, 90, 180, .25); color-scheme: light; }
-  html.light, html.light body { background: #eef3fb; }
+  html.light { --bg: #e7edf7; --text: #14213d; --muted: #5b6b8c; --line: rgba(40, 90, 180, .25); color-scheme: light; }
+  html.light, html.light body { background: #e7edf7; }
   html.light #twinkle { display: none; }
-  html.light #flash { background: radial-gradient(70% 55% at 50% 45%, rgba(255, 214, 110, .4), rgba(255, 214, 110, .1) 55%, rgba(255, 214, 110, 0) 80%); }
+  html.light #flash { background: radial-gradient(70% 55% at 50% 45%, rgba(255, 214, 110, .26), rgba(255, 214, 110, .06) 55%, rgba(255, 214, 110, 0) 80%); }
   html.light .hud-title { color: #c47f00; text-shadow: 0 1px 0 rgba(255, 255, 255, .85), 0 0 .5em rgba(255, 190, 60, .35); }
   html.light .hud-title svg, html.light .hud-label svg, html.light .pl-name svg { fill: #e39b00; filter: drop-shadow(0 0 .12em rgba(255, 170, 30, .45)); }
   html.light .hud-score { color: #13224f; text-shadow: 0 2px 0 rgba(255, 255, 255, .9), 0 0 .3em rgba(43, 140, 255, .3); }
@@ -835,7 +835,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   html.light .music-val { color: #1d2b4d; }
 
   /* Tüm süreğen animasyonlar yalnızca opaklık ve dönüşüm kullanır: GPU'da, çizim yapmadan oynar */
-  @keyframes twinkle { from { opacity: .12; } to { opacity: 1; } }
+  @keyframes twinkle { from { opacity: .1; } to { opacity: .7; } }
   @keyframes ringPulse { from { opacity: .6; } to { opacity: 1; } }
   @keyframes hlPulse { from { opacity: .72; } to { opacity: 1; } }
   @keyframes hintPulse { from { opacity: .55; } to { opacity: .92; } }
@@ -1064,7 +1064,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
 
   /* ================= Temalar =================
-     Her 10.000 puanda bir sonraki temaya geçilir (20 tema, sonra başa döner). Tema; arka planı, tahta çerçevesini,
+     Her 10.000 puanda bir sonraki temaya geçilir (17 tema, sonra başa döner). Tema; arka planı, tahta çerçevesini,
      boş kareleri, yıldızları, raf panelini ve blok renklerini değiştirir. */
   const THEME_STEP = 10000;
   const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; };
@@ -1163,11 +1163,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       halo: '64,200,220', fill: '#0a1f3a', panel: ['#0f2a4d', '#071528'], frame: ['255,160,150', '64,224,208', '255,224,102'],
       cell: [['#102d52', '#0a1f3a'], ['#0e2849', '#081b33']], cellLine: '140,220,240', bracket: '#ff6f61',
       stars: ['#a8fff4', '#ffc2bb'], tray: ['15,45,80', '6,20,38'], trayLine: '120,210,235' },
-    { name: 'RETRO ATARİ', blocks: ['#ff3b3b', '#3b82ff', '#ffe53b', '#3bff6e', '#ff9f3b'],
-      bg: { base: '#050505', top: '#0d0d12', bottom: '#000000', glowTop: '255,59,59', glowBottom: '59,130,255', glowL: '255,229,59', glowR: '59,255,110' },
-      halo: '200,200,255', fill: '#111118', panel: ['#1a1a24', '#0b0b10'], frame: ['255,59,59', '255,229,59', '59,130,255'],
-      cell: [['#1c1c28', '#12121a'], ['#181822', '#0f0f16']], cellLine: '200,200,255', bracket: '#ffe53b',
-      stars: ['#ffffff', '#ffe53b'], tray: ['30,30,45', '12,12,18'], trayLine: '200,200,255' },
     { name: 'GÖKKUŞAĞI', blocks: ['#ff4d6d', '#ffb703', '#3ddc97', '#4cc9f0', '#9d4edd'],
       bg: { base: '#0b0b1a', top: '#14142b', bottom: '#05050d', glowTop: '255,77,109', glowBottom: '76,201,240', glowL: '255,183,3', glowR: '157,78,221' },
       halo: '180,120,255', fill: '#16163a', panel: ['#1f1f4a', '#0f0f26'], frame: ['255,77,109', '61,220,151', '157,78,221'],
@@ -1182,21 +1177,30 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       bg: { base: '#03141a', top: '#05222b', bottom: '#020a0d', glowTop: '0,214,143', glowBottom: '255,180,0', glowL: '255,94,138', glowR: '0,180,255' },
       halo: '0,214,160', fill: '#07262e', panel: ['#0b3540', '#051a20'], frame: ['212,255,59', '0,214,143', '255,94,138'],
       cell: [['#0d3842', '#08282f'], ['#0b323b', '#07232a']], cellLine: '120,255,210', bracket: '#ffb400',
-      stars: ['#c8fff0', '#ffe39a'], tray: ['12,58,68', '5,26,30'], trayLine: '110,240,200' },
-    { name: 'NEON ŞEHİR', blocks: ['#ff6a00', '#00f0ff', '#ff1f8f', '#b6ff00', '#fff1b0'],
-      bg: { base: '#08080c', top: '#111119', bottom: '#030305', glowTop: '255,31,143', glowBottom: '0,240,255', glowL: '255,106,0', glowR: '182,255,0' },
-      halo: '255,31,143', fill: '#14141d', panel: ['#1d1d29', '#0e0e15'], frame: ['255,31,143', '0,240,255', '255,106,0'],
-      cell: [['#1f1f2c', '#15151e'], ['#1b1b27', '#12121a']], cellLine: '255,120,200', bracket: '#00f0ff',
-      stars: ['#ffd0ea', '#b8fbff'], tray: ['35,35,50', '14,14,20'], trayLine: '255,110,190' },
-    { name: 'GÜMÜŞ', blocks: ['#c0c8d8', '#ffffff', '#6c8ebf', '#e6c27a', '#b07d9a'],
-      bg: { base: '#0c0d10', top: '#16181d', bottom: '#050607', glowTop: '200,210,230', glowBottom: '230,194,122', glowL: '108,142,191', glowR: '176,125,154' },
-      halo: '200,210,230', fill: '#1a1c22', panel: ['#262931', '#121318'], frame: ['255,255,255', '160,170,190', '230,194,122'],
-      cell: [['#272a33', '#1b1d24'], ['#23262e', '#181a20']], cellLine: '210,215,230', bracket: '#e6c27a',
-      stars: ['#ffffff', '#f3e3bd'], tray: ['45,48,58', '18,19,24'], trayLine: '200,205,220' }
+      stars: ['#c8fff0', '#ffe39a'], tray: ['12,58,68', '5,26,30'], trayLine: '110,240,200' }
   ];
-  // İlk tema oyunun özgün, elle ayarlanmış renklerini kullanır; diğerleri ana renklerden türetilir
-  const PALETTE0 = PALETTE.slice();
-  THEMES.forEach(t => { t.palette = t.blocks ? t.blocks.map(deriveColor) : PALETTE0; });
+  // (Gri tonlu RETRO ATARİ, NEON ŞEHİR ve GÜMÜŞ temaları çıkarıldı; 17 tema kaldı)
+
+  /* Renk yumuşatma: neon tonlar göz yormasın diye bütün blok renkleri biraz koyulaşır ve doygunluğu azalır;
+     parıltılar, patlama ışıkları ve tema ışıkları da kısılır. Hepsi buradan ayarlanır (1 = eski parlaklık). */
+  const YUMUSAK = { doy: 0.82, acik: 0.87, rim: 0.75 };   // blok renkleri: doygunluk, açıklık, kenar çizgisi saydamlığı
+  const ISIK = { parilti: 0.5, flas: 0.6, isin: 0.68, zemin: 0.7 }; // blok parıltısı, beyaz parlamalar, patlama ışını, tema ışıkları
+  const yumusatHex = h => { const [r, g, b] = hexRgb(h), [hh, s, l] = rgbToHsl(r, g, b); return hslHex(hh, s * YUMUSAK.doy, l * YUMUSAK.acik); };
+  const yumusatRgb = s => hexRgb(yumusatHex(rgbHex.apply(null, s.split(',').map(Number)))).join(',');
+  function yumusatRgba(s) {
+    const m = /rgba\(\s*(\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\s*\)/.exec(s);
+    return m ? 'rgba(' + yumusatRgb(m[1] + ',' + m[2] + ',' + m[3]) + ',' + (+m[4] * YUMUSAK.rim).toFixed(3) + ')' : s;
+  }
+  function yumusat(c) {
+    return Object.assign({}, c, {
+      rgb: yumusatRgb(c.rgb), light: yumusatHex(c.light), base: yumusatHex(c.base), dark: yumusatHex(c.dark),
+      face1: yumusatHex(c.face1), face2: yumusatHex(c.face2), rim: yumusatRgba(c.rim), spark: yumusatHex(c.spark)
+    });
+  }
+  // İlk tema oyunun özgün, elle ayarlanmış renklerini kullanır; diğerleri ana renklerden türetilir (hepsi yumuşatılır)
+  const PALETTE0 = PALETTE.map(yumusat);
+  for (let i = 0; i < PALETTE.length; i++) PALETTE[i] = PALETTE0[i];
+  THEMES.forEach(t => { t.palette = t.blocks ? t.blocks.map(h => yumusat(deriveColor(h))) : PALETTE0; });
   const themeFor = sc => Math.floor(sc / THEME_STEP) % THEMES.length;
 
   // Aydınlık mod: her temanın açık eşi, temanın ana renginden türetilir. Bloklar aynı kalır;
@@ -1210,21 +1214,22 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const bk = rgbToHsl.apply(null, hexRgb(T.bracket));
     return Object.assign({}, T, {
       light: true,
-      bg: Object.assign({}, T.bg, { base: H(0.94, 0.6), top: H(0.968, 0.55), bottom: H(0.9, 0.5) }),
+      // (zemin tonları gözü almasın diye bembeyaz değil, biraz kırık)
+      bg: Object.assign({}, T.bg, { base: H(0.915, 0.55), top: H(0.94, 0.5), bottom: H(0.88, 0.45) }),
       glowA: [0.22, 0.16, 0.1, 0.1], haloA: 0.3,
-      fill: H(0.985, 0.4), panel: [H(0.975, 0.5), H(0.93, 0.45)],
+      fill: H(0.955, 0.38), panel: [H(0.948, 0.45), H(0.905, 0.4)],
       frame: T.frame.map(deep),
-      cell: [[H(0.9, 0.42), H(0.862, 0.4)], [H(0.884, 0.42), H(0.846, 0.4)]],
+      cell: [[H(0.875, 0.38), H(0.84, 0.36)], [H(0.86, 0.38), H(0.825, 0.36)]],
       cellLine: rgbOf(H(0.4, 0.5)), cellLineA: 0.16,
       bracket: hslHex(bk[0], bk[1], Math.min(bk[2], 0.5)), bracketA: 0.35,
-      tray: [rgbOf(H(0.99, 0.4)), rgbOf(H(0.945, 0.45))], trayA: [0.92, 0.78], trayLine: rgbOf(H(0.45, 0.5)), trayLineA: [0.24, 0.16]
+      tray: [rgbOf(H(0.962, 0.38)), rgbOf(H(0.92, 0.4))], trayA: [0.92, 0.78], trayLine: rgbOf(H(0.45, 0.5)), trayLineA: [0.24, 0.16]
     });
   }
   const THEMES_LIGHT = THEMES.map(lightTheme);
   const TH = k => (LIGHT ? THEMES_LIGHT : THEMES)[k];
 
   function themeCss(t) {
-    const b = t.bg, A = t.glowA || [0.3, 0.13, 0.08, 0.08];
+    const b = t.bg, A = (t.glowA || [0.3, 0.13, 0.08, 0.08]).map(a => (a * ISIK.zemin).toFixed(3));
     return 'radial-gradient(120% 65% at 50% -12%, rgba(' + b.glowTop + ',' + A[0] + '), transparent 62%),' +
       'radial-gradient(90% 45% at 50% 112%, rgba(' + b.glowBottom + ',' + A[1] + '), transparent 62%),' +
       'radial-gradient(55% 40% at -5% 55%, rgba(' + b.glowL + ',' + A[2] + '), transparent 70%),' +
@@ -1591,12 +1596,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (!col.noGlow) { // neon parıltı (aydınlık modda yumuşak renkli gölge)
       g.save();
       if (LIGHT) {
-        g.shadowColor = 'rgba(' + col.rgb + ',0.5)';
+        g.shadowColor = 'rgba(' + col.rgb + ',' + (0.5 * ISIK.parilti).toFixed(3) + ')';
         g.shadowBlur = cs * 0.16 * dpr;
         g.shadowOffsetY = cs * 0.05 * dpr;
       } else {
-        g.shadowColor = 'rgba(' + col.rgb + ',0.95)';
-        g.shadowBlur = cs * 0.38 * dpr;
+        g.shadowColor = 'rgba(' + col.rgb + ',' + (0.95 * ISIK.parilti).toFixed(3) + ')';
+        g.shadowBlur = cs * 0.34 * dpr;
       }
       g.fillStyle = col.base;
       rr(g, x, y, s, s, r); g.fill();
@@ -1613,11 +1618,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     g.fillStyle = gr; rr(g, fx, fy, fs, fs, fr); g.fill();
     // cam parlaması
     gr = g.createLinearGradient(0, fy, 0, fy + fs * 0.55);
-    gr.addColorStop(0, 'rgba(255,255,255,' + (col.gloss == null ? 0.42 : col.gloss) + ')');
+    gr.addColorStop(0, 'rgba(255,255,255,' + (col.gloss == null ? 0.32 : col.gloss) + ')');
     gr.addColorStop(1, 'rgba(255,255,255,0)');
     g.fillStyle = gr; rr(g, fx, fy, fs, fs * 0.55, fr); g.fill();
     if (!col.noGlow) {
-      g.fillStyle = 'rgba(255,255,255,0.85)';
+      g.fillStyle = 'rgba(255,255,255,0.6)';
       g.beginPath(); g.arc(fx + fs * 0.17, fy + fs * 0.17, Math.max(0.8, s * 0.045), 0, Math.PI * 2); g.fill();
     }
     const lw = Math.max(1, cs * 0.03);
@@ -1648,7 +1653,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       const x = Math.random() * L.W, y = Math.random() * L.H;
       if (x > hd.x - 4 && x < hd.x + hd.w + 4 && y > hd.y - 4 && y < hd.y + hd.h + 4) continue;
       if (y > L.footY - 4 && y < L.footY + FOOT_H + 4) continue; // alt bilgi yazısının üstüne yıldız düşmesin
-      g.globalAlpha = rand(0.14, 0.55);
+      g.globalAlpha = rand(0.1, 0.4);
       g.fillStyle = Math.random() < 0.18 ? T.stars[1] : T.stars[0];
       const r = rand(0.6, 1.7);
       g.fillRect(x, y, r, r);
@@ -1657,7 +1662,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const x0 = L.bx - fp, y0 = L.by - fp, outer = bs + 2 * fp, R = fp * 1.5;
     // dış mavi hale
     g.save();
-    g.shadowColor = 'rgba(' + T.halo + ',' + (T.haloA || 0.55) + ')';
+    g.shadowColor = 'rgba(' + T.halo + ',' + ((T.haloA || 0.55) * ISIK.zemin).toFixed(3) + ')';
     g.shadowBlur = cs * 0.8 * dpr;
     g.fillStyle = T.fill;
     rr(g, x0, y0, outer, outer, R); g.fill();
@@ -1669,9 +1674,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     // camgöbeğinden altına kenarlık
     const lw = Math.max(1.5, cs * 0.045);
     gr = g.createLinearGradient(x0, y0, x0 + outer, y0 + outer);
-    gr.addColorStop(0, 'rgba(' + T.frame[0] + ',0.95)');
-    gr.addColorStop(0.5, 'rgba(' + T.frame[1] + ',0.55)');
-    gr.addColorStop(1, 'rgba(' + T.frame[2] + ',0.9)');
+    gr.addColorStop(0, 'rgba(' + T.frame[0] + ',' + (0.95 * ISIK.zemin).toFixed(3) + ')');
+    gr.addColorStop(0.5, 'rgba(' + T.frame[1] + ',' + (0.55 * ISIK.zemin).toFixed(3) + ')');
+    gr.addColorStop(1, 'rgba(' + T.frame[2] + ',' + (0.9 * ISIK.zemin).toFixed(3) + ')');
     g.lineWidth = lw; g.strokeStyle = gr;
     rr(g, x0 + lw / 2, y0 + lw / 2, outer - lw, outer - lw, R - lw / 2); g.stroke();
     // boş hücreler
@@ -1691,10 +1696,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     // altın köşe braketleri
     const bl = cs * 0.8, off = Math.max(3, fp * 0.5), br = Math.min(R + off, bl * 0.7);
     g.save();
-    g.strokeStyle = T.bracket;
+    g.strokeStyle = T.light ? T.bracket : yumusatHex(T.bracket);
     g.lineWidth = Math.max(2, cs * 0.065);
     g.lineCap = 'round';
-    g.shadowColor = rgbaOf(T.bracket, T.bracketA || 0.9);
+    g.shadowColor = rgbaOf(T.bracket, (T.bracketA || 0.9) * ISIK.zemin);
     g.shadowBlur = cs * 0.3 * dpr;
     const xa = x0 - off, ya = y0 - off, xb = x0 + outer + off, yb = y0 + outer + off;
     const corner = (cx, cy, dx, dy) => {
@@ -2152,6 +2157,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
 
   function commitPlace(p, slot, r0, c0) {
+    Sound.place(p.cells.length); // ses en başta: hesaplar ve çizim hazırlığı sesi geciktirmesin
     const now = performance.now();
     tray[slot] = null;
     const idx = p.cells.map(([r, c]) => (r0 + r) * N + c0 + c);
@@ -2159,7 +2165,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     for (const i of idx) { board[i] = p.color; pops.push({ i, t0: now, s: 1, fl: 0 }); }
     moves++;
     addScore(p.cells.length); // yerleştirilen her kare +1
-    Sound.place(p.cells.length);
     const ln = fullLines();
     if (ln.rows.length || ln.cols.length) {
       doClear(ln.rows, ln.cols, p, r0, c0, now);
@@ -2209,10 +2214,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
     const rs = document.documentElement.style;
     rs.setProperty('--star1', mixHex(T.stars[0], '#ffffff', 0.5));
-    rs.setProperty('--star1g', rgbaOf(T.stars[0], 0.75));
+    rs.setProperty('--star1g', rgbaOf(T.stars[0], 0.5));
     rs.setProperty('--star2', mixHex(T.stars[1], '#ffffff', 0.5));
-    rs.setProperty('--star2g', rgbaOf(T.stars[1], 0.75));
-    rs.setProperty('--accent', rgbaOf(T.bracket, 0.9));
+    rs.setProperty('--star2g', rgbaOf(T.stars[1], 0.5));
+    rs.setProperty('--accent', rgbaOf(T.bracket, 0.65));
     if (metaTheme) metaTheme.setAttribute('content', T.bg.base);
     if (sprites.length) {
       for (let i = 0; i < PALETTE.length; i++) { freeCanvas(sprites[i].cv); sprites[i] = makeSprite(PALETTE[i]); }
@@ -2242,6 +2247,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     linesTotal += lines;
     let perfect = true; // patlamadan sonra tahta tamamen boş mu?
     for (let i = 0; i < N * N; i++) if (board[i] >= 0 && !set.has(i)) { perfect = false; break; }
+    Sound.clear(perfect ? Math.max(lines, 4) : lines, combo); // ses önce, efekt hazırlığı sonra
     const big = perfect || lines >= 3;
     const bonus = perfect ? perfectBonus(combo) : 0;
     pts += bonus;
@@ -2282,7 +2288,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       try { flashEl.animate([{ opacity: 0 }, { opacity: perfect ? 1 : 0.7, offset: 0.15 }, { opacity: 0 }], { duration: perfect ? 750 : 520, easing: 'ease-out' }); } catch (e) { /* desteklenmiyor */ }
     }
     if (combo >= 2) bump(hudCombo, 1.3);
-    Sound.clear(perfect ? Math.max(lines, 4) : lines, combo);
     buzz(lines > 1 ? [18, 40, 22] : 16);
     announce(lines + ' çizgi patladı, +' + fmt(pts) + ' puan' + (combo >= 2 ? ', kombo ×' + combo : '') + '. Skor ' + fmt(score) + '.');
   }
@@ -2591,9 +2596,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       P.modes(0.028, [[800, 0.55, 0.013, 1600, 0.022]]);
       P.modes(0.05, [[1000, 0.35, 0.011, 1900, 0.018]]);
     }],
-    ['8-bit', 0.215, 0.3, P => {                          // RETRO ATARİ: eski oyun konsolu gibi yukarı kayan "blip"
-      P.wave(0, { type: 'square', f: 330, glide: 880, sw: 0.035, a: 0.4, tau: 0.032, lp: 2000 });
-    }],
     ['pırıltı', 0.193, 0.3, P => {                        // GÖKKUŞAĞI: küçük bir pop ve yükselen üç kısa nota
       P.noise(0, { a: 0.18, f: 1400, q: 0.7, tau: 0.0008, seed: 81 });
       P.modes(0, [[330, 0.8, 0.014, 800, 0.018]]);
@@ -2610,15 +2612,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       P.noise(0, { a: 0.25, f: 1800, q: 0.7, tau: 0.001, seed: 101 });
       P.modes(0, [[260, 0.2, 0.018]]);
       P.modes(0, [[520, 1, 0.026], [1560, 0.25, 0.011]]);
-    }],
-    ['synth', 0.326, 0.3, P => {                          // NEON ŞEHİR: 80'ler synth "pluck"u (süzgeç hızla kapanır)
-      P.wave(0, { type: 'sawtooth', f: 330, a: 0.35, tau: 0.04, lp: 2200, lp2: 450, lpT: 0.04 });
-      P.wave(0, { type: 'sawtooth', f: 332.5, a: 0.25, tau: 0.04, lp: 2200, lp2: 450, lpT: 0.04 });
-    }],
-    ['gümüş tın', 0.159, 0.3, P => {                      // GÜMÜŞ: gümüş tabağa değen kaşık
-      P.noise(0, { a: 0.3, f: 2600, q: 1, tau: 0.0006, seed: 111 });
-      P.modes(0, [[680, 0.5, 0.013], [1240, 0.3, 0.009]]);
-      P.modes(0, [[1800, 0.35, 0.018], [2800, 0.15, 0.012]]);
     }]
   ];
   /* === YERLEŞTİRME SESLERİ BİTİŞ === */
@@ -2626,6 +2619,31 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const Sound = {
     ac: null, out: null, bufs: null, rendering: null, resumeT: -1e9, ran: false, silentEl: null,
     dead: false, stall: 0, lastT: -1, autoTries: 0,
+    /* Android'de telefonun ses yükselticisi kısa bir sessizlikte uykuya geçiyor (ör. Samsung). Bağlam "çalışıyor"
+       görünse de her ses önce onun uyanmasını bekliyor, bu yüzden hamle sesleri geç geliyordu. Duyulmayacak kadar
+       kısık bir hışırtı (yaklaşık -66 dBFS) çıkışı uyanık tutar. Yalnızca sayfa ekrandayken ve ses açıkken çalar. */
+    UYANIK: /Android/i.test(navigator.userAgent), UYANIK_SEVIYE: 0.0005, uyanik: null,
+    uyandir() {
+      const ac = this.ac;
+      if (!(this.UYANIK && soundOn && ac && ac.state === 'running' && !document.hidden)) { this.uyut(); return; }
+      if (this.uyanik && this.uyanik.context === ac) return;
+      this.uyut();
+      try {
+        const n = Math.round(ac.sampleRate * 2), b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0), r = placeKit(ac, null).rng(97);
+        for (let i = 0; i < n; i++) d[i] = (r() * 2 - 1) * this.UYANIK_SEVIYE;
+        const src = ac.createBufferSource();
+        src.buffer = b;
+        src.loop = true;
+        src.connect(ac.destination); // sıkıştırıcıdan geçmez: seviyesi sabit kalır
+        src.start(0);
+        this.uyanik = src;
+      } catch (e) { this.uyanik = null; }
+    },
+    uyut() {
+      const s = this.uyanik;
+      this.uyanik = null;
+      if (s) { try { s.stop(); s.disconnect(); } catch (e) { /* bağlam kapanmış */ } }
+    },
     session() {
       try {
         if (navigator.audioSession && navigator.audioSession.type !== 'playback') navigator.audioSession.type = 'playback';
@@ -2639,7 +2657,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
         try { this.ac = new AC(); } catch (e2) { return false; }
       }
       this.out = this.chain(this.ac);
-      this.ac.onstatechange = () => { if (this.ac.state === 'running') this.ran = true; if (typeof muzikGuncelle === 'function') muzikGuncelle(); };
+      this.ac.onstatechange = () => {
+        if (this.ac.state === 'running') this.ran = true;
+        this.uyandir();
+        if (typeof muzikGuncelle === 'function') muzikGuncelle();
+      };
       this.prerender();
       return true;
     },
@@ -2685,6 +2707,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     // Ses bağlamını baştan kurar: eskisi kapatılır, hazır ses kayıtları yeni bağlamda da kullanılır
     rebuild() {
       const old = this.ac;
+      this.uyut();
       this.ac = null; this.out = null; this.ran = false;
       this.dead = false; this.stall = 0; this.lastT = -1; this.autoTries = 0;
       if (old) {
@@ -2718,6 +2741,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     },
     // Sayfa gizlenince ya da ses kapatılınca: sessiz döngü durur; ses kapalıysa ses oturumu da bırakılır (müzik uygulaması sürebilsin)
     pause() {
+      this.uyut();
       if (this.silentEl && !this.silentEl.paused) this.silentEl.pause();
       if (!soundOn && this.ac && this.ac.state === 'running') { const p = this.ac.suspend(); if (p && p.catch) p.catch(() => {}); }
     },
@@ -2733,6 +2757,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     // Bekçi (1,5 sn'de bir): ses açık ve bağlam bir kez çalışmışken durmuşsa ya da zamanı ilerlemiyorsa
     watch() {
       const ac = this.ac;
+      this.uyandir(); // uyanık tutma sesi gerekiyorsa çalıyor mu (ekrana dönünce, ses açılınca)
       if (!soundOn || !ac || !this.ran || document.hidden) { this.stall = 0; this.lastT = -1; return; }
       const t = ac.currentTime, fine = ac.state === 'running' && t !== this.lastT;
       this.lastT = t;
@@ -2884,7 +2909,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       for (const c of cols) for (let r = 0; r < N; r++) mark(r, c);
       for (const i of marked) drawCell(hctx, spr, bx + (i % N) * cs, by + ((i / N) | 0) * cs, cs, 1, 1);
       hctx.globalCompositeOperation = 'lighter';
-      for (const i of marked) drawCell(hctx, whiteSprite, bx + (i % N) * cs, by + ((i / N) | 0) * cs, cs, 0.2, 1);
+      for (const i of marked) drawCell(hctx, whiteSprite, bx + (i % N) * cs, by + ((i / N) | 0) * cs, cs, 0.2 * ISIK.flas, 1);
       hctx.globalCompositeOperation = 'source-over';
     }
     const a = willClear ? 0.8 : 0.4;
@@ -2926,7 +2951,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (v < 0) continue;
       const q = clamp((now - p.t0) / POP_MS, 0, 1);
       p.s = 1 + 0.16 * (1 - easeOutCubic(q));
-      p.fl = (1 - q) * 0.5;
+      p.fl = (1 - q) * 0.5 * ISIK.flas;
       drawCell(ctx, sprites[v], bx + (p.i % N) * cs, by + ((p.i / N) | 0) * cs, cs, 1, p.s);
     }
     ctx.globalCompositeOperation = 'lighter';
@@ -2958,17 +2983,18 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
     ctx.globalCompositeOperation = 'lighter';
     for (const g of ghosts) {
-      const a = Math.min(1, g.fl * g.a);
+      const a = Math.min(1, g.fl * g.a) * ISIK.flas;
       if (a > 0.01) drawCell(ctx, whiteSprite, bx + g.c * cs, by + g.r * cs, cs, a, g.s);
     }
     ctx.globalCompositeOperation = 'source-over';
   }
 
+  const ISIN_RENK = (0.55 * ISIK.isin).toFixed(3), ISIN_ORTA = (0.95 * ISIK.isin).toFixed(3);
   function beamGradient(g, rgb) {
     g.addColorStop(0, 'rgba(' + rgb + ',0)');
-    g.addColorStop(0.36, 'rgba(' + rgb + ',0.55)');
-    g.addColorStop(0.5, 'rgba(255,255,255,0.95)');
-    g.addColorStop(0.64, 'rgba(' + rgb + ',0.55)');
+    g.addColorStop(0.36, 'rgba(' + rgb + ',' + ISIN_RENK + ')');
+    g.addColorStop(0.5, 'rgba(255,255,255,' + ISIN_ORTA + ')');
+    g.addColorStop(0.64, 'rgba(' + rgb + ',' + ISIN_RENK + ')');
     g.addColorStop(1, 'rgba(' + rgb + ',0)');
     return g;
   }
@@ -3009,7 +3035,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const col = PALETTE[colorIdx], k = L.cs / 44;
     for (let i = 0; i < n; i++) {
       const ang = rand(0, Math.PI * 2), sp = rand(70, 280) * k;
-      const pc = LIGHT ? (Math.random() < 0.25 ? col.dark : col.base) : Math.random() < 0.25 ? '#ffffff' : col.spark;
+      const pc = LIGHT ? (Math.random() < 0.25 ? col.dark : col.base) : Math.random() < 0.1 ? '#ffffff' : col.spark;
       particles.push({ x, y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp - 110 * k, life: 0, max: rand(0.4, 0.75), size: rand(0.07, 0.17) * L.cs, color: pc });
     }
     if (particles.length > 360) particles.splice(0, particles.length - 360);
@@ -3236,6 +3262,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const i = slotAt(x, y);
     if (i < 0 || !tray[i]) return;
     e.preventDefault();
+    Sound.pick(); // ses önce: sürükleme hazırlığını beklemesin
     try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* yakalama yok */ }
     const p = tray[i], now = performance.now();
     const v = p.ret ? retVisual(p, i, now) : trayVisual(p, i, now);
@@ -3249,7 +3276,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     positionDrag(now);
     dragEl.classList.add('on');
     updateHint();
-    Sound.pick();
     canvas.classList.remove('grab');
     canvas.classList.add('grabbing');
     trayDirty = true; // raftaki parça artık elde
@@ -3290,6 +3316,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (gameState === 'play' && !duel && score > 0) skorGonder(score, moves, 'arka');
       return;
     }
+    Sound.uyandir(); // (Android) ses çıkışı oyuncu dokunmadan önce uyansın
     // Geri dönünce ses durmuşsa (iPhone'da sık olur) tek dokunuşla devam ekranı; düelloda süre durmuştur
     setTimeout(() => {
       if (document.hidden) return;
@@ -3411,7 +3438,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     btnSound.innerHTML = on ? ICON_ON : ICON_OFF;
     btnSound.setAttribute('aria-label', on ? 'Sesi kapat' : 'Sesi aç');
     btnSound.title = on ? 'Sesi kapat' : 'Sesi aç';
-    if (on && fromUser) { Sound.unlock(true); Sound.pick(); }
+    if (on && fromUser) { Sound.unlock(true); Sound.uyandir(); Sound.pick(); }
     if (!on) Sound.pause();
     if (typeof showNotice === 'function') showNotice();
     if (typeof muzikGuncelle === 'function') muzikGuncelle();
@@ -4278,7 +4305,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       setTray: ids => { tray = ids.map((id, i) => (id ? makePiece(SHAPE_BY_ID[id], i % PALETTE.length) : null)); refreshFits(); },
       check: () => { if (!tray.some(p => p && p.fits)) triggerGameOver(); },
       setScore: n => { score = n; displayScore = n; if (score > best) setBest(score); setScoreText(score); updateHud(); queueTheme(0); },
-      audio: () => ({ state: Sound.ac ? Sound.ac.state : 'none', session: navigator.audioSession ? navigator.audioSession.type : 'yok' }),
+      audio: () => ({ state: Sound.ac ? Sound.ac.state : 'none', session: navigator.audioSession ? navigator.audioSession.type : 'yok',
+        uyanik: !!(Sound.uyanik && Sound.uyanik.context === Sound.ac), uyanikTepe: Sound.uyanik ? Math.max.apply(null, Array.from(Sound.uyanik.buffer.getChannelData(0).subarray(0, 4096), Math.abs)) : 0 }),
       // Hazır sesi ana çıkıştan (sıkıştırıcı dahil) çevrimdışı geçirip tepe ve ortalama seviyesini döndürür.
       // Oyundaki gibi ölçülür: sıkıştırıcı önce 1 sn sessizlikte oturur (ilk anda sesi kısık gösterir), ses sonra çalar
       renderSound: async (name, a, b) => {

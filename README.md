@@ -19,7 +19,7 @@ HAFTANIN EN İYİLERİ: ilk açılışta bir takma ad sorulur (geçilebilir); ha
 ana ekranda görünür. Tablo her pazartesi 00:00'da (Türkiye saati) sıfırlanır; puanlar skor.herouygulama.com.tr'de tutulur.
 Ses kesilirse "SES DURDU" düğmesi çıkar, dokununca ses geri gelir. Yeni sürüm yayımlanınca açık oyunda
 "YENİ SÜRÜM VAR" düğmesi çıkar; oyun kayıtlı olduğu için güncelleme kaldığın yerden sürer.
-Her 10.000 puanda tema değişir: 20 tema sırayla döner. Puan arttıkça oyun zorlaşır.
+Her 10.000 puanda tema değişir: 17 tema sırayla döner. Puan arttıkça oyun zorlaşır.
 Bütün şekiller (3x3 kare, çubuklar, L, T, S/Z, çapraz...) eşit sıklıkta gelir.
 
 **Oyna:** https://heroblock.herouygulama.com.tr/
