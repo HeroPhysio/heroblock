@@ -1,0 +1,26 @@
+{
+  "appId": "tr.com.herouygulama.heroblock",
+  "appName": "Hero Block",
+  "webDir": "www",
+  "backgroundColor": "#050817",
+  "loggingBehavior": "none",
+  "android": {
+    "backgroundColor": "#050817",
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false
+  },
+  "ios": {
+    "backgroundColor": "#050817",
+    "contentInset": "never",
+    "scrollEnabled": false,
+    "allowsLinkPreview": false,
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "SystemBars": {
+      "insetsHandling": "css",
+      "initialViewportFitValueHint": "cover",
+      "style": "DARK"
+    }
+  }
+}

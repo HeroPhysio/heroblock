@@ -1,0 +1,117 @@
+# Hero Block iOS uygulamasını GitHub'ın Mac sunucusunda derler, imzalar ve App Store Connect'e (TestFlight) yükler.
+# Çalıştırmak için: GitHub › Actions › "iOS · App Store Connect'e yükle" › Run workflow.
+# Gerekli gizli bilgiler (Settings › Secrets and variables › Actions › New repository secret):
+#   APPLE_TEAM_ID              Apple geliştirici takım kimliği (10 karakter, developer.apple.com › Membership)
+#   APPSTORE_API_KEY_ID        App Store Connect API anahtarının kimliği (Key ID)
+#   APPSTORE_API_ISSUER_ID     App Store Connect API "Issuer ID"
+#   APPSTORE_API_PRIVATE_KEY   İndirilen AuthKey_XXXX.p8 dosyasının içeriğinin tamamı
+# Derleme numarası her çalıştırmada kendiliğinden artar (GitHub çalıştırma numarası).
+name: iOS · App Store Connect'e yükle
+
+on:
+  workflow_dispatch:
+    inputs:
+      surum:
+        description: "App Store'da görünecek sürüm (ör. 1.0.0)"
+        required: true
+        default: "1.0.0"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-app-store
+  cancel-in-progress: false
+
+jobs:
+  ios:
+    name: Derle, imzala, yükle
+    runs-on: macos-26
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: uygulama
+    env:
+      ASC_KEY_ID: ${{ secrets.APPSTORE_API_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.APPSTORE_API_ISSUER_ID }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      SURUM: ${{ inputs.surum }}
+      DERLEME: ${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gizli bilgiler girilmiş mi
+        env:
+          ASC_P8: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+        run: |
+          eksik=0
+          for v in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_P8; do
+            if [ -z "${!v}" ]; then echo "::error::Gizli bilgi eksik: $v (Settings › Secrets and variables › Actions)"; eksik=1; fi
+          done
+          exit $eksik
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Paketleri kur
+        run: npm ci
+
+      - name: Oyun dosyalarını iOS projesine kopyala
+        run: npx cap sync ios
+
+      - name: App Store Connect API anahtarını hazırla
+        env:
+          ASC_P8: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/anahtar"
+          printf '%s\n' "$ASC_P8" > "$RUNNER_TEMP/anahtar/AuthKey_${ASC_KEY_ID}.p8"
+          echo "ASC_KEY_PATH=$RUNNER_TEMP/anahtar/AuthKey_${ASC_KEY_ID}.p8" >> "$GITHUB_ENV"
+
+      - name: Xcode sürümü
+        run: xcodebuild -version
+
+      - name: Arşivle (sürüm ${{ inputs.surum }}, derleme ${{ github.run_number }})
+        run: |
+          ortak=(-project ios/App/App.xcodeproj -scheme App -configuration Release
+                 -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/HeroBlock.xcarchive"
+                 -allowProvisioningUpdates -authenticationKeyPath "$ASC_KEY_PATH"
+                 -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+                 DEVELOPMENT_TEAM="$APPLE_TEAM_ID" MARKETING_VERSION="$SURUM" CURRENT_PROJECT_VERSION="$DERLEME")
+          # 1. yol: otomatik imza (Xcode gereken sertifika ve profilleri API anahtarıyla kendisi oluşturur)
+          if ! xcodebuild archive "${ortak[@]}" CODE_SIGN_STYLE=Automatic; then
+            # 2. yol: imzasız arşiv; imza bir sonraki adımda Apple'ın bulut imzasıyla atılır
+            echo "::warning::Otomatik imzalı arşiv olmadı; imzasız arşivlenip dışa aktarımda bulut imzası kullanılacak."
+            rm -rf "$RUNNER_TEMP/HeroBlock.xcarchive"
+            xcodebuild archive "${ortak[@]}" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
+          fi
+
+      - name: İmzala ve App Store Connect'e yükle
+        run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+            <key>uploadSymbols</key><true/>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict>
+          </plist>
+          EOF
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/HeroBlock.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/cikti" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+          echo "Yüklendi. App Store Connect › Uygulamam › TestFlight'ta 10-30 dakika içinde 'İşleniyor' olarak görünür."
+
+      - name: Anahtarı sil
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/anahtar"

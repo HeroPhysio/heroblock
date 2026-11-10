@@ -1,0 +1,12 @@
+# Paketler (npm ci ile kurulur)
+node_modules/
+
+# Gizli anahtarlar ve şifreler asla depoya girmez
+*.jks
+*.keystore
+*.p12
+*.p8
+*.mobileprovision
+keystore.properties
+
+.DS_Store

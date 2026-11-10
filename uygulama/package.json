@@ -1,0 +1,21 @@
+{
+  "name": "heroblock-uygulama",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hero Block: Google Play ve App Store uygulaması (Capacitor)",
+  "scripts": {
+    "sync": "cap sync",
+    "simgeler": "capacitor-assets generate --iconBackgroundColor '#050817' --iconBackgroundColorDark '#050817' --splashBackgroundColor '#050817' --splashBackgroundColorDark '#050817'"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.0",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.6.0",
+    "@capacitor/haptics": "8.0.2",
+    "@capacitor/ios": "8.6.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "4.0.0",
+    "@capacitor/cli": "8.6.0"
+  }
+}

@@ -2,13 +2,13 @@
    Oyun bir kez internetle açılınca oyunun dosyaları telefona kaydedilir; sonra bağlantı ve ana ekran
    simgesi internet olmadan da çalışır.
    - Oyun sayfası: önce internet (en yeni sürüm gelsin); bağlantı yoksa ya da 3 sn içinde yanıt gelmezse kayıtlı kopya.
-   - Diğer sayfalar (gizlilik politikası): önce internet, bağlantı yoksa kendi kayıtlı kopyası.
+   - Diğer sayfalar (gizlilik politikası, kullanım koşulları, destek, veri silme): önce internet, bağlantı yoksa kayıtlı kopyası.
    - Yazı tipleri ve simgeler: önce kayıtlı kopya.
    - version.json hiç kaydedilmez: açık kalan oyun yeni sürümü buradan öğrenir. */
 'use strict';
-const VERSION = 'e161da16b7';
+const VERSION = 'a1cf9bacdd';
 const CACHE = 'blok-kahramani-' + VERSION;
-const SHELL = ["./", "gizlilik.html", "manifest.webmanifest", "apple-touch-icon.png", "icon-192.png", "icon-512.png", "favicon-32.png", "muzik/ana-menu.mp3", "fonts/rajdhani-600-latin-ext.woff2", "fonts/rajdhani-600-latin.woff2", "fonts/rajdhani-700-latin-ext.woff2", "fonts/rajdhani-700-latin.woff2", "fonts/russo-one-400-latin-ext.woff2", "fonts/russo-one-400-latin.woff2"];
+const SHELL = ["./", "gizlilik.html", "kosullar.html", "destek.html", "veri-silme.html", "manifest.webmanifest", "apple-touch-icon.png", "icon-192.png", "icon-512.png", "favicon-32.png", "muzik/ana-menu.mp3", "fonts/rajdhani-600-latin-ext.woff2", "fonts/rajdhani-600-latin.woff2", "fonts/rajdhani-700-latin-ext.woff2", "fonts/rajdhani-700-latin.woff2", "fonts/russo-one-400-latin-ext.woff2", "fonts/russo-one-400-latin.woff2"];
 const INDEX = new URL('./', self.registration.scope).href;
 
 self.addEventListener('install', e => {

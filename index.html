@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hero Block</title>
-<meta name="description" content="Deneme sürümü. Neon temalı 8x8 blok bulmaca: parçaları sürükle, satır ve sütunları patlat, komboyu sürdür, milyonlara ulaş. Hero Uygulama Yazılım Teknolojileri Limited Şirketi.">
+<meta name="description" content="Neon temalı 8x8 blok bulmaca: parçaları sürükle, satır ve sütunları patlat, komboyu sürdür, milyonlara ulaş. Hero Uygulama Yazılım Teknolojileri Limited Şirketi.">
 <meta name="apple-mobile-web-app-title" content="Hero Block">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -12,7 +12,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hero Block">
 <meta property="og:title" content="Hero Block">
-<meta property="og:description" content="Deneme sürümü. Parçaları sürükle, satır ve sütunları patlat, komboyu sürdür, milyonlara ulaş. Hero Uygulama Yazılım Teknolojileri.">
+<meta property="og:description" content="Parçaları sürükle, satır ve sütunları patlat, komboyu sürdür, milyonlara ulaş. Hero Uygulama Yazılım Teknolojileri.">
 <meta property="og:url" content="https://heroblock.herouygulama.com.tr/">
 <meta property="og:image" content="https://heroblock.herouygulama.com.tr/og.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="bk-build" content="8e5a7f03ca">
+<meta name="bk-build" content="c8f67b657b">
 <meta name="theme-color" content="#050817">
 <meta name="author" content="Baran Yavuz, Hero Uygulama Yazılım Teknolojileri Limited Şirketi">
 <meta name="color-scheme" content="dark">
@@ -581,11 +581,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   .lb-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
   .lb-row {
     display: grid;
-    grid-template-columns: 28px minmax(0, 1fr) auto;
+    grid-template-columns: 28px minmax(0, 1fr) auto 24px;
     align-items: center;
     gap: 8px;
     min-height: 28px;
-    padding: 3px 10px 3px 5px;
+    padding: 3px 4px 3px 5px;
     border-radius: 10px;
     background: rgba(16, 28, 72, .72);
     font: 700 15px/1.1 var(--ui);
@@ -627,6 +627,21 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
   .lb-link { appearance: none; -webkit-appearance: none; padding: 4px 0; border: 0; background: none; color: #7fb6ff; font: 700 12px/1 var(--ui); letter-spacing: .08em; cursor: pointer; }
   .lb-act:focus-visible, .lb-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  /* Satırdaki seçenek düğmesi: şikayet et / engelle (kendi satırında yok) */
+  .lb-opt { appearance: none; -webkit-appearance: none; display: grid; place-items: center; width: 24px; height: 24px; margin: 0; padding: 0; border: 0; border-radius: 7px; background: transparent; color: rgba(160, 182, 230, .75); cursor: pointer; }
+  .lb-opt svg { width: 16px; height: 16px; }
+  .lb-opt:active { background: rgba(255, 255, 255, .08); }
+  .lb-opt:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .lb-engel { color: var(--muted); }
+  /* Takma ad penceresi: kullanım koşulları onayı */
+  .nk-kosul { display: flex; align-items: flex-start; gap: 9px; margin: 2px 0 12px; text-align: left; font: 600 13px/1.35 var(--ui); color: var(--muted); cursor: pointer; }
+  .nk-kosul input { flex: none; width: 20px; height: 20px; margin: 0; accent-color: #ffc531; cursor: pointer; }
+  .nk-kosul a { color: #7fd8ff; }
+  /* Şikayet / engelle penceresi */
+  .rp-ad { margin: 2px 0 6px; font: 400 20px/1.15 var(--display); color: #fff; word-break: break-word; }
+  .rp-durum { margin: 0 0 12px; font: 700 14px/1.35 var(--ui); color: var(--gold); }
+  .rp-durum a { color: #7fd8ff; }
+  .rp-mail { display: inline-block; margin-top: 8px; color: #7fd8ff; font: 700 13px/1 var(--ui); letter-spacing: .06em; }
   .lb-skel { height: 28px; border-radius: 10px; background: linear-gradient(90deg, rgba(20, 34, 86, .55) 0%, rgba(44, 66, 140, .6) 50%, rgba(20, 34, 86, .55) 100%); background-size: 200% 100%; animation: lbShimmer 1.2s linear infinite; }
   @keyframes lbGlow { 50% { filter: drop-shadow(0 0 13px rgba(255, 197, 49, 1)); transform: scale(1.06); } }
   @keyframes lbShimmer { to { background-position: -200% 0; } }
@@ -677,7 +692,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   @media (max-height: 560px) {
     .card { padding: 16px 18px; }
   }
-  /* Alt bilgi: deneme sürümü, şirket, kurucu ve iletişim (her zaman görünür, rafın altında) */
+  /* Alt bilgi: şirket, kurucu, iletişim, gizlilik, koşullar ve destek (her zaman görünür, rafın altında) */
   #credits {
     position: fixed;
     z-index: 3;
@@ -818,6 +833,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   html.light .lb-row.r1 .lb-score { color: #b87400; text-shadow: none; }
   html.light .lb-row.me { box-shadow: inset 0 0 0 1.5px rgba(10, 116, 201, .85); }
   html.light .lb-msg { background: #eef3fb; color: #5b6b8c; }
+  html.light .lb-opt { color: #6b7a99; }
+  html.light .nk-kosul a, html.light .rp-mail { color: #0a74c9; }
+  html.light .rp-ad { color: #13224f; }
   html.light .lb-msg b, html.light .lb-act { color: #b87400; }
   html.light .lb-act { background: rgba(255, 197, 49, .16); border-color: rgba(214, 150, 0, .7); }
   html.light .lb-link { color: #0a74c9; }
@@ -874,7 +892,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
         <li>Oyunu bağlantısından aç: <a href="https://heroblock.herouygulama.com.tr/">https://heroblock.herouygulama.com.tr/</a></li>
         <li>Bilgisayardaysan bu dosyayı Chrome, Safari ya da Edge ile aç.</li>
       </ol>
-      <p class="nojs-foot">Deneme sürümü · Hero Uygulama Yazılım Teknolojileri Limited Şirketi · Kurucu: Baran Yavuz · İletişim: <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a> · Web: <a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik Politikası</a></p>
+      <p class="nojs-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi · Kurucu: Baran Yavuz · İletişim: <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a> · Web: <a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik Politikası</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html">Kullanım Koşulları</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html">Destek</a></p>
     </div>
   </div>
 </noscript>
@@ -914,7 +932,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 <button id="notice" type="button" hidden></button>
 
 <footer id="credits">
-  <div class="cr-line"><span class="cr-beta">DENEME SÜRÜMÜ</span><span>Hero Uygulama Yazılım Teknolojileri Ltd. Şti.</span><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik</a></div>
+  <div class="cr-line"><span>Hero Uygulama Yazılım Teknolojileri Ltd. Şti.</span><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik</a><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/kosullar.html">Koşullar</a><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/destek.html">Destek</a></div>
   <div class="cr-line"><span>Kurucu: <b>Baran Yavuz</b></span><span aria-hidden="true">·</span><a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><span aria-hidden="true">·</span><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a></div>
 </footer>
 
@@ -945,14 +963,14 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     <button id="goWeek" class="go-week" type="button" hidden></button>
     <button id="btnAgain" class="btn btn-primary" type="button">TEKRAR OYNA</button>
     <button id="btnDuelOver" class="btn btn-ghost btn-gap btn-ico" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg>İKİ KİŞİLİK OYNA</button>
-    <p class="card-foot">Deneme sürümü · Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br>Kurucu: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik Politikası</a></p>
+    <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br>Kurucu: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html">Destek</a></p>
   </div>
 </div>
 
 <div id="ovStart" class="overlay" role="dialog" aria-modal="true" aria-labelledby="stTitle" hidden>
   <div class="st-wrap">
   <div id="stCard" class="card" tabindex="-1">
-    <div class="badge badge-beta">DENEME SÜRÜMÜ</div>
+    <div class="badge badge-beta">NEON BLOK BULMACA</div>
     <h2 id="stTitle" class="title">HERO BLOCK</h2>
     <p id="stSub" class="sub">Parçaları sürükle, satır ve sütunları patlat!</p>
     <button id="btnStart" class="btn btn-primary" type="button">OYNA</button>
@@ -963,7 +981,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       <input id="muzikSes" class="music-vol" type="range" min="0" max="100" step="5" value="70">
       <output id="muzikDeger" class="music-val" for="muzikSes">%70</output>
     </div>
-    <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br>Kurucu: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik Politikası</a></p>
+    <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br>Kurucu: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html">Destek</a></p>
   </div>
   <section id="lbStart" class="lb" aria-label="Haftanın en iyileri" hidden></section>
   </div>
@@ -975,11 +993,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     <h2 id="nkTitle" class="title small">OYUNCU ADIN</h2>
     <p class="sub">Haftanın en iyileri tablosunda bu ad görünecek.</p>
     <div class="field"><label for="nkName">TAKMA AD</label><input id="nkName" type="text" maxlength="14" autocomplete="nickname" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" placeholder="ÖR. KRALALİ"></div>
+    <label class="nk-kosul"><input id="nkKosul" type="checkbox"><span><a href="https://heroblock.herouygulama.com.tr/kosullar.html" target="_blank" rel="noopener">Kullanım Koşulları</a>'nı okudum, kabul ediyorum. 13 yaşından büyüğüm. Uygunsuz ad ve davranışa hiç tolerans yoktur.</span></label>
     <p id="nkErr" class="nk-err" role="alert" hidden></p>
     <button id="nkSave" class="btn btn-primary" type="button">KAYDET</button>
     <button id="nkSkip" class="link-btn" type="button">ŞİMDİLİK GEÇ</button>
-    <button id="nkDel" class="link-btn nk-del" type="button" hidden>SKOR KAYITLARIMI SİL</button>
-    <p class="card-foot">Gerçek adını yazmak zorunda değilsin. Küfür, cinsel içerik ve hakaret içeren adlar kabul edilmez. İlk 10'a girersen takma adın ve puanın herkese görünür. <a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik Politikası</a></p>
+    <button id="nkDel" class="link-btn nk-del" type="button" hidden>TAKMA ADIMI VE SKORLARIMI SİL</button>
+    <p class="card-foot">Gerçek adını yazmak zorunda değilsin. Küfür, cinsel içerik, hakaret ve başkasının kişisel bilgisini içeren adlar kabul edilmez. İlk 10'a girersen takma adın ve puanın herkese görünür. <a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik Politikası</a></p>
   </div>
 </div>
 
@@ -987,6 +1006,18 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   <div id="lbCard" class="card lb-card" tabindex="-1">
     <section id="lbFull" class="lb"></section>
     <button id="lbClose" class="btn btn-ghost btn-gap" type="button">KAPAT</button>
+  </div>
+</div>
+
+<div id="ovRapor" class="overlay" role="dialog" aria-modal="true" aria-labelledby="rpAd" hidden>
+  <div id="rpCard" class="card" tabindex="-1">
+    <div class="badge badge-beta">HAFTALIK SKOR TABLOSU</div>
+    <h2 id="rpAd" class="rp-ad">OYUNCU</h2>
+    <p class="sub">Bu takma ad uygunsuz mu? Şikayet edersen ekibimiz 24 saat içinde inceler; uygunsuzsa adı kaldırır ve oyuncuyu engeller. Engellersen bu oyuncuyu tabloda bir daha görmezsin.</p>
+    <p id="rpDurum" class="rp-durum" role="status" hidden></p>
+    <button id="rpSikayet" class="btn btn-primary" type="button">ŞİKAYET ET</button>
+    <button id="rpEngel" class="btn btn-ghost btn-gap" type="button">ENGELLE</button>
+    <button id="rpKapat" class="link-btn" type="button">VAZGEÇ</button>
   </div>
 </div>
 
@@ -1049,6 +1080,18 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   /* ================= Sabitler ================= */
   const N = 8;
   const REDUCED = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  // Google Play / App Store uygulaması (Capacitor): titreşim yerel dokunsal geri bildirimle, geri tuşu pencereleri kapatır,
+  // dış bağlantılar telefonun tarayıcısında açılır. Web sürümünde bunların hiçbiri devreye girmez.
+  const CAP = window.Capacitor;
+  const UYGULAMA = !!(CAP && typeof CAP.isNativePlatform === 'function' && CAP.isNativePlatform());
+  const eklenti = ad => { if (!UYGULAMA) return null; try { return (CAP.Plugins && CAP.Plugins[ad]) || (CAP.registerPlugin ? CAP.registerPlugin(ad) : null) || null; } catch (e) { return null; } };
+  // Telefonun durum çubuğu yazıları: karanlık modda açık renk, aydınlık modda koyu renk
+  function sistemCubugu() {
+    const SB = eklenti('SystemBars');
+    if (!SB || typeof SB.setStyle !== 'function') return;
+    try { const p = SB.setStyle({ style: LIGHT ? 'LIGHT' : 'DARK' }); if (p && p.catch) p.catch(() => {}); } catch (e) { /* yok */ }
+  }
+  const Haptik = eklenti('Haptics');
 
   // Neon kahraman paleti: elektrik mavisi, camgöbeği, altın, kehribar, kraliyet mavisi
   const PALETTE = [
@@ -1362,6 +1405,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const ovDuel = $('ovDuel');
   const ovNick = $('ovNick');
   const ovBoard = $('ovBoard');
+  const ovRapor = $('ovRapor');
   const btnBoard = $('btnBoard');
   const duelBar = $('duelBar');
   const btnDuel = $('btnDuel');
@@ -1407,7 +1451,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const REG = { x: 0, y: 0, w: 0, h: 0 };          // tahta bölgesi: bloklar ve önizleme katmanları yalnızca burayı kaplar
   const TRG = { x: 0, y: 0, w: 0, h: 0 };          // raf bölgesi
   const FP = 0.026, HUD_K = 0.255, G1 = 0.045, G2 = 0.055, TRAY_K = 0.4, PANEL_K = 0.95, GX = 0.06, MAX_B = 600;
-  const FOOT_H = 30; // ekranın altındaki bilgi şeridi (deneme sürümü, şirket, kurucu, iletişim): tahta ve raf bunun üstünde kalır
+  const FOOT_H = 30; // ekranın altındaki bilgi şeridi (şirket, kurucu, iletişim, bağlantılar): tahta ve raf bunun üstünde kalır
   let sprites = [], greySprite = null, whiteSprite = null, spritePad = 0, dragSize = 0;
 
   function readInsets() {
@@ -1846,7 +1890,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
 
   function updateHint() { hint.hidden = !(moves === 0 && gameState === 'play' && !drag && !duel); }
-  function setModal() { document.body.classList.toggle('modal', !ovOver.hidden || !ovConfirm.hidden || !ovStart.hidden || !ovDuel.hidden || !ovNick.hidden || !ovBoard.hidden); }
+  function setModal() { document.body.classList.toggle('modal', !ovOver.hidden || !ovConfirm.hidden || !ovStart.hidden || !ovDuel.hidden || !ovNick.hidden || !ovBoard.hidden || !ovRapor.hidden); }
 
   // Uzun sayılar kutusuna sığsın diye yazı boyunu küçültür
   function fitText(el, text, maxPx, width) {
@@ -2439,6 +2483,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   function buzz(pattern) {
     if (!soundOn) return;
+    if (Haptik) { try { const p = Haptik.impact({ style: Array.isArray(pattern) ? 'MEDIUM' : 'LIGHT' }); if (p && p.catch) p.catch(() => {}); } catch (e) { /* dokunsal yok */ } return; }
     try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) { /* titreşim yok */ }
   }
 
@@ -3418,6 +3463,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (light === LIGHT) return;
     LIGHT = light;
     document.documentElement.classList.toggle('light', LIGHT);
+    sistemCubugu();
     setModeButton();
     const k = Math.max(0, themeIdx);
     themeIdx = -1;
@@ -3793,6 +3839,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const K_OYUNCU = 'blokKahramani.oyuncu';
   const K_TABLO = 'blokKahramani.tablo';
   const K_BEKLEYEN = 'blokKahramani.bekleyen';
+  const K_ENGEL = 'blokKahramani.engel';     // bu cihazda engellenen oyuncular (tabloda gösterilmez)
+  const KOSUL_SURUM = '2026-11-10';          // Kullanım Koşulları sürümü: değişince takma adlı oyuncudan yeniden onay istenir
   const TROPHY = '<svg viewBox="0 0 24 24" aria-hidden="true">'
     + '<path d="M6.5 5.5H3.6v1.6a4 4 0 0 0 3.6 4M17.5 5.5h2.9v1.6a4 4 0 0 1-3.6 4" fill="none" stroke="#ffc531" stroke-width="1.7" stroke-linecap="round"/>'
     + '<path d="M6 3h12v5.6a6 6 0 0 1-12 0z" fill="#ffc531"/><path d="M12 3h6v5.6a6 6 0 0 1-6 6z" fill="#f0a818"/>'
@@ -3808,10 +3856,27 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const h = Array.from(b, x => x.toString(16).padStart(2, '0')).join('');
     return h.slice(0, 8) + '-' + h.slice(8, 12) + '-' + h.slice(12, 16) + '-' + h.slice(16, 20) + '-' + h.slice(20);
   }
-  const oyuncu = Object.assign({ id: '', ad: '', atla: false, ban: '' }, store.get(K_OYUNCU, null) || {});
+  const oyuncu = Object.assign({ id: '', ad: '', atla: false, ban: '', kosul: '' }, store.get(K_OYUNCU, null) || {});
   if (typeof oyuncu.id !== 'string' || !/^[A-Za-z0-9-]{16,64}$/.test(oyuncu.id)) { oyuncu.id = yeniKimlik(); store.set(K_OYUNCU, oyuncu); }
   if (typeof oyuncu.ad !== 'string') oyuncu.ad = '';
   if (typeof oyuncu.ban !== 'string') oyuncu.ban = '';
+  if (typeof oyuncu.kosul !== 'string') oyuncu.kosul = '';
+  const kosulTamam = () => oyuncu.kosul === KOSUL_SURUM;
+
+  /* Şikayet ve engelleme (Google Play ve App Store kullanıcı içeriği kuralları): tablodaki her takma adın yanındaki
+     düğmeyle oyuncu şikayet edilir ya da engellenir. Sunucu her oyuncu için geri çevrilemeyen kısa bir anahtar (k) verir;
+     engellenenler yalnızca bu cihazda tutulur ve tabloda gösterilmez. Şikayet sunucuya gider, yönetici 24 saat içinde inceler. */
+  let engelListe = store.get(K_ENGEL, []);
+  if (!Array.isArray(engelListe)) engelListe = [];
+  engelListe = engelListe.filter(e => e && typeof e.k === 'string' && /^[0-9a-f]{12}$/.test(e.k));
+  const engelli = k => !!k && engelListe.some(e => e.k === k);
+  function engelle(k, ad) {
+    if (!k || engelli(k)) return;
+    engelListe.push({ k, ad: String(ad || '').slice(0, 20) });
+    engelListe = engelListe.slice(-300);
+    store.set(K_ENGEL, engelListe);
+  }
+  function engelleriKaldir() { engelListe = []; store.del(K_ENGEL); }
 
   const Skor = { tablo: store.get(K_TABLO, null), durum: 'yok', yukleniyor: false, sonIstek: 0, gonderiyor: false, tekrar: false, sonGonderim: 0, zaman: 0, sonuc: null };
   const lbEls = [$('lbStart'), $('lbFull')];
@@ -3851,7 +3916,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
         ? { method: 'POST', body: JSON.stringify(govde), headers: { 'Content-Type': 'text/plain;charset=UTF-8' }, keepalive: true, cache: 'no-store' }
         : { cache: 'no-store' };
       if (ctl) opt.signal = ctl.signal;
-      const res = await fetch(SKOR_API + '?a=' + a + (govde ? '' : '&pid=' + encodeURIComponent(oyuncu.id)), opt);
+      const kim = !govde && (oyuncu.ad || oyuncu.ban) ? '&pid=' + encodeURIComponent(oyuncu.id) : '';
+      const res = await fetch(SKOR_API + '?a=' + a + kim, opt);
       const d = await res.json();
       if (!d || typeof d !== 'object') throw new Error('yanıt yok');
       return d;
@@ -3913,7 +3979,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (neden === 'bitti') { Skor.sonuc = { durum: 'tamam', yeni: false }; oyunSonuCiz(); }
       return;
     }
-    if (!oyuncu.ad) {
+    if (!oyuncu.ad || !kosulTamam()) {
       if (neden === 'bitti') { Skor.sonuc = { durum: 'adsiz' }; oyunSonuCiz(); }
       return;
     }
@@ -3954,7 +4020,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
   // Uzun oyunda tablo canlı kalsın: haftalık en iyiyi geçince en çok dakikada bir gönderilir
   function skorCanli() {
-    if (SKOR_API && !duel && oyuncu.ad && !banli() && score > haftaEnIyi() && Date.now() - Skor.sonGonderim > 60000) skorGonder(score, moves, 'oyun');
+    if (SKOR_API && !duel && oyuncu.ad && kosulTamam() && !banli() && score > haftaEnIyi() && Date.now() - Skor.sonGonderim > 60000) skorGonder(score, moves, 'oyun');
   }
 
   function kalanYazi() {
@@ -3963,10 +4029,15 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     return 'SIFIRLANMAYA ' + (g ? g + ' GÜN' + (sa ? ' ' + sa + ' SAAT' : '') : sa ? sa + ' SAAT' + (dk ? ' ' + dk + ' DK' : '') : Math.max(1, dk) + ' DK');
   }
 
+  const SECENEK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5.5" r="1.9" fill="currentColor"/><circle cx="12" cy="12" r="1.9" fill="currentColor"/><circle cx="12" cy="18.5" r="1.9" fill="currentColor"/></svg>';
   function satir(k, ben) {
     const r = k.sira | 0, crown = r === 1 ? CROWN : '';
+    const ad = upTR(String(k.ad));
+    const sec = !ben && typeof k.k === 'string' && /^[0-9a-f]{12}$/.test(k.k)
+      ? '<button class="lb-opt" type="button" data-lb="rapor" data-k="' + k.k + '" data-ad="' + esc(String(k.ad)) + '" aria-label="' + esc(ad) + ': şikayet et ya da engelle" title="Şikayet et / engelle">' + SECENEK + '</button>'
+      : '<span aria-hidden="true"></span>';
     return '<li class="lb-row' + (r <= 3 ? ' r' + r : '') + (ben ? ' me' : '') + '"><span class="lb-rank">' + r + '</span><span class="lb-name">' + crown
-      + '<span>' + esc(upTR(String(k.ad))) + '</span>' + (ben ? '<em>SEN</em>' : '') + '</span><span class="lb-score">' + fmt(k.puan) + '</span></li>';
+      + '<span>' + esc(ad) + '</span>' + (ben ? '<em>SEN</em>' : '') + '</span><span class="lb-score">' + fmt(k.puan) + '</span>' + sec + '</li>';
   }
 
   // Tabloyu çizer (başlangıç ekranındaki ve ayrı penceredeki)
@@ -3974,8 +4045,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (!SKOR_API) return;
     const t = Skor.tablo, gecerli = tabloKalan(t) > 0;
     let govde = '';
-    if (gecerli && t.ilk10.length) {
-      govde = '<ol class="lb-list">' + t.ilk10.map(k => satir(k, !!k.sen)).join('') + '</ol>';
+    const gorunen = gecerli ? t.ilk10.filter(k => k.sen || !engelli(k.k)) : [];
+    if (gecerli && t.ilk10.length && !gorunen.length) {
+      govde = '<p class="lb-msg">Engellediğin oyuncular gizlendi.</p>';
+    } else if (gecerli && t.ilk10.length) {
+      govde = '<ol class="lb-list">' + gorunen.map(k => satir(k, !!k.sen)).join('') + '</ol>';
       if (t.ben && t.ben.sira > 10) govde += '<div class="lb-gap" aria-hidden="true">···</div><ol class="lb-list">' + satir(t.ben, true) + '</ol>';
       if (Skor.durum === 'hata') govde += '<div class="lb-foot"><span>Çevrimdışı: son görülen tablo</span></div>';
     } else if (gecerli && Skor.durum === 'tamam') {
@@ -3990,10 +4064,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     } else if (!oyuncu.ad) {
       const b = bekleyenAl();
       govde += '<button class="lb-act" type="button" data-lb="ad">' + (b ? 'ADINI YAZ, ' + fmt(b.puan) + ' PUANLA TABLOYA GİR' : 'ADINI YAZ, TABLOYA GİR') + '</button>';
+    } else if (!kosulTamam()) {
+      govde += '<button class="lb-act" type="button" data-lb="ad">KULLANIM KOŞULLARINI ONAYLA, TABLODA KAL</button>';
     } else {
       govde += '<div class="lb-foot"><span>Sen: <b>' + esc(upTR(oyuncu.ad)) + '</b>' + (gecerli && t.toplam ? ' · ' + fmt(t.toplam) + ' oyuncu' : '') + '</span>'
         + '<button class="lb-link" type="button" data-lb="ad">ADINI DEĞİŞTİR</button></div>';
     }
+    if (engelListe.length) govde += '<div class="lb-foot lb-engel"><span>Engellediğin ' + fmt(engelListe.length) + ' oyuncu gösterilmiyor</span><button class="lb-link" type="button" data-lb="engelkaldir">ENGELLERİ KALDIR</button></div>';
     const html = '<header class="lb-head">' + TROPHY.replace('<svg', '<svg class="lb-trophy"') + '<div class="lb-titles"><h3 class="lb-title">HAFTANIN EN İYİLERİ</h3>'
       + '<span class="lb-time">' + (gecerli ? kalanYazi() : 'HER PAZARTESİ SIFIRLANIR') + '</span></div></header>' + govde;
     lbEls.forEach(el => { if (el) el.innerHTML = html; });
@@ -4008,7 +4085,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const t = Skor.tablo, ben = tabloKalan(t) > 0 && t.ben;
     let html = '', ne = 'tablo';
     if (r.durum === 'gidiyor') html = TROPHY + '<span>Skorun tabloya gönderiliyor…</span>';
-    else if (r.durum === 'adsiz') { html = TROPHY + '<span>Adını yaz, haftalık tabloya gir <i>›</i></span>'; ne = 'ad'; }
+    else if (r.durum === 'adsiz') { html = TROPHY + '<span>' + (oyuncu.ad ? 'Koşulları onayla, haftalık tabloya gir' : 'Adını yaz, haftalık tabloya gir') + ' <i>›</i></span>'; ne = 'ad'; }
     else if (r.durum === 'adhata') { html = TROPHY + '<span>Takma adın uygun bulunmadı. Yeni ad seç <i>›</i></span>'; ne = 'ad'; }
     else if (r.durum === 'hata') html = TROPHY + '<span>Tabloya bağlanılamadı; internet gelince gönderilir <i>›</i></span>';
     else if (r.durum === 'ban') html = TROPHY + '<span>Skor tablosuna katılımın engellendi <i>›</i></span>';
@@ -4030,9 +4107,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     $('nkErr').hidden = !mesaj;
     $('nkErr').textContent = mesaj || '';
     $('nkSave').disabled = banli();
+    $('nkKosul').checked = kosulTamam();
     const del = $('nkDel');
     del.hidden = !oyuncu.ad;
-    del.textContent = 'SKOR KAYITLARIMI SİL';
+    del.textContent = 'TAKMA ADIMI VE SKORLARIMI SİL';
     delete del.dataset.emin;
     $('nkSkip').textContent = oyuncu.ad ? 'VAZGEÇ' : 'ŞİMDİLİK GEÇ';
     ovNick.hidden = false;
@@ -4049,6 +4127,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   async function adKaydet() {
     const r = adDenetle($('nkName').value), err = $('nkErr'), btn = $('nkSave');
     if (r.hata) { err.textContent = r.hata; err.hidden = false; return; }
+    if (!$('nkKosul').checked) { err.textContent = 'Devam etmek için Kullanım Koşulları\'nı onayla.'; err.hidden = false; return; }
     btn.disabled = true;
     try {
       // Sunucu adı denetler (uygunsuz ad reddedilir); bağlantı yoksa ad şimdilik kabul edilir
@@ -4068,6 +4147,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     btn.disabled = false;
     oyuncu.ad = r.ad;
     oyuncu.atla = false;
+    oyuncu.kosul = KOSUL_SURUM;
     store.set(K_OYUNCU, oyuncu);
     announce('Takma adın ' + r.ad + ' olarak kaydedildi.');
     if (Skor.sonuc && (Skor.sonuc.durum === 'adsiz' || Skor.sonuc.durum === 'adhata')) Skor.sonuc = { durum: 'gidiyor' };
@@ -4080,6 +4160,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   $('nkSave').addEventListener('click', adKaydet);
   $('nkName').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); adKaydet(); } });
   $('nkName').addEventListener('input', () => { $('nkErr').hidden = true; });
+  $('nkKosul').addEventListener('change', () => { $('nkErr').hidden = true; });
   // Skor kayıtlarını silme: iki dokunuşla (yanlışlıkla silinmesin); sonra yeni, bağlantısız bir oyuncu kimliği
   $('nkDel').addEventListener('click', async () => {
     const del = $('nkDel'), err = $('nkErr');
@@ -4087,7 +4168,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       del.dataset.emin = '1';
       del.textContent = 'EMİN MİSİN? SİLMEK İÇİN TEKRAR DOKUN';
       clearTimeout(del._t);
-      del._t = setTimeout(() => { delete del.dataset.emin; del.textContent = 'SKOR KAYITLARIMI SİL'; }, 5000);
+      del._t = setTimeout(() => { delete del.dataset.emin; del.textContent = 'TAKMA ADIMI VE SKORLARIMI SİL'; }, 5000);
       return;
     }
     del.disabled = true;
@@ -4097,13 +4178,14 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (!banli()) oyuncu.id = yeniKimlik();   // engel sürerken kimlik değişmez (engel yeni kimlikle aşılmasın)
       oyuncu.ad = '';
       oyuncu.atla = true;
+      oyuncu.kosul = '';
       store.set(K_OYUNCU, oyuncu);
       store.del(K_BEKLEYEN);
       store.del(K_TABLO);
       Skor.tablo = null;
       Skor.durum = 'yok';
       Skor.sonuc = null;
-      announce('Skor kayıtların silindi.');
+      announce('Takma adın ve skor kayıtların silindi.');
       adKapat();
       tabloCiz();
       oyunSonuCiz();
@@ -4136,7 +4218,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
   $('lbClose').addEventListener('click', tabloKapat);
   ovBoard.addEventListener('pointerdown', e => { if (e.target === ovBoard) tabloKapat(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !ovBoard.hidden) tabloKapat(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !ovBoard.hidden && ovRapor.hidden) tabloKapat(); });
   btnBoard.addEventListener('click', tabloAc);
   goWeek.addEventListener('click', () => {
     if (goWeek.dataset.ne === 'ad') adSor(null, Skor.sonuc && Skor.sonuc.durum === 'adhata' ? Skor.sonuc.mesaj : '');
@@ -4148,7 +4230,60 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (!b) return;
     if (b.dataset.lb === 'ad') adSor();
     else if (b.dataset.lb === 'yenile') tabloYukle(true);
+    else if (b.dataset.lb === 'rapor') raporAc(b.dataset.k, b.dataset.ad || '');
+    else if (b.dataset.lb === 'engelkaldir') { engelleriKaldir(); tabloCiz(); announce('Engeller kaldırıldı.'); }
   }));
+
+  // Şikayet et / engelle penceresi
+  let rapor = null;
+  function raporAc(k, ad) {
+    if (!k) return;
+    rapor = { k, ad };
+    $('rpAd').textContent = upTR(ad || 'OYUNCU');
+    const du = $('rpDurum');
+    du.hidden = true; du.textContent = '';
+    $('rpSikayet').hidden = false; $('rpSikayet').disabled = false;
+    $('rpEngel').hidden = false;
+    $('rpKapat').textContent = 'VAZGEÇ';
+    ovRapor.hidden = false;
+    setModal();
+    focusDialog('rpKapat', 'rpCard');
+  }
+  function raporKapat() {
+    ovRapor.hidden = true;
+    rapor = null;
+    setModal();
+    tabloCiz();
+  }
+  $('rpSikayet').addEventListener('click', async () => {
+    if (!rapor) return;
+    const r = rapor, btn = $('rpSikayet'), du = $('rpDurum');
+    btn.disabled = true;
+    let tamam = false;
+    try {
+      const d = await skorIstek('sikayet', { pid: oyuncu.id, k: r.k, ad: r.ad });
+      tamam = !!d.ok || d.hata === 'yok';
+    } catch (e) { tamam = false; }
+    engelle(r.k, r.ad);   // şikayet edilen oyuncu bu cihazda hemen gizlenir
+    if (rapor !== r) return;
+    if (tamam) du.textContent = 'Şikayetin alındı, teşekkürler. Ekibimiz 24 saat içinde inceleyecek. Bu oyuncuyu artık görmeyeceksin.';
+    else du.innerHTML = 'Şikayet şu an gönderilemedi; bu oyuncuyu senin için gizledik. <a href="mailto:iletisim@herouygulama.com.tr?subject=' + encodeURIComponent('Hero Block şikayet: ' + r.ad) + '">E-postayla bildir</a>';
+    du.hidden = false;
+    btn.hidden = true;
+    $('rpEngel').hidden = true;
+    $('rpKapat').textContent = 'KAPAT';
+    announce(tamam ? 'Şikayetin alındı.' : 'Şikayet gönderilemedi; oyuncu gizlendi.');
+    tabloCiz();
+  });
+  $('rpEngel').addEventListener('click', () => {
+    if (!rapor) return;
+    engelle(rapor.k, rapor.ad);
+    announce('Oyuncu engellendi; tabloda artık görünmeyecek.');
+    raporKapat();
+  });
+  $('rpKapat').addEventListener('click', raporKapat);
+  ovRapor.addEventListener('pointerdown', e => { if (e.target === ovRapor) raporKapat(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !ovRapor.hidden) raporKapat(); });
 
   // Üst bilgideki REKOR alanının üstüne görünmez düğme (düelloda o alan süre sayacıdır: kapalı)
   function placeBoardBtn() {
@@ -4356,6 +4491,29 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     };
   }
 
+  /* ================= Uygulama (Google Play / App Store) ================= */
+  if (UYGULAMA) {
+    document.documentElement.classList.add('uygulama');
+    sistemCubugu();
+    // Dış bağlantılar (gizlilik, koşullar, destek, e-posta) uygulamanın içinde değil telefonun tarayıcısında açılır:
+    // yeni pencere istemeyen bağlantıları uygulama kabuğu kendisi tarayıcıya gönderir
+    document.querySelectorAll('a[target="_blank"]').forEach(a => a.removeAttribute('target'));
+    // Android geri tuşu: açık pencereyi kapatır; pencere yoksa uygulamayı arka plana alır (oyun kayıtlı kalır)
+    const AppEk = eklenti('App');
+    if (AppEk && typeof AppEk.addListener === 'function') {
+      try {
+        AppEk.addListener('backButton', () => {
+          if (!ovRapor.hidden) raporKapat();
+          else if (!ovBoard.hidden) tabloKapat();
+          else if (!ovNick.hidden) $('nkSkip').click();
+          else if (!ovConfirm.hidden) $('btnCancel').click();
+          else if (typeof AppEk.minimizeApp === 'function') AppEk.minimizeApp();
+          else if (typeof AppEk.exitApp === 'function') AppEk.exitApp();
+        });
+      } catch (e) { /* eklenti yok */ }
+    }
+  }
+
   /* ================= Başlat ================= */
   // Sayfa güncellendiğinde açık oyun kaybolmasın (görüntüleyici destekliyorsa)
   const hot = window.claude && window.claude.hot;
@@ -4376,8 +4534,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     // Kayıtlı oyun varsa kaldığı yerden devam, yoksa yeni oyun
     const restored = (data && data.v === 2 && load(data)) || load();
     if (!restored) newGame();
-    // İlk girişte takma ad sorulur (geçilebilir); sonra başlangıç ekranı ve haftalık tablo
+    // İlk girişte takma ad sorulur (geçilebilir); sonra başlangıç ekranı ve haftalık tablo.
+    // Takma adı olup Kullanım Koşulları'nı henüz onaylamamış oyuncudan bir kez onay istenir (onaylamazsa puanı tabloya gitmez)
     if (SKOR_API && !oyuncu.ad && !oyuncu.atla && !banli()) adSor(() => showStart(false));
+    else if (SKOR_API && oyuncu.ad && !kosulTamam() && !banli()) adSor(() => showStart(false), 'Skor tablosu için Kullanım Koşulları eklendi. Tabloda kalmak için okuyup onayla.');
     else showStart(false);
     if (SKOR_API) { bekleyenGonder('acilis'); tabloYukle(true); }
     muzikYukle();

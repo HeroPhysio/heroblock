@@ -1,7 +1,5 @@
 # Hero Block
 
-> **Deneme sürümü**
-
 **Hero Uygulama Yazılım Teknolojileri Limited Şirketi** uygulamasıdır.
 Kurucu: Baran Yavuz · İletişim: [iletisim@herouygulama.com.tr](mailto:iletisim@herouygulama.com.tr) · Web: [herouygulama.com.tr](https://herouygulama.com.tr)
 
@@ -29,7 +27,10 @@ takma adı ve ayarları ilk açılışta cihazın içinde yeni adrese taşınır
 
 **Gizlilik:** Hesap, reklam, izleme ve çerez yok. Skor tablosuna katılmak isteğe bağlıdır (takma ad ve haftalık puan);
 diğer oyun bilgileri yalnızca cihazda saklanır.
-Ayrıntılar: [Gizlilik Politikası ve KVKK Aydınlatma Metni](https://heroblock.herouygulama.com.tr/gizlilik.html)
+Ayrıntılar: [Gizlilik Politikası ve KVKK Aydınlatma Metni](https://heroblock.herouygulama.com.tr/gizlilik.html) · [Kullanım Koşulları](https://heroblock.herouygulama.com.tr/kosullar.html) ·
+[Destek](https://heroblock.herouygulama.com.tr/destek.html) · [Hesap ve veri silme](https://heroblock.herouygulama.com.tr/veri-silme.html)
+
+Skor tablosunda uygunsuz bir takma ad gören oyuncu, adın yanındaki ⋮ düğmesiyle onu şikayet edebilir ya da engelleyebilir.
 
 İnternet olmadan da oynanır: oyunu bir kez internetle açınca dosyaları cihaza kaydedilir (`sw.js`).
 iPhone'da Safari'de açıp Paylaş → Ana Ekrana Ekle ile uygulama gibi tam ekran oynayabilirsin.

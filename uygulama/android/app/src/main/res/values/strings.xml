@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Hero Block</string>
+    <string name="title_activity_main">Hero Block</string>
+    <string name="package_name">tr.com.herouygulama.heroblock</string>
+    <string name="custom_url_scheme">tr.com.herouygulama.heroblock</string>
+</resources>
