@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050817">
+<title>Gizlilik Politikası · Hero Block</title>
+<meta name="description" content="Hero Block oyununun gizlilik politikası ve KVKK aydınlatma metni: hesap, reklam, izleme ve çerez yok; isteğe bağlı haftalık skor tablosu dışında oyun bilgileri yalnızca senin cihazında saklanır.">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script>try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.documentElement.classList.add('light'); } catch (e) {}</script>
+<style>
+  @font-face { font-family: 'Rajdhani'; font-style: normal; font-weight: 600; font-display: swap; src: url(fonts/rajdhani-600-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+  @font-face { font-family: 'Rajdhani'; font-style: normal; font-weight: 600; font-display: swap; src: url(fonts/rajdhani-600-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: 'Rajdhani'; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/rajdhani-700-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+  @font-face { font-family: 'Rajdhani'; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/rajdhani-700-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: 'Russo One'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/russo-one-400-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+  @font-face { font-family: 'Russo One'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/russo-one-400-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  :root {
+    --bg: #050817;
+    --bg2: #0b1640;
+    --card: rgba(13, 24, 66, .78);
+    --line: rgba(92, 160, 255, .24);
+    --text: #dbe7ff;
+    --muted: #9db2de;
+    --gold: #ffc531;
+    --link: #7fd8ff;
+    --display: 'Russo One', 'Arial Black', system-ui, sans-serif;
+    --ui: 'Rajdhani', system-ui, sans-serif;
+    --body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    background: radial-gradient(120% 60% at 50% 0%, #13245e 0%, var(--bg) 62%) fixed, var(--bg);
+    font: 400 16.5px/1.62 var(--body);
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: max(18px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(28px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  }
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(20, 34, 86, .7);
+    color: var(--text);
+    text-decoration: none;
+    font: 700 15px/1 var(--ui);
+    letter-spacing: .08em;
+  }
+  .back:active { transform: scale(.97); }
+  header { text-align: center; margin: 22px 0 22px; }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .45em;
+    font: 400 15px/1 var(--display);
+    color: var(--gold);
+    text-shadow: 0 0 .45em rgba(255, 180, 40, .7);
+  }
+  .brand svg { width: 1.05em; height: 1.05em; fill: var(--gold); }
+  h1 {
+    margin: 12px 0 4px;
+    font: 400 clamp(28px, 8.4vw, 40px)/1.1 var(--display);
+    color: #f2f9ff;
+    text-shadow: 0 0 .3em rgba(43, 160, 255, .85);
+    text-wrap: balance;
+  }
+  .lead { margin: 0; color: var(--muted); font: 700 17px/1.3 var(--ui); letter-spacing: .03em; }
+  .date {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 12px 5px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 197, 49, .6);
+    color: #ffd45e;
+    font: 700 13px/1 var(--ui);
+    letter-spacing: .1em;
+  }
+  .card {
+    margin: 0 0 16px;
+    padding: 18px 18px 6px;
+    border-radius: 20px;
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+  .card.summary { border-color: rgba(255, 197, 49, .55); box-shadow: 0 0 26px rgba(255, 197, 49, .12), inset 0 0 0 1px rgba(255, 197, 49, .06); }
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 10px;
+    font: 400 19px/1.25 var(--display);
+    color: #f2f9ff;
+  }
+  h2 .n {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    background: rgba(43, 140, 255, .18);
+    border: 1px solid rgba(92, 170, 255, .5);
+    color: #9fd0ff;
+    font: 700 15px/1 var(--ui);
+  }
+  .summary h2 { color: var(--gold); }
+  p { margin: 0 0 12px; }
+  ul { margin: 0 0 12px; padding-left: 1.2em; }
+  li { margin: 0 0 6px; }
+  li::marker { color: #6fb8ff; }
+  .checks { list-style: none; padding: 0; }
+  .checks li { position: relative; padding-left: 30px; }
+  .checks li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: .28em;
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    background: rgba(80, 230, 140, .16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.2 4.2L19 7' fill='none' stroke='%236dffa8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat;
+    border: 1px solid rgba(80, 230, 140, .5);
+  }
+  b, strong { color: #fff; }
+  a { color: var(--link); text-underline-offset: 2px; }
+  .tbl { width: 100%; border-collapse: collapse; margin: 4px 0 14px; font-size: 15.5px; }
+  .tbl th, .tbl td { text-align: left; vertical-align: top; padding: 9px 10px; border-bottom: 1px solid var(--line); }
+  .tbl th { font: 700 13px/1.2 var(--ui); letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+  .tbl td:first-child { width: 48%; color: #fff; font-weight: 600; }
+  .muted { color: var(--muted); }
+  .src { font-size: 14px; color: var(--muted); }
+  footer {
+    margin: 22px 0 0;
+    text-align: center;
+    color: var(--muted);
+    font: 600 14px/1.5 var(--ui);
+    letter-spacing: .02em;
+  }
+  .play {
+    display: inline-block;
+    margin: 14px 0 6px;
+    padding: 15px 28px 14px;
+    border-radius: 16px;
+    color: #041230;
+    text-decoration: none;
+    font: 700 17px/1 var(--ui);
+    letter-spacing: .14em;
+    background: linear-gradient(180deg, #86ecff 0%, #2b8cff 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .28), 0 8px 24px rgba(43, 140, 255, .4);
+  }
+  /* Oyunda aydınlık mod seçildiyse bu sayfa da açık renklerle açılır */
+  html.light {
+    --bg: #eef3fb;
+    --card: #ffffff;
+    --line: rgba(43, 120, 220, .2);
+    --text: #1d2b4d;
+    --muted: #5b6b8c;
+    --gold: #b87400;
+    --link: #0a74c9;
+    color-scheme: light;
+  }
+  html.light body { background: radial-gradient(120% 60% at 50% 0%, #dfe9fb 0%, var(--bg) 62%) fixed, var(--bg); }
+  html.light .back { background: #ffffff; color: #1d3a78; }
+  html.light h1, html.light h2 { color: #13224f; text-shadow: none; }
+  html.light .brand { text-shadow: none; }
+  html.light .brand svg { fill: #e39b00; }
+  html.light .summary h2 { color: #b87400; }
+  html.light h2 .n { background: rgba(43, 140, 255, .12); color: #2b6fd6; border-color: rgba(43, 120, 220, .35); }
+  html.light b, html.light strong, html.light .tbl td:first-child { color: #13224f; }
+  html.light .card { box-shadow: 0 10px 30px rgba(20, 40, 90, .08); }
+  html.light .card.summary { box-shadow: 0 10px 30px rgba(200, 140, 0, .12); border-color: rgba(200, 140, 0, .45); }
+  html.light .date { color: #a86a00; border-color: rgba(200, 140, 0, .6); }
+  @media (max-width: 420px) {
+    .tbl td:first-child { width: auto; }
+    .tbl thead { display: none; }
+    .tbl tr { display: block; padding: 8px 0; border-bottom: 1px solid var(--line); }
+    .tbl td { display: block; padding: 2px 2px; border: 0; }
+  }
+  @media print {
+    body { background: #fff; color: #000; font-size: 12pt; }
+    .back, .play { display: none; }
+    .card { background: none; border: 1px solid #999; box-shadow: none; }
+    h1, h2, .brand, .summary h2, b, strong, .tbl td:first-child { color: #000; text-shadow: none; }
+    .lead, .muted, .src, footer, .tbl th { color: #333; }
+    a { color: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="./">&#8592; OYUNA DÖN</a>
+
+  <header>
+    <div class="brand"><svg viewBox="-12 -12 24 24" aria-hidden="true"><path d="M3 -12L-7 2H-1L-3 12L7 -3H1Z"/></svg>HERO BLOCK<svg viewBox="-12 -12 24 24" aria-hidden="true"><path d="M3 -12L-7 2H-1L-3 12L7 -3H1Z"/></svg></div>
+    <h1>Gizlilik Politikası</h1>
+    <p class="lead">ve KVKK Aydınlatma Metni</p>
+    <div class="date">SON GÜNCELLEME: 10 KASIM 2026</div>
+  </header>
+
+  <p>Bu metin, <b>Hero Block</b> oyununu (<a href="https://heroblock.herouygulama.com.tr/">heroblock.herouygulama.com.tr</a>) oynarken hangi bilgilerin nerede tutulduğunu ve bu bilgilerle ilgili haklarını anlatır. Hero Block, Hero Uygulama Yazılım Teknolojileri Limited Şirketi'nin deneme sürümündeki oyunudur.</p>
+
+  <section class="card summary" aria-labelledby="s0">
+    <h2 id="s0">Kısaca</h2>
+    <ul class="checks">
+      <li>Hesap, üyelik ya da giriş yok. Adını, e-postanı ya da telefonunu istemiyoruz.</li>
+      <li>Reklam, analiz aracı, izleme ve çerez yok. Oyunda satın alma da yok.</li>
+      <li><b>Haftalık skor tablosu</b> isteğe bağlıdır: katılırsan seçtiğin <b>takma ad</b> ve o haftaki en yüksek puanın sunucumuza gönderilir ve ilk 10'a girersen herkese görünür. Tablo her pazartesi sıfırlanır; kayıtlar 8 hafta sonra kendiliğinden silinir, istersen oyundan hemen silebilirsin.</li>
+      <li>Küfür, cinsel içerik ve hakaret içeren takma adlar kabul edilmez. Israrla uygunsuz ad deneyen oyuncu skor tablosundan <b>30 gün</b> engellenir; oyunu oynamaya devam edebilir. Engele itiraz etmek için bize yazabilirsin.</li>
+      <li>Rekorun, kayıtlı oyunun, ses ve menü müziği tercihlerin ve iki kişilik oyunda yazdığın adlar <b>yalnızca kendi cihazında</b> saklanır. Bize gönderilmez, biz göremeyiz.</li>
+      <li>Oyun heroblock.herouygulama.com.tr adresinde, GitHub Pages üzerinden yayınlanır. Her web sitesinde olduğu gibi sayfayı açtığında IP adresin bu hizmete ulaşır ve GitHub onu güvenlik amacıyla kaydeder.</li>
+      <li>Bize e-posta yazarsan, e-posta adresini ve mesajını yalnızca sana yanıt vermek için kullanırız.</li>
+    </ul>
+  </section>
+
+  <section class="card" aria-labelledby="s1">
+    <h2 id="s1"><span class="n">1</span>Veri sorumlusu</h2>
+    <p>6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında veri sorumlusu:</p>
+    <p><b>Hero Uygulama Yazılım Teknolojileri Limited Şirketi</b><br>
+    Kurucu: Baran Yavuz<br>
+    E-posta: <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br>
+    Web: <a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a></p>
+  </section>
+
+  <section class="card" aria-labelledby="s2">
+    <h2 id="s2"><span class="n">2</span>Cihazında saklanan bilgiler</h2>
+    <p>Oyunun çalışması için aşağıdaki bilgiler tarayıcının yerel depolama alanında, senin cihazında tutulur. Skor tablosuna ait olanlar dışında (4. bölüm) bu bilgiler hiçbir sunucuya gönderilmez; biz dahil kimse onlara uzaktan erişemez.</p>
+    <table class="tbl">
+      <thead><tr><th scope="col">Bilgi</th><th scope="col">Neden</th></tr></thead>
+      <tbody>
+        <tr><td>Rekor puanın</td><td>En yüksek puanını göstermek</td></tr>
+        <tr><td>Kayıtlı oyun (tahta, parçalar, puan, kombo, hamle sayısı)</td><td>Oyunu kapatıp açınca kaldığın yerden devam etmek</td></tr>
+        <tr><td>Ses açık ya da kapalı tercihi; menü müziğinin açık ya da kapalı olduğu ve ses düzeyi</td><td>Tercihlerini hatırlamak</td></tr>
+        <tr><td>İki kişilik oyunda yazdığın oyuncu adları ve seçtiğin süre</td><td>Bir sonraki düelloda hazır gelmesi</td></tr>
+        <tr><td>Oyun dosyalarının bir kopyası (önbellek; menü müziği dahil)</td><td>İnternet yokken de oynayabilmek</td></tr>
+        <tr><td>Skor tablosu için takma adın, rastgele oluşturulan oyuncu kimliği ve skor tablosundan engellendiysen engelin bitiş tarihi</td><td>Tabloda seni hesap açmadan tanımak, engel sürerken puan göndermemek (4. bölüm)</td></tr>
+        <tr><td>Skor tablosunun son hâli ve henüz gönderilemeyen puanın</td><td>İnternet yokken tabloyu göstermek, bağlantı gelince puanı göndermek</td></tr>
+        <tr><td>Kayıtlarının eski adresten taşınıp taşınmadığı</td><td>Taşımayı yalnızca bir kez yapmak (3. bölüm)</td></tr>
+      </tbody>
+    </table>
+    <p>İki kişilik oyunda gerçek adını yazmak zorunda değilsin; takma ad da kullanabilirsin.</p>
+  </section>
+
+  <section class="card" aria-labelledby="s3">
+    <h2 id="s3"><span class="n">3</span>İnternet üzerinden giden bilgiler</h2>
+    <p>Oyun <b>heroblock.herouygulama.com.tr</b> adresinde, <b>GitHub Pages</b> (GitHub, Inc.) sunucularından yayınlanır. Oyunu açtığında ve oyun açıkken yeni sürüm çıkıp çıkmadığını anlamak için birkaç dakikada bir küçük bir sürüm dosyası istenir. Bu istekler yalnızca GitHub Pages sunucularına gider. Her web sitesinde olduğu gibi bu sırada IP adresin ve tarayıcının standart bağlantı bilgileri (ör. tarayıcı ve işletim sistemi türü) GitHub'a ulaşır.</p>
+    <p>GitHub, GitHub Pages sitelerini ziyaret edenlerin IP adresini güvenlik amacıyla kaydeder ve saklar; bu bilgileri kendi <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">gizlilik bildirimine</a> göre işler. Bu kayıtlara biz erişmiyoruz ve onları kullanmıyoruz.</p>
+    <p><b>Eski adresten taşıma:</b> Oyunun eski adresi (herophysio.github.io/blok-kahramani) bu adrese yönlenir. Tarayıcılar kayıtları adrese bağlı tuttuğu için, eski adreste oynadıysan rekorun, kayıtlı oyunun, takma adın ve ayarların yeni adresi ilk açtığında kendi cihazının içinde yeni adrese aktarılır. Bunun için oyun bir kez eski adresi açıp geri döner (bu da bir GitHub Pages ziyaretidir). Aktarılan bilgiler adres çubuğunun # ile başlayan kısmında taşınır; bu kısım hiçbir sunucuya gönderilmez ve aktarım biter bitmez adres çubuğundan silinir.</p>
+    <p>Oyun bunun dışında yalnızca haftalık skor tablosu için şirketimizin kendi sunucusuna (<b>skor.herouygulama.com.tr</b>, 4. bölüm) bağlanır. Yazı tipleri, görseller ve ana menü müziği oyunla aynı sunucudan (GitHub Pages) gelir; müzik, internetsiz de çalabilmesi için cihazında önbelleğe alınır ve çalınması hiçbir bilgi göndermez. Reklam ağı, analiz aracı, sosyal medya eklentisi ya da başka bir izleme aracı kullanılmaz.</p>
+  </section>
+
+  <section class="card" aria-labelledby="s4">
+    <h2 id="s4"><span class="n">4</span>Haftalık skor tablosu</h2>
+    <p>Oyunun ana ekranında o haftanın en yüksek puanlı 10 oyuncusu gösterilir. Tabloya katılmak <b>isteğe bağlıdır</b>: oyunu ilk açtığında bir takma ad sorulur, bu soruyu geçebilir ve tabloya hiç katılmadan oynayabilirsin.</p>
+    <table class="tbl">
+      <thead><tr><th scope="col">Konu</th><th scope="col">Açıklama</th></tr></thead>
+      <tbody>
+        <tr><td>Gönderilen bilgiler</td><td>Takma adın, puanın, o oyundaki hamle sayısı ve cihazında rastgele oluşturulan bir oyuncu kimliği. Oyuncu kimliği adını, telefon numaranı ya da cihazının donanım kimliğini içermez; yalnızca puanlarının aynı oyuncuya ait olduğunu anlamaya yarar.</td></tr>
+        <tr><td>Ne zaman</td><td>Takma ad yazdıysan ve puanın o haftaki en iyini geçtiyse: oyun bitince, yeniden başlarken, oyundan çıkarken ya da uzun bir oyunda en çok dakikada bir.</td></tr>
+        <tr><td>Kim görür</td><td>Haftanın ilk 10'undaki takma adlar ve puanlar oyunu açan herkese görünür. Kendi sıranı yalnızca sen görürsün. Oyuncu kimliği ve hamle sayısı kimseye gösterilmez. Uygunsuz bulunan adlar ve engellenen oyuncular tabloda gösterilmez. Kayıtların tamamını yalnızca şirket yetkilisi, gizli bir anahtarla açılan yönetim sayfasında görür.</td></tr>
+        <tr><td>Nerede tutulur</td><td>Şirketimizin, barındırma hizmetini Güzel Hosting'den aldığı sunucuda (skor.herouygulama.com.tr). Bu bilgileri kimseyle paylaşmayız, satmayız; yalnızca yasal bir zorunluluk olursa yetkili kamu kurum ve kuruluşlarıyla paylaşabiliriz.</td></tr>
+        <tr><td>IP adresi</td><td>Bağlantı sırasında IP adresin sunucuya ulaşır. Sunucu, aynı yerden çok sık puan gönderilmesini önlemek için IP adresinin geri çevrilemeyen bir özetini 10 dakika tutar; IP adresini açık hâliyle saklamaz. Barındırma firmasının web sunucusu da her sitede olduğu gibi standart erişim kayıtları tutabilir.</td></tr>
+        <tr><td>Takma ad kuralları</td><td>Küfür, cinsel içerik ve hakaret içeren takma adlar otomatik bir süzgeçle reddedilir; harf oyunlarıyla (ör. rakam ya da nokta eklenerek) yazılanlar da. Süzgeç sunucumuzda çalışır ve takma adı yalnızca bu kurallara uygunluk için denetler.</td></tr>
+        <tr><td>Engelleme</td><td>24 saat içinde 3 kez uygunsuz takma ad deneyen oyuncu skor tablosundan <b>30 gün</b> kendiliğinden engellenir; ilk iki denemede uyarılırsın. Kurallara aykırı davranan (ör. hileli puan gönderen) oyuncuları biz de en çok <b>1 yıl</b> engelleyebiliriz. Engellenen oyuncunun puan kayıtları silinir; engel sürerken puan gönderemez ve takma ad seçemez, ama oyunu oynamaya devam edebilir.</td></tr>
+        <tr><td>Engel için tutulan bilgiler</td><td>Uygunsuz ad denemelerinde denenen ad saklanmaz; yalnızca oyuncu kimliğinin geri çevrilemeyen bir özeti ve deneme zamanları 24 saat tutulur. Engellenen oyuncu için oyuncu kimliği, son takma adı ya da denediği ad, engelin nedeni, başlangıç ve bitiş tarihi engel bitene kadar tutulur, sonra kendiliğinden silinir.</td></tr>
+        <tr><td>Yönetim</td><td>Kurallara aykırı kayıtları silebilir, hatalı puanları düzeltebilir, yanlışlıkla uygunsuz bulunan bir ada izin verebilir ve engeli erken kaldırabiliriz.</td></tr>
+        <tr><td>Saklama süresi</td><td>Tablo her pazartesi 00:00'da (Türkiye saati) sıfırlanır. Geçmiş haftaların kayıtları 8 hafta saklanır, sonra kendiliğinden silinir. Uygunsuz ad denemeleri 24 saat, engel kayıtları engel süresince (otomatik engelde 30 gün, en çok 1 yıl) saklanır.</td></tr>
+        <tr><td>Hukuki sebep</td><td>Kullanmayı seçtiğin skor tablosu özelliğini sunmak (KVKK m. 5/2-c); kötüye kullanımı önlemek ve tabloyu her yaştan oyuncu için uygun tutmak konusundaki meşru menfaatimiz (KVKK m. 5/2-f).</td></tr>
+      </tbody>
+    </table>
+    <p>Takma ad seçerken gerçek adını yazmak zorunda değilsin; özellikle çocukların takma ad kullanmasını öneririz.</p>
+    <p><b>Engele itiraz:</b> Otomatik süzgeç masum bir adı yanlışlıkla uygunsuz bulabilir. Adının ya da engelin hatalı olduğunu düşünüyorsan oyundaki takma adını ve olayın tarihini yazarak <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a> adresine başvurabilirsin; bir kişi inceler, haklıysan adına izin verir ve engeli kaldırırız (KVKK m. 11/1-g).</p>
+  </section>
+
+  <section class="card" aria-labelledby="s5">
+    <h2 id="s5"><span class="n">5</span>Toplamadığımız bilgiler</h2>
+    <p>Ad-soyad, e-posta, telefon numarası, konum, rehber, fotoğraf, kamera, mikrofon, cihazının donanım ya da reklam kimliği ve ödeme bilgisi istemiyor ve toplamıyoruz. Patlatmalarda telefonun kısa bir süre titreşebilir (destekleyen cihazlarda); bu da hiçbir bilgi toplamaz.</p>
+  </section>
+
+  <section class="card" aria-labelledby="s6">
+    <h2 id="s6"><span class="n">6</span>Çerezler</h2>
+    <p>Hero Block çerez kullanmaz. 2. bölümde anlatılan yerel depolama ve önbellek yalnızca oyunun çalışması içindir; seni tanımak ya da izlemek için kullanılmaz.</p>
+  </section>
+
+  <section class="card" aria-labelledby="s7">
+    <h2 id="s7"><span class="n">7</span>Bize e-posta gönderirsen</h2>
+    <p><a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a> adresine yazdığında e-posta adresin, e-postanda görünüyorsa adın ve mesajının içeriği bize ulaşır.</p>
+    <ul>
+      <li><b>Amaç:</b> Sorunu, önerini ya da talebini yanıtlamak.</li>
+      <li><b>Toplama yöntemi:</b> Bize elektronik ortamda gönderdiğin e-posta.</li>
+      <li><b>Hukuki sebep:</b> İletişime yanıt verme konusundaki meşru menfaatimiz (KVKK m. 5/2-f); KVKK kapsamındaki başvurularda hukuki yükümlülüğümüzü yerine getirmek (KVKK m. 5/2-ç).</li>
+      <li><b>Aktarım:</b> E-postalar, alan adını ve e-posta hizmetini aldığımız Güzel Hosting'in sunucularında saklanır. Bunun dışında bilgilerini kimseyle paylaşmayız; yalnızca yasal bir zorunluluk olursa yetkili kamu kurum ve kuruluşlarıyla paylaşabiliriz.</li>
+      <li><b>Saklama süresi:</b> Talebin sonuçlandıktan sonra, yasal bir saklama zorunluluğu yoksa e-postanı sileriz.</li>
+    </ul>
+  </section>
+
+  <section class="card" aria-labelledby="s8">
+    <h2 id="s8"><span class="n">8</span>Çocuklar</h2>
+    <p>Hero Block her yaştan oyuncuya uygundur ve kişisel bilgi istemez; skor tablosunda gerçek ad yerine takma ad kullanılmasını öneririz. Çocukların bize e-posta göndermeden önce bir ebeveyne danışmasını rica ederiz. Çocuğunun bize bilgi gönderdiğini düşünen ebeveynler bize yazarak bu bilgilerin silinmesini isteyebilir.</p>
+  </section>
+
+  <section class="card" aria-labelledby="s9">
+    <h2 id="s9"><span class="n">9</span>Bilgilerini nasıl silersin?</h2>
+    <p>Cihazındaki bilgiler senin kontrolündedir. Tarayıcının ayarlarından bu sitenin verilerini silerek hepsini kaldırabilirsin; bu, rekorunu ve kayıtlı oyununu da siler.</p>
+    <ul>
+      <li><b>iPhone (Safari):</b> Ayarlar › Uygulamalar › Safari › Gelişmiş › Web Sitesi Verileri bölümünde <i>herouygulama.com.tr</i> kaydını sil (iOS 17 ve öncesinde: Ayarlar › Safari › Gelişmiş).</li>
+      <li><b>Android (Chrome):</b> Chrome'un Ayarlar › Site ayarları bölümünde <i>heroblock.herouygulama.com.tr</i> sitesini bulup verilerini temizle.</li>
+      <li>Oyunu eski adresinde de oynadıysan, aynı yerden <i>herophysio.github.io</i> kaydını da silebilirsin.</li>
+    </ul>
+    <p>Oyundaki yeniden başlat düğmesi yalnızca o anki oyunu sıfırlar, rekoru silmez. Bize gönderdiğin e-postanın silinmesini istersen bize yazman yeterli.</p>
+    <p><b>Skor tablosu kayıtların:</b> Oyunda skor tablosundaki <i>ADINI DEĞİŞTİR</i> düğmesiyle açılan pencerede <i>SKOR KAYITLARIMI SİL</i>'e (iki kez) dokunursan sunucudaki bütün skor kayıtların hemen silinir ve cihazında yeni bir oyuncu kimliği oluşturulur. İstersen bize e-posta yazarak da silinmelerini isteyebilirsin.</p>
+    <p><b>Engel kaydı:</b> Engellenen oyuncunun puan kayıtları engelle birlikte silinir. Engel kaydı ise engelin yeni bir kimlikle aşılmaması için engel süresince saklanır ve bu süre boyunca oyuncu kimliği değiştirilmez; süre bitince kendiliğinden silinir.</p>
+  </section>
+
+  <section class="card" aria-labelledby="s10">
+    <h2 id="s10"><span class="n">10</span>KVKK kapsamındaki hakların</h2>
+    <p>KVKK'nın 11. maddesi uyarınca şirketimize başvurarak:</p>
+    <ul>
+      <li>kişisel verilerinin işlenip işlenmediğini öğrenme,</li>
+      <li>işlenmişse buna ilişkin bilgi talep etme,</li>
+      <li>işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme,</li>
+      <li>yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme,</li>
+      <li>eksik veya yanlış işlenmişse düzeltilmesini isteme,</li>
+      <li>KVKK'nın 7. maddesindeki şartlar çerçevesinde silinmesini veya yok edilmesini isteme,</li>
+      <li>düzeltme, silme ya da yok etme işlemlerinin, verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme,</li>
+      <li>yalnızca otomatik sistemlerle analiz edilmesi sonucu aleyhine bir sonuç çıkmasına itiraz etme,</li>
+      <li>kanuna aykırı işleme nedeniyle zarara uğrarsan zararın giderilmesini talep etme</li>
+    </ul>
+    <p>haklarına sahipsin. Başvurunu, adını-soyadını ve talebini yazarak <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a> adresine gönderebilirsin. Talebini en geç 30 gün içinde ücretsiz olarak sonuçlandırırız (KVKK m. 13). Yanıtımızdan memnun kalmazsan Kişisel Verileri Koruma Kurulu'na şikâyette bulunabilirsin (KVKK m. 14).</p>
+    <p>Avrupa Birliği'nden oynuyorsan, GDPR kapsamındaki erişim, düzeltme, silme, işlemeyi kısıtlama, itiraz ve veri taşınabilirliği hakların için de aynı adrese yazabilirsin.</p>
+  </section>
+
+  <section class="card" aria-labelledby="s11">
+    <h2 id="s11"><span class="n">11</span>Güvenlik</h2>
+    <p>Site ve skor tablosu sunucusu HTTPS ile şifreli bağlantı üzerinden çalışır; skor kayıtlarının tutulduğu klasöre dışarıdan erişim kapalıdır, yönetim sayfası yalnızca şirket yetkilisinin bildiği gizli bir anahtarla açılır. Cihazında saklanan oyun bilgileri hassas bilgi değildir; yine de cihazını kullanabilen biri bunları (ör. rekorunu) görebilir.</p>
+  </section>
+
+  <section class="card" aria-labelledby="s12">
+    <h2 id="s12"><span class="n">12</span>Değişiklikler</h2>
+    <p>Hero Block deneme sürümündedir. İleride başka bilgi toplayan bir özellik eklenirse (ör. hesap ya da reklam), bu politikayı o özellik yayına girmeden önce güncelleriz. Güncel metin her zaman bu sayfadadır ve tarihi en üstte yazar.</p>
+  </section>
+
+  <footer>
+    <a class="play" href="./">OYUNA DÖN</a>
+    <div>Hero Uygulama Yazılım Teknolojileri Limited Şirketi</div>
+    <div>Kurucu: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a> · <a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a></div>
+  </footer>
+</div>
+</body>
+</html>
