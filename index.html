@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="bk-build" content="96a2a1de8f">
+<meta name="bk-build" content="b491b7afe1">
 <meta name="theme-color" content="#050817">
 <meta name="author" content="Baran Yavuz, Hero Uygulama Yazılım Teknolojileri Limited Şirketi">
 <meta name="color-scheme" content="dark">
@@ -45,7 +45,8 @@
    adres çubuğundaki #tasi=... ile buraya getirilir. Veri yalnızca cihazdaki iki sayfa arasında geçer, sunucuya gitmez.
    - #tasi= ile gelindiyse: bu adreste olmayan kayıtlar yazılır, rekorda büyük olan kalır, takma adlı oyuncu kimliği öne geçer.
      Taşıma bir kez yapılır; sonra gelen eski veri yok sayılır.
-   - Bu adreste hiç kayıt yoksa (ilk açılış) bir kez eski adrese gidilir; eski adres kayıtlarını (ya da "yok") geri gönderir. */
+   - Bu adreste hiç kayıt yoksa (ilk açılış) eski adrese gidilir; eski adres kayıtlarını (ya da "yok") geri gönderir.
+     Gidildiği hâlde kayıt gelmediyse bir kez daha denenir; o arada bu adreste açılan kimlik geçici sayılır, eski adlı kimlik öne geçer. */
 (function () {
   var YENI = 'heroblock.herouygulama.com.tr', ESKI = 'https://herophysio.github.io/blok-kahramani/', BAYRAK = 'blokKahramani.tasima';
   var ANAHTAR = /^(blokKahramani\.|bk-)/;
@@ -60,10 +61,12 @@
   if (location.protocol === 'http:') { yonlen('https://' + YENI + location.pathname + location.search + location.hash); return; }
   var ls;
   try { ls = window.localStorage; ls.setItem(BAYRAK + '.t', '1'); ls.removeItem(BAYRAK + '.t'); } catch (e) { return; }
+  var durum = ls.getItem(BAYRAK); // null: denenmedi · 'denendi', 'denendi2': gidildi, kayıt gelmedi · '1': bitti
   var m = /^#tasi=([^&]*)/.exec(location.hash);
   if (m) {
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* eski tarayıcı */ }
-    if (ls.getItem(BAYRAK) === '1') return;
+    if (durum === '1') return;
+    var eskiOnde = durum === 'denendi' || durum === 'denendi2';
     var veri = null;
     if (m[1] !== 'yok' && m[1].length < 400000) { try { veri = JSON.parse(decodeURIComponent(m[1])); } catch (e) { veri = null; } }
     if (veri && typeof veri === 'object' && !Array.isArray(veri)) {
@@ -77,7 +80,7 @@
           } else if (k === 'blokKahramani.oyuncu') {
             var eski = JSON.parse(v), bu = null;
             try { bu = JSON.parse(simdi); } catch (e) { bu = null; }
-            if (eski && typeof eski.id === 'string' && (!bu || (!bu.ad && eski.ad))) ls.setItem(k, v);
+            if (eski && typeof eski.id === 'string' && (!bu || (eski.ad && (!bu.ad || eskiOnde)))) ls.setItem(k, v);
           } else if (simdi === null) {
             ls.setItem(k, v);
           }
@@ -87,12 +90,15 @@
     ls.setItem(BAYRAK, '1');
     return;
   }
-  if (ls.getItem(BAYRAK) !== null) return;
-  for (var i = 0; i < ls.length; i++) {
-    if (ANAHTAR.test(ls.key(i) || '')) { ls.setItem(BAYRAK, '1'); return; }   // bu adreste zaten oynanmış
+  if (durum === '1') return;
+  if (durum === 'denendi2') { ls.setItem(BAYRAK, '1'); return; }   // iki deneme yeter
+  if (durum === null) {
+    for (var i = 0; i < ls.length; i++) {
+      if (ANAHTAR.test(ls.key(i) || '')) { ls.setItem(BAYRAK, '1'); return; }   // bu adreste zaten oynanmış
+    }
   }
   if (navigator.onLine === false || /(^#|&)test(&|=|$)/.test(location.hash)) return;
-  ls.setItem(BAYRAK, 'denendi');
+  ls.setItem(BAYRAK, durum === null ? 'denendi' : 'denendi2');
   yonlen(ESKI);
 })();
 try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.documentElement.classList.add('light'); } catch (e) {}
