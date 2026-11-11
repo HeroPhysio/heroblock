@@ -3,7 +3,7 @@
 **Hero Uygulama Yazılım Teknolojileri Limited Şirketi** uygulamasıdır.
 Kurucu: Baran Yavuz · İletişim: [iletisim@herouygulama.com.tr](mailto:iletisim@herouygulama.com.tr) · Web: [herouygulama.com.tr](https://herouygulama.com.tr)
 
-Neon temalı 8x8 blok bulmaca oyunu. Parçaları sürükle, dolan satır ve sütunları patlat, komboyu sürdür.
+8x8 tahtada oynanan blok bulmaca oyunu. Parçaları sürükle, dolan satır ve sütunları patlat, komboyu sürdür.
 
 Puanlama: yerleştirilen her kare 1 puan, patlayan her kare 10 puan;
 aynı hamlede 2 çizgi 2 kat, 3 çizgi 3 kat puan getirir ve hepsi kombo ile çarpılır.

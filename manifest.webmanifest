@@ -1,7 +1,7 @@
 {
   "name": "Hero Block",
   "short_name": "Hero Block",
-  "description": "Neon temalı 8x8 blok bulmaca oyunu",
+  "description": "8x8 tahtada oynanan blok bulmaca oyunu",
   "lang": "tr",
   "start_url": "./",
   "scope": "./",
