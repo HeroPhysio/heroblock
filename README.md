@@ -20,6 +20,11 @@ Ses kesilirse "SES DURDU" düğmesi çıkar, dokununca ses geri gelir. Yeni sür
 Her 10.000 puanda tema değişir: 17 tema sırayla döner. Puan arttıkça oyun zorlaşır.
 DİL: oyun Türkçe açılır; ana menüdeki (ve ilk açılıştaki takma ad penceresindeki) TÜRKÇE / ENGLISH seçiciyle
 bütün oyun İngilizceye geçer, seçim cihazda hatırlanır.
+JOKERLER: rafın altındaki DÖNDÜR (parçayı saat yönünde 90° çevirir), YENİLE (yeni üç parça) ve KARE SİL (dokunulan tek kareyi
+patlatır) her yeni oyunda birer hakla başlar. Hiçbir parça sığmadığında işe yarar joker varsa oyun hemen bitmez.
+REKLAMLAR (yalnızca Google Play ve App Store uygulamalarında, Google AdMob): altta şerit reklam, ilk 2 oyundan sonra her
+3. TEKRAR OYNA'da bir oyun arası reklam, isteğe bağlı ödüllü reklamla jokere +1 hak ya da oyun başına bir kez ikinci şans
+(3x3 alan temizlenir). Sitede reklam yoktur: hakkı biten joker sönük kalır, ikinci şans düğmesi çıkmaz.
 Bütün şekiller (3x3 kare, çubuklar, L, T, S/Z, çapraz...) eşit sıklıkta gelir.
 
 **Oyna:** https://heroblock.herouygulama.com.tr/
@@ -27,8 +32,9 @@ Bütün şekiller (3x3 kare, çubuklar, L, T, S/Z, çapraz...) eşit sıklıkta 
 Eski adres (herophysio.github.io/blok-kahramani) buraya yönlenir; oyuncuların o adresteki rekoru, kayıtlı oyunu,
 takma adı ve ayarları ilk açılışta cihazın içinde yeni adrese taşınır.
 
-**Gizlilik:** Hesap, reklam, izleme ve çerez yok. Skor tablosuna katılmak isteğe bağlıdır (takma ad ve haftalık puan);
-diğer oyun bilgileri yalnızca cihazda saklanır.
+**Gizlilik:** Sitede hesap, reklam, izleme ve çerez yok. Google Play ve App Store uygulamaları Google AdMob reklamları
+gösterir (AB, AEA, Birleşik Krallık ve İsviçre'de Google'ın izin penceresiyle). Skor tablosuna katılmak isteğe bağlıdır
+(takma ad ve haftalık puan); diğer oyun bilgileri yalnızca cihazda saklanır.
 Ayrıntılar: [Gizlilik Politikası ve KVKK Aydınlatma Metni](https://heroblock.herouygulama.com.tr/gizlilik.html) · [Kullanım Koşulları](https://heroblock.herouygulama.com.tr/kosullar.html) ·
 [Destek](https://heroblock.herouygulama.com.tr/destek.html) · [Hesap ve veri silme](https://heroblock.herouygulama.com.tr/veri-silme.html)
 

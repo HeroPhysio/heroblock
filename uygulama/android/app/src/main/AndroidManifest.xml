@@ -27,6 +27,12 @@
             android:grantUriPermissions="true">
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
+
+        <!-- Google AdMob uygulama kimliği (app/build.gradle'daki ADMOB_APP_ID'den gelir).
+             Şimdilik Google'ın TEST kimliği: yayından önce AdMob hesabındaki Android uygulama kimliğiyle değiştir. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="${admobAppId}" />
     </application>
 
     <!-- Permissions -->

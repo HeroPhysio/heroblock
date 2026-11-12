@@ -17,6 +17,9 @@ android {
         // Sürüm: bulut derlemesinde -PhbSurumKodu=2 -PhbSurum=1.0.1 ile verilir (her Google Play yüklemesinde kod artmalı)
         versionCode((project.findProperty('hbSurumKodu') ?: '1') as Integer)
         versionName((project.findProperty('hbSurum') ?: '1.0.0') as String)
+        // Google AdMob Android uygulama kimliği: -PADMOB_APP_ID=ca-app-pub-...~... ile ya da ADMOB_APP_ID ortam
+        // değişkeniyle verilir. Verilmezse Google'ın TEST kimliği kullanılır (yalnızca deneme reklamı gösterir).
+        manifestPlaceholders = [admobAppId: (project.findProperty('ADMOB_APP_ID') ?: System.getenv('ADMOB_APP_ID') ?: 'ca-app-pub-3940256099942544~3347511713')]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

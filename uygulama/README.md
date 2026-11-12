@@ -59,6 +59,25 @@ keyAlias=upload
 keyPassword=ŞİFRE
 ```
 
+## Reklamlar (Google AdMob)
+
+Uygulama, `@capacitor-community/admob` (8.3.0) eklentisiyle reklam gösterir. Sitede reklam yoktur.
+
+- **Şerit (banner):** ekranın en altında, güvenli bölgenin üstünde. Tahta, raf ve jokerler reklamın üstünde kalır.
+- **Oyun arası reklam:** ilk 2 oyunda çıkmaz. Sonra her 3 **TEKRAR OYNA**'da bir kez çıkar.
+- **Ödüllü reklam:** isteğe bağlıdır. Hakkı biten jokere +1 hak verir. **YER KALMADI** penceresinde oyun başına bir kez ikinci şans verir (3x3 alan temizlenir).
+- **İzin:** AB, AEA, Birleşik Krallık ve İsviçre'de açılışta Google'ın izin penceresi (UMP) çıkar. Oyuncu kararını menüdeki **REKLAM GİZLİLİK AYARLARI** ile değiştirebilir. iOS takip izni (ATT) sorulmaz.
+
+**Şimdilik Google'ın TEST kimlikleri var** (yalnızca "Test Ad" çıkar). Yayından önce AdMob'da Android ve iOS için birer uygulama ve her birine 3 reklam birimi (ödüllü, geçiş, banner) açılır. Kimlikler şu yerlere yazılır:
+
+| Nerede | Ne |
+| --- | --- |
+| `www/index.html` › `REKLAM_KIMLIK` | 6 reklam birimi kimliği (`ca-app-pub-…/…`), Android ve iOS için ayrı |
+| `android/app/build.gradle` › `admobAppId` | Android uygulama kimliği (`ca-app-pub-…~…`). Derlemede `-PADMOB_APP_ID=…` ya da `ADMOB_APP_ID` ortam değişkeniyle de verilebilir |
+| `ios/App/App/Info.plist` › `GADApplicationIdentifier` | iOS uygulama kimliği (`ca-app-pub-…~…`) |
+
+Ayrıca sitenin köküne `app-ads.txt` konur (`google.com, pub-…, DIRECT, f08c47fec0942fa0`).
+
 ## Mağaza bağlantıları
 
 - Gizlilik politikası: https://heroblock.herouygulama.com.tr/gizlilik.html

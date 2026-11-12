@@ -6,7 +6,7 @@
    - Yazı tipleri ve simgeler: önce kayıtlı kopya.
    - version.json hiç kaydedilmez: açık kalan oyun yeni sürümü buradan öğrenir. */
 'use strict';
-const VERSION = '5ace80fb71';
+const VERSION = '8dc1557800';
 const CACHE = 'blok-kahramani-' + VERSION;
 const SHELL = ["./", "gizlilik.html", "kosullar.html", "destek.html", "veri-silme.html", "manifest.webmanifest", "apple-touch-icon.png", "icon-192.png", "icon-512.png", "favicon-32.png", "muzik/ana-menu.mp3", "fonts/rajdhani-600-latin-ext.woff2", "fonts/rajdhani-600-latin.woff2", "fonts/rajdhani-700-latin-ext.woff2", "fonts/rajdhani-700-latin.woff2", "fonts/russo-one-400-latin-ext.woff2", "fonts/russo-one-400-latin.woff2"];
 const INDEX = new URL('./', self.registration.scope).href;

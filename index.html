@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="bk-build" content="1b8ab54ba2">
+<meta name="bk-build" content="f40916ba6c">
 <meta name="theme-color" content="#050817">
 <meta name="author" content="Baran Yavuz, Hero Uygulama Yazılım Teknolojileri Limited Şirketi">
 <meta name="color-scheme" content="dark">
@@ -364,7 +364,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     flex-direction: column;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(max(16px, env(safe-area-inset-bottom, 0px)) + var(--reklam-alt, 0px)) max(16px, env(safe-area-inset-left, 0px));
     background: radial-gradient(80% 60% at 50% 42%, rgba(12, 24, 70, .55), rgba(2, 4, 14, .84));
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
@@ -688,6 +688,158 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   .dil-row button[aria-checked="true"] { color: #241500; background: linear-gradient(180deg, #ffe892, #ffb51f); box-shadow: 0 0 14px rgba(255, 197, 49, .35); }
   .dil-row button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   .nk-dil { margin: 0 0 14px; }
+  /* ================= Jokerler, ikinci şans ve reklamlar ================= */
+  /* Joker sırası: rafın altında üç kompakt düğme. Hak sayısı köşedeki altın rozette; hak bitince rozet "▶ +1" olur (reklam izle) */
+  #jokerBar { position: fixed; z-index: 5; left: 0; top: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--jk-gap, 8px); transition: opacity .25s ease; }
+  #jokerBar.kapali { opacity: .5; pointer-events: none; }
+  .jk {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .45em;
+    min-width: 0;
+    height: 100%;
+    padding: 0 .55em;
+    border-radius: var(--jk-r, 13px);
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(22, 40, 100, .88), rgba(9, 16, 48, .88));
+    color: #cfe2ff;
+    font: 700 var(--jk-f, 13px)/1 var(--ui);
+    letter-spacing: .08em;
+    white-space: nowrap;
+    box-shadow: 0 0 14px rgba(43, 140, 255, .18), inset 0 1px 0 rgba(255, 255, 255, .08);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .12s ease, border-color .2s ease, color .2s ease, opacity .2s ease;
+  }
+  .jk > svg { width: 1.5em; height: 1.5em; flex: none; color: var(--gold); filter: drop-shadow(0 0 .22em rgba(255, 197, 49, .5)); }
+  .jk > span { min-width: 0; overflow: hidden; line-height: 1.4; }
+  .jk:hover { border-color: rgba(43, 227, 255, .65); color: #fff; }
+  .jk:active { transform: scale(.94); }
+  .jk:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  /* Seçili joker (dokunulacak yer bekleniyor) ve sıkışınca kullanılabilir jokerler: altın çerçeve yalnızca opaklıkla nabız atar */
+  .jk::after { content: ""; position: absolute; inset: -1px; border-radius: inherit; border: 1.5px solid rgba(255, 197, 49, .95); box-shadow: 0 0 18px rgba(255, 197, 49, .55), inset 0 0 12px rgba(255, 197, 49, .16); opacity: 0; pointer-events: none; }
+  .jk.on { color: #fff; }
+  .jk.on::after, #jokerBar.ikaz .jk[data-durum="var"]::after { animation: jkNabiz .8s ease-in-out infinite alternate; }
+  @keyframes jkNabiz { from { opacity: .3; } to { opacity: 1; } }
+  .jk-n {
+    position: absolute;
+    top: -.6em;
+    right: -.4em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .12em;
+    min-width: 1.65em;
+    height: 1.65em;
+    padding: 0 .45em;
+    border-radius: 999px;
+    font: 400 calc(var(--jk-f, 13px) * .9)/1 var(--display);
+    letter-spacing: 0;
+    color: #241500;
+    background: linear-gradient(180deg, #ffe892, #ffb51f);
+    box-shadow: 0 0 10px rgba(255, 197, 49, .55), 0 0 0 1.5px var(--bg);
+    pointer-events: none;
+  }
+  .jk-n svg { width: .8em; height: .8em; flex: none; }
+  .jk[data-durum="reklam"] .jk-n { color: #041230; background: linear-gradient(180deg, #86ecff, #2b8cff); box-shadow: 0 0 10px rgba(43, 227, 255, .6), 0 0 0 1.5px var(--bg); }
+  .jk[data-durum="bos"] { opacity: .45; filter: saturate(.4); cursor: default; }
+  .jk[data-durum="bos"]:active { transform: none; }
+  .jk[data-durum="bos"] .jk-n { color: #c9d6f2; background: #2a3658; box-shadow: 0 0 0 1.5px var(--bg); }
+  /* Joker ipucu: tahta ile raf arasında. DÖNDÜR / KARE SİL seçiliyken ne yapılacağını ve VAZGEÇ'i, sıkışınca BİTİR'i gösterir */
+  #jokerIpucu {
+    position: fixed;
+    z-index: 6;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    max-width: calc(100vw - 16px);
+    padding: 5px 5px 5px 15px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(255, 197, 49, .85);
+    background: rgba(8, 14, 34, .93);
+    color: #fff;
+    font: 700 13px/1 var(--ui);
+    letter-spacing: .07em;
+    white-space: nowrap;
+    box-shadow: 0 0 16px rgba(255, 197, 49, .3);
+  }
+  #jokerIpucu span { min-width: 0; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
+  #jokerIpucu button { appearance: none; -webkit-appearance: none; flex: none; padding: 8px 12px 7px; border: 0; border-radius: 999px; background: rgba(255, 197, 49, .18); color: var(--gold); font: 700 12px/1 var(--ui); letter-spacing: .1em; cursor: pointer; }
+  #jokerIpucu button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  #trayCv.secim, #cells.secim { animation: hlPulse .45s ease-in-out infinite alternate; }
+  #game.hedef { cursor: crosshair; }
+  /* Kısa bilgi yazısı (ör. şu an reklam yok): ekranın üstünde belirip kaybolur */
+  #toast {
+    position: fixed;
+    z-index: 31;
+    left: 50%;
+    top: calc(max(12px, env(safe-area-inset-top, 0px)) + 8px);
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: min(360px, calc(100vw - 32px));
+    padding: 10px 16px 9px;
+    border-radius: 14px;
+    border: 1px solid rgba(92, 160, 255, .5);
+    background: rgba(8, 14, 34, .95);
+    color: var(--text);
+    font: 700 14px/1.3 var(--ui);
+    letter-spacing: .03em;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .25s ease;
+  }
+  #toast.on { opacity: 1; }
+  /* KAYBETTİN ekranı: reklam izleyip kaldığı yerden devam (oyun başına bir kez) */
+  .btn-devam {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 10px;
+    padding: 13px 14px 11px;
+    color: #241500;
+    background: linear-gradient(180deg, #ffe892 0%, #ffb51f 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .35), 0 8px 24px rgba(255, 160, 30, .4), 0 0 30px rgba(255, 197, 49, .3);
+  }
+  .btn-devam:hover { filter: brightness(1.06); }
+  .bd-ust { display: flex; align-items: center; justify-content: center; gap: 9px; font: 700 17px/1.05 var(--ui); letter-spacing: .1em; }
+  .bd-ust svg { width: 20px; height: 20px; flex: none; margin-top: -2px; }
+  .bd-alt { font: 700 12px/1 var(--ui); letter-spacing: .16em; opacity: .75; }
+  /* Reklam penceresi: sitede test için 2 saniyelik taklit, uygulamada reklam yüklenirken */
+  #ovReklam { z-index: 30; }
+  .rk-card { width: min(340px, 100%); }
+  #rkBaslik { font-size: clamp(21px, 6.4vw, 26px); }
+  .rk-ikon { position: relative; display: grid; place-items: center; width: 66px; height: 66px; margin: 2px auto 14px; border-radius: 50%; border: 1.5px solid rgba(43, 227, 255, .6); background: radial-gradient(circle at 50% 40%, rgba(43, 227, 255, .28), rgba(43, 140, 255, .06) 70%); box-shadow: 0 0 24px rgba(43, 227, 255, .3); }
+  .rk-ikon::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; border: 1px solid rgba(43, 227, 255, .45); animation: rkHalka 1.2s ease-out infinite; }
+  .rk-ikon svg { width: 26px; height: 26px; margin-left: 4px; color: #86ecff; }
+  .rk-cubuk { position: relative; height: 8px; margin: 6px 0 14px; border-radius: 999px; background: rgba(6, 12, 38, .9); border: 1px solid rgba(92, 160, 255, .3); overflow: hidden; }
+  .rk-cubuk i { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; border-radius: inherit; background: linear-gradient(90deg, #2b8cff, #86ecff 60%, #ffc531); transform-origin: 0 50%; transform: scaleX(0); }
+  .rk-cubuk.dolu i { animation: rkDol var(--rk-sure, 2s) linear forwards; }
+  .rk-cubuk.belirsiz i { width: 38%; transform: none; animation: rkKay 1.1s ease-in-out infinite; }
+  #rkAlt { margin: 0; font-size: 15px; }
+  @keyframes rkDol { to { transform: scaleX(1); } }
+  @keyframes rkKay { from { transform: translateX(-110%); } to { transform: translateX(280%); } }
+  @keyframes rkHalka { from { opacity: .9; transform: scale(.88); } to { opacity: 0; transform: scale(1.18); } }
+  /* Deneme banner alanı (#test&banner): uygulamadaki banner reklamın yerini gösterir */
+  #reklamAlani { position: fixed; z-index: 25; left: 0; right: 0; bottom: env(safe-area-inset-bottom, 0px); height: var(--reklam-alt, 50px); display: grid; place-items: center; border-top: 1px dashed rgba(92, 160, 255, .6); background: repeating-linear-gradient(135deg, rgba(43, 140, 255, .16) 0 10px, rgba(43, 140, 255, .07) 10px 20px), #060b1f; color: #8ea6d8; font: 700 12px/1 var(--ui); letter-spacing: .2em; pointer-events: none; }
+  #btnReklamGizlilik { display: block; margin: 8px auto 0; font-size: 12px; }
+  @media (max-height: 680px) {
+    .btn-devam { gap: 4px; margin-bottom: 8px; padding: 10px 12px 9px; }
+    .bd-ust { font-size: 15px; }
+    .bd-alt { font-size: 11px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .jk.on::after, #jokerBar.ikaz .jk[data-durum="var"]::after { animation: none; opacity: 1; }
+    #trayCv.secim, #cells.secim, .rk-ikon::after, .rk-cubuk.belirsiz i { animation: none; }
+  }
   /* Takma ad penceresi */
   .nk-err { margin: -4px 0 12px; text-align: left; font: 600 13px/1.3 var(--ui); color: #ff8fa0; }
   #ovNick { z-index: 22; } /* skor tablosu penceresinden açılınca onun üstünde */
@@ -861,6 +1013,18 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   html.light .dil-row { background: #eef3fb; border-color: rgba(43, 120, 220, .2); }
   html.light .dil-row svg, html.light .dil-row button { color: #5b6b8c; }
   html.light .dil-row button[aria-checked="true"] { color: #241500; }
+  html.light .jk { background: linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(232, 240, 252, .96)); color: #1d3a78; border-color: rgba(40, 90, 180, .25); box-shadow: 0 4px 12px rgba(30, 60, 120, .12), inset 0 1px 0 rgba(255, 255, 255, .9); }
+  html.light .jk > svg { color: #e39b00; filter: none; }
+  html.light .jk:hover, html.light .jk.on { color: #0b2a66; }
+  html.light .jk::after { border-color: rgba(214, 150, 0, .9); box-shadow: 0 0 14px rgba(240, 168, 0, .35); }
+  html.light .jk[data-durum="bos"] .jk-n { color: #5b6b8c; background: #dfe6f2; }
+  html.light #jokerIpucu { background: rgba(255, 255, 255, .96); color: #1d2b4d; border-color: rgba(214, 150, 0, .7); box-shadow: 0 6px 18px rgba(30, 60, 120, .16); }
+  html.light #jokerIpucu button { background: rgba(255, 197, 49, .2); color: #a86a00; }
+  html.light #toast { background: rgba(255, 255, 255, .97); color: #1d2b4d; border-color: rgba(43, 120, 220, .3); box-shadow: 0 10px 26px rgba(30, 60, 120, .18); }
+  html.light .rk-cubuk { background: #eef3fb; border-color: rgba(43, 120, 220, .22); }
+  html.light .rk-ikon { background: radial-gradient(circle at 50% 40%, rgba(43, 180, 255, .2), rgba(43, 140, 255, .05) 70%); border-color: rgba(10, 140, 210, .5); }
+  html.light .rk-ikon svg { color: #0a8fd0; }
+  html.light #reklamAlani { background: repeating-linear-gradient(135deg, rgba(43, 140, 255, .12) 0 10px, rgba(43, 140, 255, .05) 10px 20px), #f4f7fc; color: #5b6b8c; }
 
   /* Tüm süreğen animasyonlar yalnızca opaklık ve dönüşüm kullanır: GPU'da, çizim yapmadan oynar */
   @keyframes twinkle { from { opacity: .1; } to { opacity: .7; } }
@@ -954,6 +1118,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 <button id="btnMode" class="icon-btn" type="button" aria-label="Aydınlık moda geç" title="Aydınlık moda geç"></button>
 <button id="btnBoard" type="button" data-ta="haftalikTablo" aria-label="Haftalık skor tablosu" title="Haftalık skor tablosu" hidden></button>
 <div id="duelBar" aria-hidden="true" hidden></div>
+<div id="jokerBar" role="group" data-ta="jokerler" aria-label="Jokerler" hidden>
+  <button id="jkDondur" class="jk" type="button" data-jk="dondur"><svg viewBox="-1 -1 26 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 4v6h-6"/><path d="M20.5 15a9 9 0 1 1-2.1-9.4L23 10"/></svg><span data-t="jkDondur">DÖNDÜR</span><b class="jk-n" aria-hidden="true">1</b></button>
+  <button id="jkYenile" class="jk" type="button" data-jk="yenile"><svg viewBox="-1 -1 26 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg><span data-t="jkYenile">YENİLE</span><b class="jk-n" aria-hidden="true">1</b></button>
+  <button id="jkSil" class="jk" type="button" data-jk="sil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.4 6.3 13.6 3.1 20.9 10.4 17.7 13.6Z" fill="currentColor" fill-opacity=".3"/><path d="M14.1 9.9 4 20"/><path d="M2.8 13.2h2.4M4.6 9.6l1.7 1.2M8.2 7.4 8.8 9.5"/></svg><span data-t="jkSil">KARE SİL</span><b class="jk-n" aria-hidden="true">1</b></button>
+</div>
+<div id="jokerIpucu" hidden><span id="jokerIpucuYazi"></span><button id="jokerIpucuBtn" type="button"></button></div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <div id="insetProbe" aria-hidden="true"></div>
 <div id="live" class="sr-only" aria-live="polite"></div>
@@ -971,6 +1142,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       <div class="stat"><span data-t="enIyiKombo">EN İYİ KOMBO</span><b id="goCombo">×0</b></div>
     </div>
     <button id="goWeek" class="go-week" type="button" hidden></button>
+    <button id="goDevam" class="btn btn-devam" type="button" hidden><span class="bd-ust"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4v16l13-8z" fill="currentColor"/></svg><span data-t="ikinciSans">REKLAM İZLE VE DEVAM ET</span></span><span class="bd-alt" data-t="ikinciSansAlt">3×3 ALAN TEMİZLE</span></button>
     <button id="btnAgain" class="btn btn-primary" type="button" data-t="tekrarOyna">TEKRAR OYNA</button>
     <button id="btnDuelOver" class="btn btn-ghost btn-gap btn-ico" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg><span data-t="duelloOyna">İKİ KİŞİLİK OYNA</span></button>
     <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br><span data-t="kurucu">Kurucu</span>: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></p>
@@ -991,6 +1163,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       <output id="muzikDeger" class="music-val" for="muzikSes">%70</output>
     </div>
     <div class="dil-row" role="radiogroup" aria-label="Dil" data-ta="dil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9s1.3-6.3 3.8-9z"/></svg><button type="button" role="radio" aria-checked="true" data-dil="tr" lang="tr">TÜRKÇE</button><button type="button" role="radio" aria-checked="false" data-dil="en" lang="en">ENGLISH</button></div>
+    <button id="btnReklamGizlilik" class="link-btn" type="button" data-t="reklamGizlilik" hidden>REKLAM GİZLİLİK AYARLARI</button>
     <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br><span data-t="kurucu">Kurucu</span>: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></p>
   </div>
   <section id="lbStart" class="lb" data-ta="haftaninEnIyileriAria" aria-label="Haftanın en iyileri" hidden></section>
@@ -1082,6 +1255,17 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     </div>
   </div>
 </div>
+
+<div id="ovReklam" class="overlay" role="dialog" aria-modal="true" aria-labelledby="rkBaslik" hidden>
+  <div id="rkCard" class="card rk-card" tabindex="-1">
+    <div id="rkRozet" class="badge badge-beta">TEST REKLAMI</div>
+    <div class="rk-ikon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4v16l13-8z" fill="currentColor"/></svg></div>
+    <h2 id="rkBaslik" class="title small">REKLAM İZLENİYOR…</h2>
+    <div id="rkCubuk" class="rk-cubuk" aria-hidden="true"><i></i></div>
+    <p id="rkAlt" class="sub"></p>
+  </div>
+</div>
+<div id="reklamAlani" aria-hidden="true" hidden></div>
 
 <script>
 (() => {
@@ -1505,7 +1689,35 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     muzikAcik: 'Menü müziği açık',
     muzikKapali: 'Menü müziği kapalı',
     kosulEklendi: 'Skor tablosu için Kullanım Koşulları eklendi. Tabloda kalmak için okuyup onayla.',
-    dilDegisti: 'Dil: Türkçe'
+    dilDegisti: 'Dil: Türkçe',
+    // Reklamlar
+    rkTest: 'TEST REKLAMI',
+    rkReklam: 'REKLAM',
+    rkIzleniyor: 'REKLAM İZLENİYOR…',
+    rkGecis: 'REKLAM ARASI',
+    rkYukleniyor: 'REKLAM YÜKLENİYOR…',
+    rkOdulAlt: 'Reklam bitince ödülün verilecek.',
+    rkGecisAlt: 'Yeni oyun birazdan başlıyor.',
+    rkBekle: 'Bir saniye…',
+    rkYok: 'Şu an gösterilecek reklam yok. Biraz sonra tekrar dene.',
+    rkYarim: 'Reklam bitmeden kapandı; ödül verilmedi.',
+    rkAlan: 'REKLAM ALANI · TEST',
+    // Jokerler ve ikinci şans
+    jkAria: (a, n, d) => (d === 'reklam' ? a + ': hakkın bitti. Reklam izle, 1 hak kazan' : a + ': ' + n + ' hak'),
+    jkIpDondur: 'DÖNDÜRMEK İÇİN PARÇAYA DOKUN',
+    jkIpSil: 'SİLMEK İÇİN DOLU KAREYE DOKUN',
+    jkTikandi: 'YER KALMADI · JOKER KULLAN',
+    bitir: 'BİTİR',
+    jkDonmez: 'Bu parça döndürülünce aynı kalıyor.',
+    jkDonenYok: 'Raftaki parçalar döndürülünce aynı kalıyor.',
+    jkBosTahta: 'Tahtada silinecek kare yok.',
+    jkDondurDuyuru: 'Parça döndürüldü.',
+    jkYenileDuyuru: 'Yeni parçalar geldi.',
+    jkSilDuyuru: 'Kare silindi.',
+    jkKazandin: a => a + ' jokerine 1 hak eklendi.',
+    jkTikandiDuyuru: 'Yer kalmadı. Joker kullanabilir ya da oyunu bitirebilirsin.',
+    devamFloat: 'DEVAM!',
+    ikinciDuyuru: 'İkinci şans: 3×3 alan temizlendi, oyun sürüyor.'
   };
   const SOZ_EN = {
     // Sabit yazılar (Türkçeleri HTML'de)
@@ -1559,6 +1771,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     duellodanCik: 'LEAVE DUEL',
     rovans: 'REMATCH',
     tekKisilikDon: 'BACK TO SINGLE PLAYER',
+    jokerler: 'Power-ups',
+    jkDondur: 'ROTATE',
+    jkYenile: 'REROLL',
+    jkSil: 'ERASE',
+    ikinciSans: 'WATCH AD & CONTINUE',
+    ikinciSansAlt: 'CLEAR A 3×3 AREA',
+    reklamGizlilik: 'AD PRIVACY SETTINGS',
     // Koddaki yazılar
     temaYazi: n => 'THEME: ' + n,
     yeniTema: n => 'New theme: ' + n,
@@ -1675,7 +1894,33 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     muzikAcik: 'Menu music on',
     muzikKapali: 'Menu music off',
     kosulEklendi: 'We’ve added Terms of Use for the leaderboard. Read and accept them to stay on the board.',
-    dilDegisti: 'Language: English'
+    dilDegisti: 'Language: English',
+    rkTest: 'TEST AD',
+    rkReklam: 'AD',
+    rkIzleniyor: 'WATCHING AD…',
+    rkGecis: 'AD BREAK',
+    rkYukleniyor: 'LOADING AD…',
+    rkOdulAlt: 'You get your reward when the ad ends.',
+    rkGecisAlt: 'Your next game starts in a moment.',
+    rkBekle: 'One moment…',
+    rkYok: 'No ad available right now. Try again in a bit.',
+    rkYarim: 'The ad was closed early, so no reward this time.',
+    rkAlan: 'AD SPACE · TEST',
+    jkAria: (a, n, d) => (d === 'reklam' ? a + ': none left. Watch an ad to get 1 more' : a + ': ' + n + ' left'),
+    jkIpDondur: 'TAP A PIECE TO ROTATE',
+    jkIpSil: 'TAP A BLOCK TO ERASE',
+    jkTikandi: 'NO ROOM · USE A POWER-UP',
+    bitir: 'END GAME',
+    jkDonmez: 'This piece looks the same when rotated.',
+    jkDonenYok: 'These pieces look the same when rotated.',
+    jkBosTahta: 'There are no blocks to erase.',
+    jkDondurDuyuru: 'Piece rotated.',
+    jkYenileDuyuru: 'New pieces dealt.',
+    jkSilDuyuru: 'Block erased.',
+    jkKazandin: a => a + ': +1 power-up.',
+    jkTikandiDuyuru: 'No room left. Use a power-up or end the game.',
+    devamFloat: 'CONTINUE!',
+    ikinciDuyuru: 'Second chance: a 3×3 area was cleared. Keep playing.'
   };
   function yaz(k, ...a) {
     const v = DIL === 'en' && k in SOZ_EN ? SOZ_EN[k] : k in SOZ_TR ? SOZ_TR[k] : SOZ_EN[k];
@@ -1728,6 +1973,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       showNotice();
       tabloCiz();
       oyunSonuCiz();
+      jokerCiz();
+      ipucuGuncelle();
+      if (!$('reklamAlani').hidden) $('reklamAlani').textContent = yaz('rkAlan');
       // Sayı biçimi ve yazı genişlikleri değişti: üst bilgi, alt bilgi ve REKOR düğmesi yeniden sığdırılır
       scoreText = ''; bestText = '';
       setScoreText(displayScore);
@@ -1792,6 +2040,251 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const probe = $('insetProbe');
   const credits = $('credits');
   const live = $('live');
+  const jokerBar = $('jokerBar');
+  const jkBtn = { dondur: $('jkDondur'), yenile: $('jkYenile'), sil: $('jkSil') };
+  const jokerIpucu = $('jokerIpucu'), jokerIpucuYazi = $('jokerIpucuYazi'), jokerIpucuBtn = $('jokerIpucuBtn');
+  const toastEl = $('toast');
+  const goDevam = $('goDevam');
+  const ovReklam = $('ovReklam');
+
+  /* ================= Reklam yöneticisi (AdManager) =================
+     Oyun reklamlara yalnızca bu modülün üç yöntemiyle dokunur:
+       AdManager.showRewardedAd(basarili, basarisiz)  Ödüllü reklam. Oyuncu reklamı sonuna kadar izlerse basarili(); kapatırsa,
+                                                      reklam yüklenemezse ya da reklam yoksa basarisiz(neden) çağrılır.
+       AdManager.showInterstitialAd(bitti)            Geçiş reklamı ("TEKRAR OYNA"da). Biten oyunları sayar: ilk 2 oyun reklamsız,
+                                                      sonra her 3. TEKRAR OYNA'da bir reklam. Her durumda bitti() çağrılır.
+       AdManager.initBannerAd()                       Ekranın en altındaki banner (güvenli alanın üstünde). Yüksekliği oyuna
+                                                      bildirilir; tahta, raf ve jokerler onun üstünde kalır (sürükleme alanına girmez).
+     Ortamlar:
+       • Google Play / App Store uygulaması (Capacitor + @capacitor-community/admob): gerçek reklamlar. Açılışta gerekiyorsa Google'ın
+         izin penceresi (UMP: AB, AEA, Birleşik Krallık, İsviçre) çıkar; izin süreci bitmeden reklam istenmez.
+       • Web sitesi: reklam yok, hata da yok. Ödüllü reklam isteyen düğmeler gizlenir (odulluVar()), geçiş reklamı atlanır.
+       • Test (adreste #test, uygulama dışında): ödüllü reklam 2 saniyelik "REKLAM İZLENİYOR…" penceresiyle taklit edilir ve ödül
+         verilir; geçiş reklamı da kısa bir pencereyle. #test&banner ile 50 piksellik deneme banner alanı açılır.
+     Reklam birimi kimlikleri şimdilik Google'ın deneme kimlikleri (yalnızca "Test Ad" çıkar). YAYINDAN ÖNCE AdMob hesabındaki
+     kimliklerle değiştir; uygulama kimlikleri ayrıca Android (app/build.gradle) ve iOS (Info.plist) ayarlarında. */
+  const REKLAM_KIMLIK = {
+    android: { odullu: 'ca-app-pub-3940256099942544/5224354917', gecis: 'ca-app-pub-3940256099942544/1033173712', banner: 'ca-app-pub-3940256099942544/9214589741' },
+    ios: { odullu: 'ca-app-pub-3940256099942544/1712485313', gecis: 'ca-app-pub-3940256099942544/4411468910', banner: 'ca-app-pub-3940256099942544/2435281174' }
+  };
+  // ilkOyunlar: reklamsız ilk oyun sayısı; herKac: sonra kaç TEKRAR OYNA'da bir geçiş reklamı; icerik: reklamların en yüksek içerik
+  // derecesi (General / ParentalGuidance / Teen / MatureAudience); süreler milisaniye
+  const REKLAM_AYAR = { ilkOyunlar: 2, herKac: 3, icerik: 'ParentalGuidance', simOdul: 2000, simGecis: 1300, yukleBekle: 8000, odulBekle: 150000, gecisBekle: 90000 };
+  const K_REKLAM = 'blokKahramani.reklam';
+  const AdManager = (() => {
+    let yerel = false;
+    try { yerel = UYGULAMA && (typeof CAP.isPluginAvailable === 'function' ? CAP.isPluginAvailable('AdMob') : !!(CAP.Plugins && CAP.Plugins.AdMob)); } catch (e) { yerel = false; }
+    const AdMob = yerel ? eklenti('AdMob') : null;
+    if (!AdMob) yerel = false;
+    const sim = !yerel && HASHQ.has('test');
+    let ios = false;
+    try { ios = yerel && typeof CAP.getPlatform === 'function' && CAP.getPlatform() === 'ios'; } catch (e) { ios = false; }
+    const KIM = REKLAM_KIMLIK[ios ? 'ios' : 'android'];
+    const s0 = store.get(K_REKLAM, null) || {};
+    const sayac = { biten: Math.max(0, s0.biten | 0), tekrar: Math.max(0, s0.tekrar | 0) };
+    const D = { basladi: false, izinSuruyor: false, altyapi: false, hazir: false, odullu: null, gecisHazir: false, gecisYukleniyor: false,
+      banner: 0, bannerIstendi: false, acik: false, kapanis: 0, gizlilik: false, izin: null };
+    let kanca = {}, istek = null, bannerT = 0, bannerDeneme = 0, izinT = 0, odulT = 0, gecisT = 0;
+    const cagir = (ad, ...a) => { try { if (typeof kanca[ad] === 'function') kanca[ad](...a); } catch (e) { /* oyun tarafı */ } };
+    const kaydet = () => store.set(K_REKLAM, sayac);
+    // Eklenti çağrısı: her zaman bir söz döner, hata fırlatmaz
+    const yap = (ad, arg) => { try { const p = AdMob[ad](arg); return p && typeof p.then === 'function' ? p : Promise.resolve(p); } catch (e) { return Promise.reject(e); } };
+    const sinirli = (p, ms) => Promise.race([p, new Promise(r => setTimeout(() => r(false), ms))]);
+
+    // Pencere: taklit reklam (odullu / gecis, ms süreli dolum çubuğuyla) ya da uygulamada reklam yüklenirken (yukleniyor)
+    function pencere(tur, ms) {
+      const cb = $('rkCubuk');
+      $('rkRozet').textContent = yaz(sim ? 'rkTest' : 'rkReklam');
+      $('rkBaslik').textContent = yaz(tur === 'odullu' ? 'rkIzleniyor' : tur === 'gecis' ? 'rkGecis' : 'rkYukleniyor');
+      $('rkAlt').textContent = yaz(tur === 'odullu' ? 'rkOdulAlt' : tur === 'gecis' ? 'rkGecisAlt' : 'rkBekle');
+      cb.className = 'rk-cubuk';
+      void cb.offsetWidth; // dolum animasyonu baştan başlasın
+      if (ms) { cb.style.setProperty('--rk-sure', ms + 'ms'); cb.classList.add('dolu'); } else cb.classList.add('belirsiz');
+      ovReklam.hidden = false;
+      cagir('modal');
+      try { $('rkCard').focus({ preventScroll: true }); } catch (e) { /* odak yok */ }
+    }
+    function pencereKapat() {
+      if (ovReklam.hidden) return;
+      ovReklam.hidden = true;
+      cagir('modal');
+    }
+    // Taklit reklam (test): pencere ms boyunca açık kalır, sonra sonra() çağrılır
+    function taklit(tur, ms, sonra) {
+      D.acik = true;
+      cagir('sesKes');
+      pencere(tur, ms);
+      setTimeout(() => { D.acik = false; D.kapanis = Date.now(); pencereKapat(); cagir('sesAc'); sonra(); }, ms);
+    }
+
+    // Tam ekran reklam sürerken oyunun sesi durur; reklam hangi yoldan biterse bitsin sonunda() tek kez çağrılır
+    function tamEkran(tur, goster, sonunda) {
+      const is = { tur, kazandi: false, bitti: false, t: 0 };
+      istek = is;
+      D.acik = true;
+      cagir('sesKes');
+      is.bitir = neden => {
+        if (is.bitti) return;
+        is.bitti = true;
+        clearTimeout(is.t);
+        if (istek === is) istek = null;
+        D.acik = false;
+        D.kapanis = Date.now();
+        pencereKapat();
+        cagir('sesAc');
+        sonunda(is.kazandi, neden);
+      };
+      is.t = setTimeout(() => is.bitir('zaman'), tur === 'odullu' ? REKLAM_AYAR.odulBekle : REKLAM_AYAR.gecisBekle);
+      goster().then(r => { if (tur === 'odullu' && r) is.kazandi = true; }, () => is.bitir('hata'));
+    }
+
+    function dinle() {
+      const on = (olay, fn) => { try { const p = AdMob.addListener(olay, fn); if (p && p.catch) p.catch(() => {}); } catch (e) { /* dinlenemedi */ } };
+      on('onRewardedVideoAdReward', () => { if (istek && istek.tur === 'odullu') istek.kazandi = true; });
+      // Kapanış bildirimi ödül bildiriminden önce gelebilir: kısa bir süre beklenir
+      on('onRewardedVideoAdDismissed', () => { const is = istek; if (is && is.tur === 'odullu') setTimeout(() => is.bitir('yarim'), 400); });
+      on('onRewardedVideoAdFailedToShow', () => { if (istek && istek.tur === 'odullu') istek.bitir('hata'); });
+      on('onRewardedVideoAdShowed', pencereKapat);
+      on('interstitialAdDismissed', () => { if (istek && istek.tur === 'gecis') istek.bitir(); });
+      on('interstitialAdFailedToShow', () => { if (istek && istek.tur === 'gecis') istek.bitir('hata'); });
+      on('interstitialAdShowed', pencereKapat);
+      on('bannerAdSizeChanged', b => bannerBoyu(b && b.height));
+      on('bannerAdLoaded', () => { bannerDeneme = 0; });
+      on('bannerAdFailedToLoad', () => { bannerBoyu(0); bannerTekrar(); });
+    }
+
+    // Açılış: izin (UMP) → reklam altyapısı → banner ve reklamların ön yüklemesi. İzin bilgisi alınamazsa (ör. internet yok) sonra yeniden denenir
+    function baslat() {
+      if (!yerel || D.hazir || D.izinSuruyor) return;
+      if (!D.basladi) { D.basladi = true; dinle(); }
+      D.izinSuruyor = true;
+      clearTimeout(izinT);
+      yap('requestConsentInfo')
+        .then(b => (b && b.isConsentFormAvailable && b.status === 'REQUIRED' ? yap('showConsentForm') : b))
+        .then(b => { D.izinSuruyor = false; izinUygula(b); }, () => { D.izinSuruyor = false; izinT = setTimeout(baslat, 60000); });
+    }
+    function izinUygula(b) {
+      if (!b) return;
+      D.izin = { durum: b.status, reklamIstenebilir: !!b.canRequestAds, gizlilik: b.privacyOptionsRequirementStatus };
+      const g = b.privacyOptionsRequirementStatus === 'REQUIRED';
+      if (g !== D.gizlilik) { D.gizlilik = g; cagir('gizlilik', g); }
+      if (b.canRequestAds) altyapi();
+    }
+    function altyapi() {
+      if (D.altyapi) return;
+      D.altyapi = true;
+      yap('initialize', { maxAdContentRating: REKLAM_AYAR.icerik }).catch(() => {}).then(() => {
+        D.hazir = true;
+        if (D.bannerIstendi) bannerGoster();
+        odulluYukle();
+        gecisYukle();
+        cagir('hazir');
+      });
+    }
+
+    // Ödüllü reklamın ön yüklemesi; söz "hazır mı" ile sonuçlanır. Yüklenemezse bir süre sonra yeniden denenir
+    function odulluYukle() {
+      if (!D.hazir) return Promise.resolve(false);
+      if (D.odullu) return D.odullu;
+      clearTimeout(odulT);
+      const p = yap('prepareRewardVideoAd', { adId: KIM.odullu }).then(() => true, () => false);
+      D.odullu = p;
+      p.then(ok => { if (!ok) { if (D.odullu === p) D.odullu = null; odulT = setTimeout(odulluYukle, 45000); } });
+      return p;
+    }
+    function gecisYukle() {
+      if (!D.hazir || D.gecisHazir || D.gecisYukleniyor) return;
+      D.gecisYukleniyor = true;
+      clearTimeout(gecisT);
+      yap('prepareInterstitial', { adId: KIM.gecis })
+        .then(() => { D.gecisHazir = true; }, () => { gecisT = setTimeout(gecisYukle, 60000); })
+        .then(() => { D.gecisYukleniyor = false; });
+    }
+
+    function showRewardedAd(onRewardSuccess, onRewardFail) {
+      const ok = typeof onRewardSuccess === 'function' ? onRewardSuccess : () => {};
+      const no = typeof onRewardFail === 'function' ? onRewardFail : () => {};
+      if (D.acik) { no('mesgul'); return; }
+      if (sim) { taklit('odullu', REKLAM_AYAR.simOdul, () => ok({ type: 'test', amount: 1 })); return; }
+      if (!yerel || !D.hazir) { no('yok'); return; }
+      D.acik = true; // reklam yüklenirken ikinci bir dokunuş yeni reklam istemez
+      pencere('yukleniyor');
+      sinirli(odulluYukle(), REKLAM_AYAR.yukleBekle).then(hazir => {
+        if (!hazir) { D.acik = false; pencereKapat(); no('yok'); return; }
+        D.odullu = null; // bu reklam harcanır; kapanınca yenisi yüklenir
+        tamEkran('odullu', () => yap('showRewardVideoAd'), (kazandi, neden) => {
+          setTimeout(odulluYukle, 1500);
+          if (kazandi) ok(); else no(neden || 'yarim');
+        });
+      });
+    }
+
+    function showInterstitialAd(onComplete) {
+      const son = typeof onComplete === 'function' ? onComplete : () => {};
+      if (!(yerel || sim) || D.acik) { son(false); return; }
+      if (sayac.biten <= REKLAM_AYAR.ilkOyunlar) { son(false); return; } // ilk oyunlar reklamsız
+      sayac.tekrar++;
+      kaydet();
+      if (sayac.tekrar < REKLAM_AYAR.herKac) { son(false); return; }
+      if (sim) { sayac.tekrar = 0; kaydet(); taklit('gecis', REKLAM_AYAR.simGecis, () => son(true)); return; }
+      // Reklam hazır değilse beklenmez: oyun hemen başlar, sayaç sıfırlanmaz (sonraki TEKRAR OYNA'da yine denenir)
+      if (!D.hazir || !D.gecisHazir) { gecisYukle(); son(false); return; }
+      sayac.tekrar = 0;
+      kaydet();
+      D.gecisHazir = false;
+      tamEkran('gecis', () => yap('showInterstitial'), () => { setTimeout(gecisYukle, 1500); son(true); });
+    }
+
+    function initBannerAd() {
+      if (sim && HASHQ.has('banner')) { const el = $('reklamAlani'); el.textContent = yaz('rkAlan'); el.hidden = false; bannerBoyu(50); return; }
+      if (!yerel) return;
+      D.bannerIstendi = true;
+      if (D.hazir) bannerGoster(); else baslat();
+    }
+    function bannerGoster() {
+      clearTimeout(bannerT);
+      yap('showBanner', { adId: KIM.banner, adSize: 'ADAPTIVE_BANNER', position: 'BOTTOM_CENTER', margin: 0 }).catch(bannerTekrar);
+    }
+    // Banner yüklenemedi: giderek uzayan aralıklarla (en çok 5 dakika) yeniden denenir; internet gelince hemen
+    function bannerTekrar() {
+      clearTimeout(bannerT);
+      bannerT = setTimeout(bannerGoster, Math.min(300000, 30000 * Math.pow(2, bannerDeneme++)));
+    }
+    function bannerBoyu(h) {
+      h = Math.max(0, Math.min(200, Math.round(Number(h) || 0)));
+      if (h === D.banner) return;
+      D.banner = h;
+      document.documentElement.style.setProperty('--reklam-alt', h + 'px');
+      cagir('banner', h);
+    }
+    window.addEventListener('online', () => {
+      if (!yerel) return;
+      if (!D.hazir) baslat();
+      else if (D.bannerIstendi && !D.banner) bannerGoster();
+    });
+
+    // Reklam gizlilik ayarları (izni değiştirme): Google'ın penceresi açılır, sonra izin durumu yeniden okunur
+    function gizlilikAyarlari() {
+      if (!yerel) return;
+      yap('showPrivacyOptionsForm').catch(() => {}).then(() => yap('requestConsentInfo')).then(izinUygula, () => {});
+    }
+
+    return {
+      showRewardedAd,
+      showInterstitialAd,
+      initBannerAd,
+      odulluVar: () => sim || (yerel && D.hazir),      // ödüllü reklam sunulabilir mi (sitede hayır)
+      acik: () => D.acik,                               // reklam ya da reklam penceresi açık mı
+      yeniKapandi: () => Date.now() - D.kapanis < 4000,  // az önce bir reklam kapandı mı (uygulamaya dönüş reklamdan)
+      bannerYuksekligi: () => D.banner,
+      oyunBitti() { if (!(yerel || sim)) return; sayac.biten = Math.min(1e6, sayac.biten + 1); kaydet(); },
+      gizlilikAyarlari,
+      baglan(k) { kanca = k || {}; },
+      durum: () => ({ yerel, sim, ios, hazir: D.hazir, odulluHazir: !!D.odullu, gecisHazir: D.gecisHazir, banner: D.banner, acik: D.acik,
+        sayac: Object.assign({}, sayac), izin: D.izin, gizlilik: D.gizlilik }),
+      sayacAyarla(o) { if (o && typeof o === 'object') { if (Number.isFinite(o.biten)) sayac.biten = Math.max(0, o.biten | 0); if (Number.isFinite(o.tekrar)) sayac.tekrar = Math.max(0, o.tekrar | 0); kaydet(); } }
+    };
+  })();
 
   /* ================= Şekiller ================= */
   const SHAPES = SHAPE_DEFS.map(([id, rows, weight, tier]) => {
@@ -1825,11 +2318,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   function animateTray(ms) { trayAnimUntil = Math.max(trayAnimUntil, performance.now() + ms); trayDirty = true; wake(); }
 
   /* ================= Yerleşim ================= */
-  const L = { W: 0, H: 0, dpr: 1, fxDpr: 1, cs: 40, bs: 320, fp: 8, bx: 0, by: 0, mode: 'col', hud: { x: 0, y: 0, w: 0, h: 0 }, tray: { x: 0, y: 0, w: 0, h: 0 }, slotW: 0, footY: 0 };
+  const L = { W: 0, H: 0, dpr: 1, fxDpr: 1, cs: 40, bs: 320, fp: 8, bx: 0, by: 0, mode: 'col', hud: { x: 0, y: 0, w: 0, h: 0 }, tray: { x: 0, y: 0, w: 0, h: 0 }, jk: { x: 0, y: 0, w: 0, h: 0 }, slotW: 0, footY: 0 };
   const REG = { x: 0, y: 0, w: 0, h: 0 };          // tahta bölgesi: bloklar ve önizleme katmanları yalnızca burayı kaplar
   const TRG = { x: 0, y: 0, w: 0, h: 0 };          // raf bölgesi
   const FP = 0.026, HUD_K = 0.255, G1 = 0.045, G2 = 0.055, TRAY_K = 0.4, PANEL_K = 0.95, GX = 0.06, MAX_B = 600;
   const FOOT_H = 30; // ekranın altındaki bilgi şeridi (şirket, kurucu, iletişim, bağlantılar): tahta ve raf bunun üstünde kalır
+  // Joker sırası (rafın altında): yüksekliği tahta boyuna oranlı ama dokunulabilir boyda (JK_MIN-JK_MAX piksel); JK_G raf ile arası
+  const JK_K = 0.115, JK_G = 0.06, JK_MIN = 36, JK_MAX = 50;
   let sprites = [], greySprite = null, whiteSprite = null, spritePad = 0, dragSize = 0;
 
   function readInsets() {
@@ -1899,7 +2394,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     // Tam cihaz çözünürlüğü (iPhone'larda 3x): bloklar ve yazılar keskin
     const dpr = Math.min(window.devicePixelRatio || 1, 3);
     const ins = readInsets();
-    const key = [W, H, dpr, ins.t, ins.r, ins.b, ins.l].join('|');
+    // Uygulamadaki banner reklam ekranın en altında (güvenli alanın üstünde) durur: oyun onun üstünde kalır, arada küçük bir boşluk
+    const bh = AdManager.bannerYuksekligi(), ba = bh ? bh + 6 : 0;
+    const key = [W, H, dpr, ins.t, ins.r, ins.b, ins.l, ba].join('|');
     if (key === layoutKey) return; // boyut aynıysa hiçbir şeyi yeniden kurma
     layoutKey = key;
     L.W = W; L.H = H; L.dpr = dpr;
@@ -1907,12 +2404,15 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     L.fxDpr = Math.min(dpr, 2);
     const m = clamp(Math.min(W, H) * 0.03, 8, 22);
     const aw = Math.max(120, W - ins.l - ins.r - 2 * m);
-    const ah = Math.max(120, H - ins.t - ins.b - 2 * m - FOOT_H);
-    L.footY = Math.round(H - ins.b - FOOT_H - m * 0.35);
+    const ah = Math.max(120, H - ins.t - ins.b - ba - 2 * m - FOOT_H);
+    L.footY = Math.round(H - ins.b - ba - FOOT_H - m * 0.35);
     credits.style.top = L.footY + 'px';
     fitCredits();
     const outerK = 1 + 2 * FP;
-    const Bcol = Math.min(aw / outerK, ah / (HUD_K + G1 + outerK + G2 + TRAY_K), MAX_B);
+    // Sütun düzeni: üst bilgi, tahta, raf ve joker sırası alt alta (joker sırası en az JK_MIN piksel)
+    const KOL = HUD_K + G1 + outerK + G2 + TRAY_K + JK_G;
+    const jkPx = Math.round(clamp(Math.min(aw / outerK, ah / (KOL + JK_K), MAX_B) * JK_K, JK_MIN, JK_MAX));
+    const Bcol = Math.min(aw / outerK, (ah - jkPx) / KOL, MAX_B);
     const Bside = Math.min(ah / outerK, aw / (outerK + GX + PANEL_K), MAX_B);
     const side = Bside > Bcol * 1.2;
     const cs = Math.max(12, Math.floor((side ? Bside : Bcol) / N));
@@ -1921,14 +2421,15 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const outer = bs + 2 * fp;
     L.cs = cs; L.bs = bs; L.fp = fp; L.mode = side ? 'side' : 'col';
     if (!side) {
-      const hudH = bs * HUD_K, g1 = bs * G1, g2 = bs * G2, trayH = bs * TRAY_K;
-      const extra = Math.max(0, ah - (hudH + g1 + outer + g2 + trayH));
+      const hudH = bs * HUD_K, g1 = bs * G1, g2 = bs * G2, trayH = bs * TRAY_K, jg = bs * JK_G;
+      const extra = Math.max(0, ah - (hudH + g1 + outer + g2 + trayH + jg + jkPx));
       const top = ins.t + m + extra * 0.4;
       const left = ins.l + m + (aw - outer) / 2;
       L.bx = left + fp;
       L.by = top + hudH + g1 + fp;
       L.hud = { x: left, y: top, w: outer, h: hudH };
       L.tray = { x: left, y: L.by + bs + fp + g2 + extra * 0.15, w: outer, h: trayH };
+      L.jk = { x: left, y: L.tray.y + trayH + jg + extra * 0.1, w: outer, h: jkPx };
     } else {
       const gx = bs * GX;
       const panelW = Math.min(aw - outer - gx, bs * 1.05);
@@ -1937,8 +2438,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       L.bx = left + fp;
       L.by = top + fp;
       const px = left + outer + gx;
-      L.hud = { x: px, y: top, w: panelW, h: outer * 0.46 };
-      L.tray = { x: px, y: top + outer * 0.5, w: panelW, h: outer * 0.5 };
+      const jkS = Math.round(clamp(outer * 0.1, JK_MIN, JK_MAX));
+      L.hud = { x: px, y: top, w: panelW, h: outer * 0.42 };
+      L.tray = { x: px, y: top + outer * 0.45, w: panelW, h: outer * 0.51 - jkS };
+      L.jk = { x: px, y: top + outer - jkS, w: panelW, h: jkS };
     }
     L.slotW = L.tray.w / 3;
     // Tahta ve raf bölgeleri: blokların parıltısı da sığsın; kenarlar cihaz pikseline hizalı
@@ -1996,6 +2499,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     hint.style.left = (L.bx + L.bs / 2) + 'px';
     hint.style.top = (L.by + L.bs / 2) + 'px';
     placeNotice();
+    placeJoker();
     scoreText = '';
     bestText = '';
     setScoreText(displayScore);
@@ -2075,6 +2579,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       const x = Math.random() * L.W, y = Math.random() * L.H;
       if (x > hd.x - 4 && x < hd.x + hd.w + 4 && y > hd.y - 4 && y < hd.y + hd.h + 4) continue;
       if (y > L.footY - 4 && y < L.footY + FOOT_H + 4) continue; // alt bilgi yazısının üstüne yıldız düşmesin
+      if (x > L.jk.x - 4 && x < L.jk.x + L.jk.w + 4 && y > L.jk.y - 4 && y < L.jk.y + L.jk.h + 4) continue; // joker düğmelerinin altına da
       g.globalAlpha = rand(0.1, 0.4);
       g.fillStyle = Math.random() < 0.18 ? T.stars[1] : T.stars[0];
       const r = rand(0.6, 1.7);
@@ -2156,7 +2661,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   function buildTwinkle() {
     twinkleEl.textContent = '';
     const n = Math.round(clamp((L.W * L.H) / 22000, 8, 28));
-    const avoid = [L.hud, { x: L.bx - L.fp, y: L.by - L.fp, w: L.bs + 2 * L.fp, h: L.bs + 2 * L.fp }, L.tray, { x: 0, y: L.footY, w: L.W, h: FOOT_H }];
+    const avoid = [L.hud, { x: L.bx - L.fp, y: L.by - L.fp, w: L.bs + 2 * L.fp, h: L.bs + 2 * L.fp }, L.tray, L.jk, { x: 0, y: L.footY, w: L.W, h: FOOT_H }];
     const frag = document.createDocumentFragment();
     let placed = 0, tries = 0;
     while (placed < n && tries++ < n * 25) {
@@ -2268,7 +2773,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
 
   function updateHint() { hint.hidden = !(moves === 0 && gameState === 'play' && !drag && !duel); }
-  function setModal() { document.body.classList.toggle('modal', !ovOver.hidden || !ovConfirm.hidden || !ovStart.hidden || !ovDuel.hidden || !ovNick.hidden || !ovBoard.hidden || !ovRapor.hidden); }
+  function setModal() { document.body.classList.toggle('modal', !ovOver.hidden || !ovConfirm.hidden || !ovStart.hidden || !ovDuel.hidden || !ovNick.hidden || !ovBoard.hidden || !ovRapor.hidden || !ovReklam.hidden); }
 
   // Uzun sayılar kutusuna sığsın diye yazı boyunu küçültür
   function fitText(el, text, maxPx, width) {
@@ -2551,7 +3056,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
 
   function makePiece(shape, color) {
-    return { uid: ++pieceUid, shape, cells: shape.cells, w: shape.w, h: shape.h, color, fits: true, enter: null, ret: null, hv: 0 };
+    return { uid: ++pieceUid, shape, cells: shape.cells, w: shape.w, h: shape.h, color, fits: true, enter: null, ret: null, hv: 0, don: null };
   }
 
   const ENTER = { delay: 60, stagger: 60, dur: 320 };
@@ -2611,7 +3116,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     animate(220);
     // Her 10.000 puanda tema değişir: patlatma animasyonu eski renklerle bitsin, sonra geçilsin
     if (themeFor(score) !== themeIdx) queueTheme(ln.rows.length || ln.cols.length ? 520 : 80);
-    if (!tray.some(t => t && t.fits)) triggerGameOver();
+    if (!tray.some(t => t && t.fits)) oyunTikandi(); // elde işe yarar joker varsa oyun hemen bitmez
     else skorCanli();
   }
 
@@ -2726,6 +3231,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     checkUpdate();
     if (gameState !== 'play') return;
     gameState = 'ending';
+    jokerSifirla();
     Skor.sonuc = null;
     skorGonder(score, moves, 'bitti');
     clearTimeout(themeTimer);
@@ -2756,6 +3262,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     goScore.textContent = '0';
     ovConfirm.hidden = true;
     ovOver.hidden = false;
+    ikinciCiz();
+    if (!ikinci) AdManager.oyunBitti(); // geçiş reklamı sayacı: oyun başına bir kez (ikinci şanstan sonraki bitiş sayılmaz)
     oyunSonuCiz();
     setModal();
     countUp(goScore, score, 900);
@@ -2788,6 +3296,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     clearTimeout(themeTimer);
     setTheme(0, themeIdx > 0);
     recentFams = [];
+    jk = { dondur: 1, yenile: 1, sil: 1 }; // her yeni oyunda her jokerden 1 ücretsiz hak
+    ikinci = false;
+    jokerSifirla();
     tray = generateTray();
     refreshFits();
     ovOver.hidden = true;
@@ -2806,7 +3317,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (gameState !== 'play' || duel) return null; // düelloda tek kişilik kayıt bozulmaz
     return {
       v: 2, board: Array.from(board), tray: tray.map(p => (p ? [p.shape.id, p.color] : null)),
-      score, combo, comboMoves, maxCombo, linesTotal, moves, bestAtStart
+      score, combo, comboMoves, maxCombo, linesTotal, moves, bestAtStart,
+      jk: { dondur: jk.dondur, yenile: jk.yenile, sil: jk.sil }, ikinci
     };
   }
 
@@ -2826,7 +3338,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
         bd[i] = Number.isInteger(v) && v >= 0 ? v % PALETTE.length : -1; // eski sürümdeki fotoğraflı kareler renkli bloğa döner
       }
       const t = s.tray.map(x => (Array.isArray(x) && SHAPE_BY_ID[x[0]] ? makePiece(SHAPE_BY_ID[x[0]], clamp(x[1] | 0, 0, PALETTE.length - 1)) : null));
-      if (t.some(Boolean) && !t.some(p => p && fitsOn(bd, p))) return false; // kayıtlı oyun zaten bitmiş
+      const j = jokerOku(s.jk);
+      // Kayıtlı oyun zaten bitmiş: hiçbir parça sığmıyor ve işe yarar joker de yok
+      if (t.some(Boolean) && !t.some(p => p && fitsOn(bd, p)) && !jokerKurtarir(bd, t, j)) return false;
       board.set(bd);
       pops = []; ghosts = []; beams = []; particles = [];
       score = Math.max(0, Math.floor(Number(s.score) || 0)); displayScore = score;
@@ -2836,6 +3350,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (score > best) setBest(score);
       gameState = 'play';
       greyRows = -1;
+      jk = j;
+      ikinci = !!s.ikinci;
+      jokerSifirla();
       clearTimeout(themeTimer);
       setTheme(themeFor(score), false);
       tray = t.some(Boolean) ? t : generateTray();
@@ -2846,12 +3363,375 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       updateHint();
       cellsDirty = true;
       fxDirty = true;
-      if (!tray.some(p => p && p.fits)) triggerGameOver();
+      if (!tray.some(p => p && p.fits)) oyunTikandi();
       return true;
     } catch (e) {
       return false;
     }
   }
+
+  /* ================= Jokerler ve ikinci şans =================
+     Her yeni oyunda her jokerden 1 ücretsiz hak (oyun kaydıyla birlikte saklanır). Hakkı biten jokerin rozeti "▶ +1" olur:
+     dokununca ödüllü reklam; izlenirse o jokere 1 hak eklenir (sitede reklam yok: hak bitince joker sönük kalır).
+       DÖNDÜR   : raftaki parçayı saat yönünde 90° çevirir (döndürülebilen tek parça varsa hemen, yoksa dokunulan parçayı)
+       YENİLE   : raftaki parçaların yerine yeni üç parça
+       KARE SİL : dokunulan tek dolu kareyi patlatır (puan vermez, komboyu bozmaz)
+     Hiçbir parça sığmadığında elde işe yarar ücretsiz joker varsa oyun hemen bitmez: "YER KALMADI · JOKER KULLAN" çıkar, oyuncu
+     joker kullanır ya da BİTİR'e dokunur. Düelloda jokerler yok (iki oyuncu aynı koşullarda oynar).
+     İkinci şans: KAYBETTİN ekranında, oyun başına en çok bir kez. Ödüllü reklam izlenince en işe yarar 3x3 alan (raftaki bir
+     parçayı sığdıran, en dolu, eşitse merkeze en yakın) patlatılır ve oyun aynı skorla sürer. Kullanıldığı oyunda düğme bir daha
+     görünmez (haftalık skor tablosu adaleti). */
+  const JOKER_ADLAR = ['dondur', 'yenile', 'sil'];
+  const JK_ETIKET = { dondur: 'jkDondur', yenile: 'jkYenile', sil: 'jkSil' };
+  let jk = { dondur: 1, yenile: 1, sil: 1 };
+  let jokerMod = '';     // '' | 'dondur' | 'sil': oyuncunun dokunacağı parça ya da kare bekleniyor
+  let tikandi = false;   // hiçbir parça sığmıyor ama elde işe yarar joker var (oyun bitmeden joker kullanma fırsatı)
+  let ikinci = false;    // bu oyunda reklamla ikinci şans kullanıldı mı
+  const OYNAT_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4v16l13-8z" fill="currentColor"/></svg>';
+
+  // Saat yönünde 90° dönüş: (satır, sütun) → (sütun, yükseklik - 1 - satır). Döndürülmüş hali listede olmayan ya da kendisiyle
+  // aynı olan şekil (kareler) döndürülemez
+  const DONUS = (() => {
+    const anahtar = (w, h, cells) => w + 'x' + h + ':' + cells.map(([r, c]) => r + ',' + c).sort().join(';');
+    const bul = {}, m = {};
+    SHAPES.forEach(s => { bul[anahtar(s.w, s.h, s.cells)] = s.id; });
+    SHAPES.forEach(s => {
+      const id = bul[anahtar(s.h, s.w, s.cells.map(([r, c]) => [c, s.h - 1 - r]))];
+      if (id && id !== s.id) m[s.id] = id;
+    });
+    return m;
+  })();
+
+  function jokerOku(o) {
+    const j = { dondur: 1, yenile: 1, sil: 1 };
+    if (o && typeof o === 'object') for (const ad of JOKER_ADLAR) if (Number.isFinite(o[ad])) j[ad] = clamp(Math.floor(o[ad]), 0, 99);
+    return j;
+  }
+
+  // Sıkışınca elde işe yarayacak ücretsiz joker var mı: YENİLE (tahtada boş kare varsa), döndürülünce sığan parça varsa DÖNDÜR,
+  // bir kare silinince bir parça sığıyorsa KARE SİL
+  function jokerKurtarir(bd, pcs, j) {
+    const parcalar = pcs.filter(Boolean);
+    if (!parcalar.length) return false;
+    let bos = false;
+    for (let i = 0; i < N * N; i++) if (bd[i] < 0) { bos = true; break; }
+    if (j.yenile > 0 && bos) return true;
+    if (j.dondur > 0 && parcalar.some(p => DONUS[p.shape.id] && fitsOn(bd, SHAPE_BY_ID[DONUS[p.shape.id]]))) return true;
+    if (j.sil > 0) {
+      for (let i = 0; i < N * N; i++) {
+        const v = bd[i];
+        if (v < 0) continue;
+        bd[i] = -1;
+        const sigar = parcalar.some(p => fitsOn(bd, p));
+        bd[i] = v;
+        if (sigar) return true;
+      }
+    }
+    return false;
+  }
+
+  function placeJoker() {
+    const j = L.jk, s = jokerBar.style;
+    s.left = j.x + 'px';
+    s.top = j.y + 'px';
+    s.width = j.w + 'px';
+    s.height = j.h + 'px';
+    s.setProperty('--jk-f', clamp(j.h * 0.31, 11, 15).toFixed(1) + 'px');
+    s.setProperty('--jk-gap', Math.round(clamp(j.w * 0.025, 6, 12)) + 'px');
+    s.setProperty('--jk-r', Math.round(j.h * 0.3) + 'px');
+    placeJokerIpucu();
+  }
+  // Joker ipucu: tahta ile raf arasında (yan yana düzende raf panelinin üstünde)
+  function placeJokerIpucu() {
+    if (jokerIpucu.hidden || !L.tray) return;
+    const below = L.tray.y > L.by + L.bs;
+    jokerIpucu.style.left = (below ? L.bx + L.bs / 2 : L.tray.x + L.tray.w / 2) + 'px';
+    jokerIpucu.style.top = (below ? (L.by + L.bs + L.tray.y) / 2 : Math.min((L.hud.y + L.hud.h + L.tray.y) / 2, L.tray.y - 18)) + 'px';
+  }
+
+  // Joker düğmeleri: hak sayısı, hak bitince "▶ +1" (reklam varsa) ya da sönük; seçili joker ve sıkışma uyarısı
+  function jokerCiz() {
+    jokerBar.hidden = !!duel;
+    if (duel) return;
+    jokerBar.classList.toggle('kapali', gameState !== 'play');
+    jokerBar.classList.toggle('ikaz', tikandi && !jokerMod);
+    const reklam = AdManager.odulluVar();
+    for (const ad of JOKER_ADLAR) {
+      const b = jkBtn[ad], n = jk[ad], d = n > 0 ? 'var' : reklam ? 'reklam' : 'bos';
+      const rozet = b.querySelector('.jk-n'), icerik = d === 'reklam' ? OYNAT_SVG + '+1' : String(n);
+      b.dataset.durum = d;
+      if (rozet.dataset.v !== icerik) { rozet.dataset.v = icerik; rozet.innerHTML = icerik; }
+      b.classList.toggle('on', jokerMod === ad);
+      const etiket = yaz('jkAria', yaz(JK_ETIKET[ad]), n, d);
+      b.setAttribute('aria-label', etiket);
+      b.title = etiket;
+      b.setAttribute('aria-disabled', String(d === 'bos'));
+      b.setAttribute('aria-pressed', String(jokerMod === ad));
+    }
+  }
+
+  let ipucuEylem = null;
+  function ipucuGuncelle() {
+    let yazi = '', dugme = '';
+    if (jokerMod) {
+      yazi = yaz(jokerMod === 'dondur' ? 'jkIpDondur' : 'jkIpSil');
+      dugme = yaz('vazgec');
+      ipucuEylem = () => { jokerModBitir(); Sound.pick(); };
+    } else if (tikandi && gameState === 'play' && !duel) {
+      yazi = yaz('jkTikandi');
+      dugme = yaz('bitir');
+      ipucuEylem = () => { tikandi = false; triggerGameOver(); };
+    } else ipucuEylem = null;
+    const acik = !!yazi;
+    if (acik) { jokerIpucuYazi.textContent = yazi; jokerIpucuBtn.textContent = dugme; }
+    if (jokerIpucu.hidden === acik) { jokerIpucu.hidden = !acik; showNotice(); } // bildirim düğmesi ipucu açıkken bekler
+    placeJokerIpucu();
+  }
+  jokerIpucuBtn.addEventListener('click', () => { if (ipucuEylem) ipucuEylem(); });
+
+  let toastT = 0;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('on');
+    clearTimeout(toastT);
+    toastT = setTimeout(() => toastEl.classList.remove('on'), 2800);
+  }
+
+  // Yeni oyunda, kayıt yüklenince ve oyun biterken: seçili joker ve sıkışma uyarısı temizlenir
+  function jokerSifirla() {
+    jokerMod = '';
+    tikandi = false;
+    cvTray.classList.remove('secim');
+    cvCells.classList.remove('secim');
+    canvas.classList.remove('hedef');
+    ipucuGuncelle();
+    jokerCiz();
+  }
+  function jokerModBasla(ad) {
+    jokerMod = ad;
+    cvTray.classList.toggle('secim', ad === 'dondur');
+    cvCells.classList.toggle('secim', ad === 'sil');
+    canvas.classList.toggle('hedef', ad === 'sil');
+    ipucuGuncelle();
+    jokerCiz();
+    Sound.pick();
+  }
+  function jokerModBitir() {
+    if (!jokerMod) return;
+    jokerMod = '';
+    cvTray.classList.remove('secim');
+    cvCells.classList.remove('secim');
+    canvas.classList.remove('hedef');
+    ipucuGuncelle();
+    jokerCiz();
+  }
+
+  jokerBar.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('.jk');
+    if (b) jokerTikla(b.dataset.jk);
+  });
+  function jokerTikla(ad) {
+    if (duel || gameState !== 'play' || drag || AdManager.acik() || !(ad in jk)) return;
+    if (jokerMod === ad) { jokerModBitir(); Sound.pick(); return; } // seçili jokere yeniden dokunmak vazgeçmektir
+    if (jk[ad] <= 0) { jokerReklam(ad); return; }
+    jokerModBitir();
+    if (ad === 'yenile') { jokerYenile(); return; }
+    if (ad === 'dondur') {
+      const donen = [0, 1, 2].filter(i => tray[i] && DONUS[tray[i].shape.id]);
+      if (!donen.length) { Sound.bad(); toast(yaz('jkDonenYok')); return; }
+      if (donen.length === 1) { jokerDondur(donen[0]); return; } // döndürülebilen tek parça: hemen döner
+      jokerModBasla('dondur');
+      return;
+    }
+    let dolu = false;
+    for (let i = 0; i < N * N; i++) if (board[i] >= 0) { dolu = true; break; }
+    if (!dolu) { Sound.bad(); toast(yaz('jkBosTahta')); return; }
+    jokerModBasla('sil');
+  }
+
+  // Hakkı biten joker: ödüllü reklam izlenirse +1 hak
+  function jokerReklam(ad) {
+    if (!AdManager.odulluVar()) { Sound.bad(); return; }
+    jokerModBitir();
+    AdManager.showRewardedAd(() => {
+      jk[ad] = Math.min(99, jk[ad] + 1);
+      save();
+      jokerCiz();
+      const r = jkBtn[ad].getBoundingClientRect();
+      spawnFloat('+1', r.left + r.width / 2, r.top - L.cs * 0.25, 'combo', 0, 900);
+      Sound.clear(2, 1);
+      buzz(16);
+      announce(yaz('jkKazandin', yaz(JK_ETIKET[ad])));
+    }, neden => { if (neden !== 'mesgul') toast(yaz(neden === 'yarim' ? 'rkYarim' : 'rkYok')); });
+  }
+
+  // Joker seçiliyken tuvale dokunuş: true dönerse dokunuş jokere gitti (parça tutulmaz)
+  function jokerDokunus(x, y, e) {
+    if (jokerMod === 'dondur') {
+      const i = slotAt(x, y);
+      if (i >= 0 && tray[i]) {
+        e.preventDefault();
+        if (DONUS[tray[i].shape.id]) jokerDondur(i);
+        else { Sound.bad(); toast(yaz('jkDonmez')); }
+      }
+      return true; // döndürme seçiliyken tahtaya dokunmak bir şey yapmaz
+    }
+    if (jokerMod === 'sil') {
+      if (x >= L.bx && x < L.bx + L.bs && y >= L.by && y < L.by + L.bs) {
+        e.preventDefault();
+        const r = clamp(Math.floor((y - L.by) / L.cs), 0, N - 1), c = clamp(Math.floor((x - L.bx) / L.cs), 0, N - 1);
+        if (board[r * N + c] >= 0) jokerSil(r, c); else Sound.bad();
+        return true;
+      }
+      jokerModBitir(); // tahtanın dışına (ör. raftaki parçaya) dokunmak silmeyi bırakır; parça normal tutulur
+    }
+    return false;
+  }
+
+  function jokerDondur(i) {
+    const p = tray[i], yeni = p && SHAPE_BY_ID[DONUS[p.shape.id]];
+    if (!yeni || jk.dondur <= 0 || gameState !== 'play') return;
+    jk.dondur--;
+    const q = makePiece(yeni, p.color);
+    q.don = { t0: performance.now(), dur: 280 };
+    tray[i] = q;
+    animateTray(330);
+    Sound.pick();
+    buzz(12);
+    jokerSonra('jkDondurDuyuru');
+  }
+  function jokerYenile() {
+    if (jk.yenile <= 0 || gameState !== 'play') return;
+    jk.yenile--;
+    tray = generateTray(); // yeni üçlü (girişi canlanır)
+    Sound.clear(1, 4);
+    buzz(14);
+    jokerSonra('jkYenileDuyuru');
+  }
+  function jokerSil(r, c) {
+    const i = r * N + c, v = board[i];
+    if (v < 0 || jk.sil <= 0 || gameState !== 'play') return;
+    jk.sil--;
+    ghosts.push({ r, c, color: v, t0: performance.now(), dur: 380, burst: false, s: 1, a: 1, fl: 0, n: 10 });
+    board[i] = -1;
+    if (pops.length) pops = pops.filter(q => q.i !== i);
+    cellsDirty = true;
+    fxDirty = true;
+    animate(440);
+    Sound.clear(1, 1);
+    shake(3);
+    buzz(16);
+    jokerSonra('jkSilDuyuru');
+  }
+  // Joker kullanıldı: kayıt, düğmeler, duyuru. Sıkışmışken bir parça artık sığıyorsa oyun sürer; sığmıyor ve işe yarar joker
+  // kalmadıysa oyun biter
+  function jokerSonra(duyuru) {
+    jokerModBitir();
+    refreshFits();
+    save();
+    jokerCiz();
+    announce(yaz(duyuru));
+    if (tray.some(p => p && p.fits)) tikanmaBitir();
+    else oyunTikandi();
+  }
+
+  // Hiçbir parça sığmıyor: düelloda tur, işe yarar joker yoksa oyun biter; varsa oyuncuya joker kullanma fırsatı verilir
+  function oyunTikandi() {
+    if (duel || gameState !== 'play' || !jokerKurtarir(board, tray, jk)) { triggerGameOver(); return; }
+    if (!tikandi) {
+      tikandi = true;
+      spawnFloat(yaz('yerKalmadiFloat'), L.bx + L.bs / 2, L.by + L.bs * 0.42, 'praise', 0, 1400);
+      Sound.bad();
+      buzz([18, 40, 22]);
+      announce(yaz('jkTikandiDuyuru'));
+    }
+    ipucuGuncelle();
+    jokerCiz();
+  }
+  function tikanmaBitir() {
+    if (!tikandi) return;
+    tikandi = false;
+    ipucuGuncelle();
+    jokerCiz();
+  }
+
+  // KAYBETTİN ekranındaki ikinci şans düğmesi: ödüllü reklam sunulabiliyorsa ve bu oyunda kullanılmadıysa
+  function ikinciCiz() {
+    goDevam.hidden = !(AdManager.odulluVar() && !ikinci && !duel && gameState === 'over');
+    if (!AdManager.acik()) goDevam.disabled = false;
+  }
+  goDevam.addEventListener('click', () => {
+    if (ikinci || duel || gameState !== 'over' || AdManager.acik()) return;
+    goDevam.disabled = true;
+    AdManager.showRewardedAd(() => { goDevam.disabled = false; ikinciSans(); }, neden => {
+      goDevam.disabled = false;
+      if (neden !== 'mesgul') toast(yaz(neden === 'yarim' ? 'rkYarim' : 'rkYok'));
+    });
+  });
+
+  // İkinci şansta temizlenecek 3x3 alan: önce raftaki bir parçayı sığdıranlar, sonra en dolu olan, eşitse merkeze en yakın
+  function temizlenecekAlan() {
+    let en = null;
+    const bd = new Int8Array(N * N), orta = (N - 1) / 2;
+    for (let r0 = 0; r0 <= N - 3; r0++) {
+      for (let c0 = 0; c0 <= N - 3; c0++) {
+        bd.set(board);
+        let dolu = 0;
+        for (let r = r0; r < r0 + 3; r++) for (let c = c0; c < c0 + 3; c++) { const i = r * N + c; if (bd[i] >= 0) { dolu++; bd[i] = -1; } }
+        const sigar = tray.some(p => p && fitsOn(bd, p)) ? 1 : 0, uzak = Math.abs(r0 + 1 - orta) + Math.abs(c0 + 1 - orta);
+        if (!en || sigar > en.sigar || (sigar === en.sigar && (dolu > en.dolu || (dolu === en.dolu && uzak < en.uzak)))) en = { r0, c0, sigar, dolu, uzak };
+      }
+    }
+    return en;
+  }
+
+  // Reklam izlendi: 3x3 alan patlar, pencere kapanır, oyun aynı skorla sürer
+  function ikinciSans() {
+    if (ikinci || duel || gameState !== 'over') return;
+    ikinci = true;
+    const a = temizlenecekAlan(), mr = a.r0 + 1, mc = a.c0 + 1, now = performance.now();
+    ovOver.hidden = true;
+    goDevam.hidden = true;
+    setModal();
+    gameState = 'play';
+    greyRows = -1;
+    for (let r = a.r0; r < a.r0 + 3; r++) {
+      for (let c = a.c0; c < a.c0 + 3; c++) {
+        const i = r * N + c, v = board[i];
+        if (v < 0) continue;
+        ghosts.push({ r, c, color: v, t0: now + 140 + Math.max(Math.abs(r - mr), Math.abs(c - mc)) * 90, dur: 380, burst: false, s: 1, a: 1, fl: 0, n: 9 });
+        board[i] = -1;
+      }
+    }
+    pops = [];
+    cellsDirty = true;
+    fxDirty = true;
+    if (!REDUCED && typeof flashEl.animate === 'function') {
+      try { flashEl.animate([{ opacity: 0 }, { opacity: 0.8, offset: 0.2 }, { opacity: 0 }], { duration: 650, easing: 'ease-out' }); } catch (e) { /* desteklenmiyor */ }
+    }
+    setTimeout(() => { Sound.clear(3, 1); shake(9); buzz([18, 40, 22]); }, 140);
+    spawnFloat(yaz('devamFloat'), L.bx + L.bs / 2, L.by + (mr + 0.5) * L.cs, 'praise', 120, 1200);
+    refreshFits();
+    if (!tray.some(p => p && p.fits)) { tray = generateTray(); refreshFits(); }
+    updateHud();
+    updateHint();
+    jokerSifirla();
+    save();
+    animate(900);
+    announce(yaz('ikinciDuyuru'));
+    if (!tray.some(p => p && p.fits)) oyunTikandi();
+  }
+
+  // Reklam yöneticisinin oyuna dokunduğu yerler: pencere durumu, ses, banner yüksekliği, reklamların hazır olması, gizlilik düğmesi
+  AdManager.baglan({
+    modal: setModal,
+    sesKes: () => { if (drag) endDrag(null, true); Sound.pause(); },
+    sesAc: () => Sound.uyandir(),
+    banner: () => { layoutKey = ''; layout(); },
+    hazir: () => { jokerCiz(); ikinciCiz(); },
+    gizlilik: g => { $('btnReklamGizlilik').hidden = !g; }
+  });
+  $('btnReklamGizlilik').addEventListener('click', () => AdManager.gizlilikAyarlari());
 
   // Klavye kullanıcısına düğmeyi odakla; dokunmatik/farede halka göstermeden pencereye odaklan
   let keyboardUser = false;
@@ -3520,6 +4400,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
         return { x: home.x, y: home.y + (1 - e) * L.tray.h * 0.45, cs: tcs * lerp(0.35, 1, e), a: clamp(q * 3, 0, 1) };
       }
     }
+    if (p.don) { // DÖNDÜR jokeri: yeni şekil -90°'den 0°'a döner (parça saat yönünde çevrilmiş görünür)
+      const q = clamp((now - p.don.t0) / p.don.dur, 0, 1);
+      if (q >= 1) p.don = null;
+      else return { x: home.x, y: home.y, cs: tcs * (1 + 0.1 * Math.sin(Math.PI * q)), a: 1, rot: -(1 - easeOutCubic(q)) * Math.PI / 2 };
+    }
     return { x: home.x, y: home.y, cs: tcs * (1 + 0.08 * (p.hv || 0)), a: 1 };
   }
 
@@ -3540,7 +4425,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       p.hv = (p.hv || 0) + (target - (p.hv || 0)) * Math.min(1, frameDt * 14);
       const v = trayVisual(p, i, now);
       if (v.a <= 0) continue;
-      drawPiece(tctx, p, v.x, v.y, v.cs, v.a, p.fits ? sprites[p.color] : greySprite);
+      const spr = p.fits ? sprites[p.color] : greySprite;
+      if (v.rot) { tctx.save(); tctx.translate(v.x, v.y); tctx.rotate(v.rot); drawPiece(tctx, p, 0, 0, v.cs, v.a, spr); tctx.restore(); }
+      else drawPiece(tctx, p, v.x, v.y, v.cs, v.a, spr);
     }
   }
 
@@ -3689,6 +4576,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (gameState !== 'play' || drag) return;
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     const { x, y } = pointerPos(e);
+    if (jokerMod && jokerDokunus(x, y, e)) return; // DÖNDÜR / KARE SİL seçiliyken dokunuş jokere gider
     const i = slotAt(x, y);
     if (i < 0 || !tray[i]) return;
     e.preventDefault();
@@ -3696,7 +4584,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* yakalama yok */ }
     const p = tray[i], now = performance.now();
     const v = p.ret ? retVisual(p, i, now) : trayVisual(p, i, now);
-    p.ret = null; p.enter = null; p.hv = 0;
+    p.ret = null; p.enter = null; p.hv = 0; p.don = null;
     // Parçanın neresinden tutulduğu (kare biriminde, merkeze göre; parçanın dışına taşmaz)
     const gu = clamp((x - v.x) / v.cs, -p.w / 2, p.w / 2), gv = clamp((y - v.y) / v.cs, -p.h / 2, p.h / 2);
     drag = { piece: p, slot: i, pid: e.pointerId, type: e.pointerType || 'mouse', px: x, py: y, x0: x, y0: y, far: 0, gu, gv, scs: v.cs, t0: now, tx: v.x, ty: v.y, preview: null };
@@ -3751,6 +4639,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     setTimeout(() => {
       if (document.hidden) return;
       if (duel) { if (duel.phase === 'paused' && ovDuel.hidden && ovConfirm.hidden) showDuelReady(true); return; }
+      if (AdManager.acik() || AdManager.yeniKapandi()) return; // reklamdan dönüş: devam ekranı açılmaz (ses durduysa bildirim çıkar)
       if (gameState === 'play' && soundOn && Sound.ac && Sound.ac.state !== 'running') showStart(true);
     }, 600);
   });
@@ -3788,7 +4677,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   /* Bildirim düğmesi (oyunu durdurmaz): "SES DURDU" ya da "YENİ SÜRÜM VAR"; dokununca ses baştan kurulur ya da
      yeni sürüm açılır (oyun kayıtlı, kaldığı yerden sürer) */
   function showNotice() {
-    const kind = updateReady && !duel ? 'update' : soundOn && Sound.dead && ovStart.hidden ? 'sound' : '';
+    const kind = !jokerIpucu.hidden ? '' : updateReady && !duel ? 'update' : soundOn && Sound.dead && ovStart.hidden ? 'sound' : '';
     noticeEl.dataset.kind = kind;
     noticeEl.hidden = !kind;
     updateDuelBar();
@@ -3912,12 +4801,23 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (gameState === 'play' && score > 0) skorGonder(score, moves, 'yeniden');
     newGame();
   });
-  $('btnAgain').addEventListener('click', () => { if (updateReady) { applyUpdate(); return; } newGame(); });
+  // TEKRAR OYNA: sırası geldiyse önce geçiş reklamı (ilk 2 oyunda yok, sonra her 3 tıklamada bir), sonra yeni oyun
+  $('btnAgain').addEventListener('click', () => {
+    const b = $('btnAgain');
+    if (b.dataset.bekle) return;
+    b.dataset.bekle = '1';
+    AdManager.showInterstitialAd(() => {
+      delete b.dataset.bekle;
+      if (updateReady) { applyUpdate(); return; }
+      newGame();
+    });
+  });
   ovConfirm.addEventListener('pointerdown', e => { if (e.target === ovConfirm) closeConfirm(); });
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     if (!ovConfirm.hidden) closeConfirm();
     else if (!ovDuel.hidden && !$('dSetup').hidden) cancelDuelSetup();
+    else if (jokerMod) jokerModBitir();
   });
 
 
@@ -4902,7 +5802,17 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       dil: () => DIL,
       dilSec: d => dilSec(d, true),
       temaAdlari: () => THEMES.map((_, i) => temaAdi(i)),
-      newGame
+      newGame,
+      // Jokerler, ikinci şans ve reklam yöneticisi
+      jk: () => ({ jk: Object.assign({}, jk), mod: jokerMod, tikandi, ikinci, bar: !jokerBar.hidden, kapali: jokerBar.classList.contains('kapali'),
+        durum: JOKER_ADLAR.map(a => jkBtn[a].dataset.durum), ipucu: jokerIpucu.hidden ? '' : jokerIpucuYazi.textContent }),
+      jkAyarla: o => { jk = jokerOku(Object.assign({}, jk, o)); jokerCiz(); },
+      tikanma: () => { if (!tray.some(p => p && p.fits)) oyunTikandi(); },
+      donus: () => Object.assign({}, DONUS),
+      ikinciAlan: () => { const a = temizlenecekAlan(); return a && { r0: a.r0, c0: a.c0, dolu: a.dolu, sigar: a.sigar }; },
+      reklam: () => AdManager.durum(),
+      reklamSayac: o => AdManager.sayacAyarla(o),
+      AdManager
     };
   }
 
@@ -4922,6 +5832,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
           else if (!ovBoard.hidden) tabloKapat();
           else if (!ovNick.hidden) $('nkSkip').click();
           else if (!ovConfirm.hidden) $('btnCancel').click();
+          else if (!ovReklam.hidden) { /* reklam penceresi kendiliğinden kapanır */ }
+          else if (jokerMod) jokerModBitir();
           else if (typeof AppEk.minimizeApp === 'function') AppEk.minimizeApp();
           else if (typeof AppEk.exitApp === 'function') AppEk.exitApp();
         });
@@ -4940,6 +5852,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (booted) return;
     booted = true;
     setSound(soundOn, false);
+    AdManager.initBannerAd(); // uygulamada: izin penceresi (gerekirse), reklamlar ve banner; sitede bir şey yapmaz
     layout();
     // Yazı tipleri yüklenince alt bilgi genişliği değişir: yeniden sığdır
     if (document.fonts) {
