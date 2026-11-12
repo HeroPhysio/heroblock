@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="bk-build" content="f40916ba6c">
+<meta name="bk-build" content="c754e91786">
 <meta name="theme-color" content="#050817">
 <meta name="author" content="Baran Yavuz, Hero Uygulama Yazılım Teknolojileri Limited Şirketi">
 <meta name="color-scheme" content="dark">
@@ -1564,6 +1564,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   // Haftalık skor tablosu sunucusu (boşsa tablo ve takma ad sorusu kapalı). Testte #test&skor=<adres> ile değişir
   const HASHQ = new URLSearchParams(location.hash.slice(1));
   const SKOR_API = (HASHQ.has('test') && HASHQ.get('skor')) || 'https://skor.herouygulama.com.tr/index.php';
+  // #test (taklit reklamlar: ödül 2 saniyede, sınırsız) gerçek tabloya puan göndermez; tablo yalnızca okunur (haftalık tablo adaleti).
+  // Adres skor= ile gerçek sunucuya çevrilse de gönderilmez; deneme sunucusuna (127.0.0.1 gibi) gönderim sürer.
+  const SKOR_GONDERILMEZ = HASHQ.has('test') && (() => {
+    try { return /(^|\.)herouygulama\.com\.tr$/i.test(new URL(SKOR_API, location.href).hostname); } catch (e) { return true; }
+  })();
   let LIGHT = store.get(K_MODE, 'dark') === 'light';
   document.documentElement.classList.toggle('light', LIGHT);
 
@@ -5261,13 +5266,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
 
   function skorGonder(puan, hamle, neden) {
-    if (!SKOR_API || duel || !(puan > 0)) return;
+    if (!SKOR_API || SKOR_GONDERILMEZ || duel || !(puan > 0)) return;
     if (banli()) { if (neden === 'bitti') { Skor.sonuc = { durum: 'ban' }; oyunSonuCiz(); } return; }
     if (puan > haftaEnIyi()) bekleyenEkle(puan, hamle);
     bekleyenGonder(neden);
   }
   function bekleyenGonder(neden) {
-    if (!SKOR_API || duel) return;
+    if (!SKOR_API || SKOR_GONDERILMEZ || duel) return;
     if (banli()) { store.del(K_BEKLEYEN); if (neden === 'bitti') { Skor.sonuc = { durum: 'ban' }; oyunSonuCiz(); } return; }
     const b = bekleyenAl();
     if (!b || b.puan <= haftaEnIyi()) {
