@@ -665,6 +665,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   .music-vol { flex: 1 1 auto; min-width: 0; height: 28px; margin: 0; accent-color: #ffc531; cursor: pointer; touch-action: pan-x; }
   .music-vol:disabled { opacity: .4; cursor: default; }
   .music-val { flex: none; min-width: 2.4em; text-align: right; font: 700 13px/1 var(--ui); color: var(--text); font-variant-numeric: tabular-nums; }
+  /* Dil seçimi (Türkçe / İngilizce): ana menüde müzik satırının altında, takma ad penceresinde en üstte */
+  .dil-row { display: flex; align-items: center; gap: 6px; margin-top: 10px; padding: 5px; border-radius: 14px; background: rgba(12, 22, 62, .72); border: 1px solid rgba(92, 160, 255, .25); }
+  .dil-row svg { flex: none; width: 20px; height: 20px; margin: 0 3px 0 5px; color: var(--muted); }
+  .dil-row button { appearance: none; -webkit-appearance: none; flex: 1 1 0; min-width: 0; padding: 9px 4px 8px; border-radius: 10px; border: 0; background: transparent; color: var(--muted); font: 700 14px/1 var(--ui); letter-spacing: .12em; cursor: pointer; }
+  .dil-row button[aria-checked="true"] { color: #241500; background: linear-gradient(180deg, #ffe892, #ffb51f); box-shadow: 0 0 14px rgba(255, 197, 49, .35); }
+  .dil-row button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .nk-dil { margin: 0 0 14px; }
   /* Takma ad penceresi */
   .nk-err { margin: -4px 0 12px; text-align: left; font: 600 13px/1.3 var(--ui); color: #ff8fa0; }
   #ovNick { z-index: 22; } /* skor tablosu penceresinden açılınca onun üstünde */
@@ -835,6 +842,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   html.light .music-btn[aria-pressed="false"] { color: #5b6b8c; background: transparent; border-color: rgba(43, 120, 220, .25); }
   html.light .music-lbl { color: #5b6b8c; }
   html.light .music-val { color: #1d2b4d; }
+  html.light .dil-row { background: #eef3fb; border-color: rgba(43, 120, 220, .2); }
+  html.light .dil-row svg, html.light .dil-row button { color: #5b6b8c; }
+  html.light .dil-row button[aria-checked="true"] { color: #241500; }
 
   /* Tüm süreğen animasyonlar yalnızca opaklık ve dönüşüm kullanır: GPU'da, çizim yapmadan oynar */
   @keyframes twinkle { from { opacity: .1; } to { opacity: .7; } }
@@ -890,12 +900,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     <svg viewBox="-12 -12 24 24"><path d="M3 -12L-7 2H-1L-3 12L7 -3H1Z"/></svg>
   </div>
   <div class="hud-side hud-best">
-    <div class="hud-label"><svg viewBox="-11 -9 22 16" aria-hidden="true"><path d="M-9 6L-10 -5L-4 0L0 -8L4 0L10 -5L9 6Z"/></svg>REKOR</div>
+    <div class="hud-label"><svg viewBox="-11 -9 22 16" aria-hidden="true"><path d="M-9 6L-10 -5L-4 0L0 -8L4 0L10 -5L9 6Z"/></svg><span data-t="rekor">REKOR</span></div>
     <div id="hudBest" class="hud-val">0</div>
   </div>
   <div id="hudScoreBox" class="hud-score"><span id="hudScore">0</span></div>
   <div id="hudComboBox" class="hud-side hud-combo">
-    <div class="hud-label">KOMBO</div>
+    <div class="hud-label" data-t="kombo">KOMBO</div>
     <div class="hud-cval"><span class="pips" aria-hidden="true"></span><span id="hudCombo" class="hud-val">—</span></div>
   </div>
 </div>
@@ -906,27 +916,27 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   <canvas id="cells" class="region" aria-hidden="true"></canvas>
   <canvas id="hl" class="region" aria-hidden="true"></canvas>
   <canvas id="trayCv" class="region" aria-hidden="true"></canvas>
-  <canvas id="game" class="layer" role="img" aria-label="Hero Block oyun alanı. Alttaki parçaları sürükleyip 8x8 ızgaraya bırak; dolan satır ve sütunlar patlar."></canvas>
+  <canvas id="game" class="layer" role="img" data-ta="oyunAlani" aria-label="Hero Block oyun alanı. Alttaki parçaları sürükleyip 8x8 ızgaraya bırak; dolan satır ve sütunlar patlar."></canvas>
 </div>
 <canvas id="dragEl" aria-hidden="true"></canvas>
 
-<div id="hint" aria-hidden="true" hidden><b>PARÇALARI SÜRÜKLE</b><span>Satır ya da sütun doldur, patlat!</span></div>
+<div id="hint" aria-hidden="true" hidden><b data-t="ipucu1">PARÇALARI SÜRÜKLE</b><span data-t="ipucu2">Satır ya da sütun doldur, patlat!</span></div>
 <div id="floats" aria-hidden="true"></div>
 <div id="flash" aria-hidden="true"></div>
 <button id="notice" type="button" hidden></button>
 
 <footer id="credits">
-  <div class="cr-line"><span>Hero Uygulama Yazılım Teknolojileri Ltd. Şti.</span><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik</a><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/kosullar.html">Koşullar</a><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/destek.html">Destek</a></div>
-  <div class="cr-line"><span>Kurucu: <b>Baran Yavuz</b></span><span aria-hidden="true">·</span><a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><span aria-hidden="true">·</span><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a></div>
+  <div class="cr-line"><span>Hero Uygulama Yazılım Teknolojileri Ltd. Şti.</span><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></div>
+  <div class="cr-line"><span><span data-t="kurucu">Kurucu</span>: <b>Baran Yavuz</b></span><span aria-hidden="true">·</span><a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><span aria-hidden="true">·</span><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a></div>
 </footer>
 
-<button id="btnRestart" class="icon-btn" type="button" aria-label="Yeniden başlat" title="Yeniden başlat">
+<button id="btnRestart" class="icon-btn" type="button" data-ta="yenidenBaslat" aria-label="Yeniden başlat" title="Yeniden başlat">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4v5h5"/></svg>
 </button>
 <button id="btnSound" class="icon-btn" type="button" aria-label="Sesi kapat" title="Sesi kapat"></button>
-<button id="btnDuel" class="icon-btn" type="button" aria-label="İki kişilik oyna" title="İki kişilik oyna"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg></button>
+<button id="btnDuel" class="icon-btn" type="button" data-ta="duelloAria" aria-label="İki kişilik oyna" title="İki kişilik oyna"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg></button>
 <button id="btnMode" class="icon-btn" type="button" aria-label="Aydınlık moda geç" title="Aydınlık moda geç"></button>
-<button id="btnBoard" type="button" aria-label="Haftalık skor tablosu" title="Haftalık skor tablosu" hidden></button>
+<button id="btnBoard" type="button" data-ta="haftalikTablo" aria-label="Haftalık skor tablosu" title="Haftalık skor tablosu" hidden></button>
 <div id="duelBar" aria-hidden="true" hidden></div>
 
 <div id="insetProbe" aria-hidden="true"></div>
@@ -934,20 +944,20 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
 <div id="ovOver" class="overlay" role="dialog" aria-modal="true" aria-labelledby="goTitle" hidden>
   <div id="goCard" class="card" tabindex="-1">
-    <div id="goBadge" class="badge" hidden>YENİ REKOR!</div>
-    <h2 id="goTitle" class="title">KAYBETTİN</h2>
-    <p class="sub">Yerleştirecek yer kalmadı</p>
-    <div class="label">SKOR</div>
+    <div id="goBadge" class="badge" data-t="yeniRekor" hidden>YENİ REKOR!</div>
+    <h2 id="goTitle" class="title" data-t="kaybettin">KAYBETTİN</h2>
+    <p class="sub" data-t="yerKalmadi">Yerleştirecek yer kalmadı</p>
+    <div class="label" data-t="skor">SKOR</div>
     <div id="goScore" class="big-score">0</div>
     <div class="stats">
-      <div class="stat"><span>REKOR</span><b id="goBest">0</b></div>
-      <div class="stat"><span>ÇİZGİ</span><b id="goLines">0</b></div>
-      <div class="stat"><span>EN İYİ KOMBO</span><b id="goCombo">×0</b></div>
+      <div class="stat"><span data-t="rekor">REKOR</span><b id="goBest">0</b></div>
+      <div class="stat"><span data-t="cizgi">ÇİZGİ</span><b id="goLines">0</b></div>
+      <div class="stat"><span data-t="enIyiKombo">EN İYİ KOMBO</span><b id="goCombo">×0</b></div>
     </div>
     <button id="goWeek" class="go-week" type="button" hidden></button>
-    <button id="btnAgain" class="btn btn-primary" type="button">TEKRAR OYNA</button>
-    <button id="btnDuelOver" class="btn btn-ghost btn-gap btn-ico" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg>İKİ KİŞİLİK OYNA</button>
-    <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br>Kurucu: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html">Destek</a></p>
+    <button id="btnAgain" class="btn btn-primary" type="button" data-t="tekrarOyna">TEKRAR OYNA</button>
+    <button id="btnDuelOver" class="btn btn-ghost btn-gap btn-ico" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg><span data-t="duelloOyna">İKİ KİŞİLİK OYNA</span></button>
+    <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br><span data-t="kurucu">Kurucu</span>: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></p>
   </div>
 </div>
 
@@ -957,49 +967,51 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     <h2 id="stTitle" class="title">HERO BLOCK</h2>
     <p id="stSub" class="sub">Parçaları sürükle, satır ve sütunları patlat!</p>
     <button id="btnStart" class="btn btn-primary" type="button">OYNA</button>
-    <button id="btnDuelStart" class="btn btn-ghost btn-gap btn-ico" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg>İKİ KİŞİLİK</button>
+    <button id="btnDuelStart" class="btn btn-ghost btn-gap btn-ico" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg><span data-t="ikiKisilik">İKİ KİŞİLİK</span></button>
     <div id="muzikRow" class="music-row">
-      <button id="muzikBtn" class="music-btn" type="button" aria-pressed="true" aria-label="Menü müziğini kapat" title="Menü müziği"></button>
-      <label for="muzikSes" class="music-lbl">MENÜ MÜZİĞİ</label>
+      <button id="muzikBtn" class="music-btn" type="button" aria-pressed="true" aria-label="Menü müziğini kapat" title="Menü müziği" data-tt="menuMuzigi"></button>
+      <label for="muzikSes" class="music-lbl" data-t="menuMuzigiBaslik">MENÜ MÜZİĞİ</label>
       <input id="muzikSes" class="music-vol" type="range" min="0" max="100" step="5" value="70">
       <output id="muzikDeger" class="music-val" for="muzikSes">%70</output>
     </div>
-    <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br>Kurucu: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html">Destek</a></p>
+    <div class="dil-row" role="radiogroup" aria-label="Dil" data-ta="dil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9s1.3-6.3 3.8-9z"/></svg><button type="button" role="radio" aria-checked="true" data-dil="tr" lang="tr">TÜRKÇE</button><button type="button" role="radio" aria-checked="false" data-dil="en" lang="en">ENGLISH</button></div>
+    <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br><span data-t="kurucu">Kurucu</span>: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></p>
   </div>
-  <section id="lbStart" class="lb" aria-label="Haftanın en iyileri" hidden></section>
+  <section id="lbStart" class="lb" data-ta="haftaninEnIyileriAria" aria-label="Haftanın en iyileri" hidden></section>
   </div>
 </div>
 
 <div id="ovNick" class="overlay" role="dialog" aria-modal="true" aria-labelledby="nkTitle" hidden>
   <div id="nkCard" class="card" tabindex="-1">
-    <div class="badge badge-beta">HAFTALIK SKOR TABLOSU</div>
-    <h2 id="nkTitle" class="title small">OYUNCU ADIN</h2>
-    <p class="sub">Haftanın en iyileri tablosunda bu ad görünecek.</p>
-    <div class="field"><label for="nkName">TAKMA AD</label><input id="nkName" type="text" maxlength="14" autocomplete="nickname" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" placeholder="ÖR. KRALALİ"></div>
-    <label class="nk-kosul"><input id="nkKosul" type="checkbox"><span><a href="https://heroblock.herouygulama.com.tr/kosullar.html" target="_blank" rel="noopener">Kullanım Koşulları</a>'nı okudum, kabul ediyorum. 13 yaşından büyüğüm. Uygunsuz ad ve davranışa hiç tolerans yoktur.</span></label>
+    <div class="dil-row nk-dil" role="radiogroup" aria-label="Dil" data-ta="dil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9s1.3-6.3 3.8-9z"/></svg><button type="button" role="radio" aria-checked="true" data-dil="tr" lang="tr">TÜRKÇE</button><button type="button" role="radio" aria-checked="false" data-dil="en" lang="en">ENGLISH</button></div>
+    <div class="badge badge-beta" data-t="tabloRozet">HAFTALIK SKOR TABLOSU</div>
+    <h2 id="nkTitle" class="title small" data-t="oyuncuAdin">OYUNCU ADIN</h2>
+    <p class="sub" data-t="adAciklama">Haftanın en iyileri tablosunda bu ad görünecek.</p>
+    <div class="field"><label for="nkName" data-t="takmaAd">TAKMA AD</label><input id="nkName" type="text" maxlength="14" autocomplete="nickname" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" data-tp="adOrnek" placeholder="ÖR. KRALALİ"></div>
+    <label class="nk-kosul"><input id="nkKosul" type="checkbox"><span><span data-t="kosulOn"></span><a href="https://heroblock.herouygulama.com.tr/kosullar.html" target="_blank" rel="noopener" data-t="kosulLink">Kullanım Koşulları</a><span data-t="kosulSon">'nı okudum, kabul ediyorum. 13 yaşından büyüğüm. Uygunsuz ad ve davranışa hiç tolerans yoktur.</span></span></label>
     <p id="nkErr" class="nk-err" role="alert" hidden></p>
-    <button id="nkSave" class="btn btn-primary" type="button">KAYDET</button>
+    <button id="nkSave" class="btn btn-primary" type="button" data-t="kaydet">KAYDET</button>
     <button id="nkSkip" class="link-btn" type="button">ŞİMDİLİK GEÇ</button>
     <button id="nkDel" class="link-btn nk-del" type="button" hidden>TAKMA ADIMI VE SKORLARIMI SİL</button>
-    <p class="card-foot">Gerçek adını yazmak zorunda değilsin. Küfür, cinsel içerik, hakaret ve başkasının kişisel bilgisini içeren adlar kabul edilmez. İlk 10'a girersen takma adın ve puanın herkese görünür. <a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik Politikası</a></p>
+    <p class="card-foot"><span data-t="adAlt">Gerçek adını yazmak zorunda değilsin. Küfür, cinsel içerik, hakaret ve başkasının kişisel bilgisini içeren adlar kabul edilmez. İlk 10'a girersen takma adın ve puanın herkese görünür.</span> <a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilikPol">Gizlilik Politikası</a></p>
   </div>
 </div>
 
-<div id="ovBoard" class="overlay" role="dialog" aria-modal="true" aria-label="Haftanın en iyileri" hidden>
+<div id="ovBoard" class="overlay" role="dialog" aria-modal="true" data-ta="haftaninEnIyileriAria" aria-label="Haftanın en iyileri" hidden>
   <div id="lbCard" class="card lb-card" tabindex="-1">
     <section id="lbFull" class="lb"></section>
-    <button id="lbClose" class="btn btn-ghost btn-gap" type="button">KAPAT</button>
+    <button id="lbClose" class="btn btn-ghost btn-gap" type="button" data-t="kapat">KAPAT</button>
   </div>
 </div>
 
 <div id="ovRapor" class="overlay" role="dialog" aria-modal="true" aria-labelledby="rpAd" hidden>
   <div id="rpCard" class="card" tabindex="-1">
-    <div class="badge badge-beta">HAFTALIK SKOR TABLOSU</div>
+    <div class="badge badge-beta" data-t="tabloRozet">HAFTALIK SKOR TABLOSU</div>
     <h2 id="rpAd" class="rp-ad">OYUNCU</h2>
-    <p class="sub">Bu takma ad uygunsuz mu? Şikayet edersen ekibimiz 24 saat içinde inceler; uygunsuzsa adı kaldırır ve oyuncuyu engeller. Engellersen bu oyuncuyu tabloda bir daha görmezsin.</p>
+    <p class="sub" data-t="raporAciklama">Bu takma ad uygunsuz mu? Şikayet edersen ekibimiz 24 saat içinde inceler; uygunsuzsa adı kaldırır ve oyuncuyu engeller. Engellersen bu oyuncuyu tabloda bir daha görmezsin.</p>
     <p id="rpDurum" class="rp-durum" role="status" hidden></p>
-    <button id="rpSikayet" class="btn btn-primary" type="button">ŞİKAYET ET</button>
-    <button id="rpEngel" class="btn btn-ghost btn-gap" type="button">ENGELLE</button>
+    <button id="rpSikayet" class="btn btn-primary" type="button" data-t="sikayetEt">ŞİKAYET ET</button>
+    <button id="rpEngel" class="btn btn-ghost btn-gap" type="button" data-t="engelle">ENGELLE</button>
     <button id="rpKapat" class="link-btn" type="button">VAZGEÇ</button>
   </div>
 </div>
@@ -1009,7 +1021,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     <h2 id="cfTitle" class="title small">YENİDEN BAŞLA?</h2>
     <p id="cfSub" class="sub">Bu oyundaki skorun kaybolacak.</p>
     <div class="btn-row">
-      <button id="btnCancel" class="btn btn-ghost" type="button">VAZGEÇ</button>
+      <button id="btnCancel" class="btn btn-ghost" type="button" data-t="vazgec">VAZGEÇ</button>
       <button id="btnConfirm" class="btn btn-primary" type="button">BAŞLA</button>
     </div>
   </div>
@@ -1018,30 +1030,30 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 <div id="ovDuel" class="overlay" role="dialog" aria-modal="true" aria-labelledby="dTitle" hidden>
   <div id="dCard" class="card" tabindex="-1">
     <div id="dSetup">
-      <div class="badge badge-beta">İKİ KİŞİLİK</div>
-      <h2 id="dTitle" class="title small">DÜELLO</h2>
-      <p class="sub">Sırayla oynayın. Süre bitince en yüksek puanı yapan kazanır.</p>
-      <div class="field"><label for="dName1">1. OYUNCU</label><input id="dName1" type="text" maxlength="12" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="next" placeholder="ADIN"></div>
-      <div class="field"><label for="dName2">2. OYUNCU</label><input id="dName2" type="text" maxlength="12" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" placeholder="ADIN"></div>
-      <div class="field"><span class="flabel" id="dSecsLbl">SÜRE</span>
+      <div class="badge badge-beta" data-t="ikiKisilik">İKİ KİŞİLİK</div>
+      <h2 id="dTitle" class="title small" data-t="duello">DÜELLO</h2>
+      <p class="sub" data-t="duelloAciklama">Sırayla oynayın. Süre bitince en yüksek puanı yapan kazanır.</p>
+      <div class="field"><label for="dName1" data-t="oyuncu1">1. OYUNCU</label><input id="dName1" type="text" maxlength="12" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="next" data-tp="adPh" placeholder="ADIN"></div>
+      <div class="field"><label for="dName2" data-t="oyuncu2">2. OYUNCU</label><input id="dName2" type="text" maxlength="12" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" data-tp="adPh" placeholder="ADIN"></div>
+      <div class="field"><span class="flabel" id="dSecsLbl" data-t="sure">SÜRE</span>
         <div id="dSecs" class="seg" role="radiogroup" aria-labelledby="dSecsLbl">
-          <button type="button" role="radio" aria-checked="false" data-secs="60">1 DK</button>
-          <button type="button" role="radio" aria-checked="true" data-secs="120">2 DK</button>
-          <button type="button" role="radio" aria-checked="false" data-secs="180">3 DK</button>
-          <button type="button" role="radio" aria-checked="false" data-secs="300">5 DK</button>
+          <button type="button" role="radio" aria-checked="false" data-secs="60" data-t="dk1">1 DK</button>
+          <button type="button" role="radio" aria-checked="true" data-secs="120" data-t="dk2">2 DK</button>
+          <button type="button" role="radio" aria-checked="false" data-secs="180" data-t="dk3">3 DK</button>
+          <button type="button" role="radio" aria-checked="false" data-secs="300" data-t="dk5">5 DK</button>
         </div>
       </div>
-      <p class="duel-note">İkiniz de aynı parçalarla başlarsınız.</p>
-      <button id="dGo" class="btn btn-primary" type="button">BAŞLA</button>
-      <button id="dCancel" class="link-btn" type="button">VAZGEÇ</button>
+      <p class="duel-note" data-t="ayniParcalar">İkiniz de aynı parçalarla başlarsınız.</p>
+      <button id="dGo" class="btn btn-primary" type="button" data-t="basla">BAŞLA</button>
+      <button id="dCancel" class="link-btn" type="button" data-t="vazgec">VAZGEÇ</button>
     </div>
     <div id="dReady" hidden>
       <div id="dRound" class="badge badge-beta">1. TUR</div>
       <h2 id="dWho" class="title">SIRA: 1. OYUNCU</h2>
       <p id="dInfo" class="sub"></p>
-      <div id="dTarget" class="duel-target" hidden><span>HEDEF</span><b id="dTargetVal">0</b><i id="dTargetWho"></i></div>
+      <div id="dTarget" class="duel-target" hidden><span data-t="hedef">HEDEF</span><b id="dTargetVal">0</b><i id="dTargetWho"></i></div>
       <button id="dStart" class="btn btn-primary" type="button">BAŞLA</button>
-      <button id="dQuit" class="link-btn" type="button">DÜELLODAN ÇIK</button>
+      <button id="dQuit" class="link-btn" type="button" data-t="duellodanCik">DÜELLODAN ÇIK</button>
     </div>
     <div id="dResult" hidden>
       <div id="dResBadge" class="badge">KAZANAN</div>
@@ -1049,8 +1061,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       <p id="dResSub" class="sub"></p>
       <div id="dRes" class="duel-res"></div>
       <div id="dSeries" class="series"></div>
-      <button id="dAgain" class="btn btn-primary" type="button">RÖVANŞ</button>
-      <button id="dExit" class="btn btn-ghost btn-gap" type="button">TEK KİŞİLİK OYUNA DÖN</button>
+      <button id="dAgain" class="btn btn-primary" type="button" data-t="rovans">RÖVANŞ</button>
+      <button id="dExit" class="btn btn-ghost btn-gap" type="button" data-t="tekKisilikDon">TEK KİŞİLİK OYUNA DÖN</button>
     </div>
   </div>
 </div>
@@ -1206,6 +1218,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       stars: ['#c8fff0', '#ffe39a'], tray: ['12,58,68', '5,26,30'], trayLine: '110,240,200' }
   ];
   // (Gri tonlu RETRO ATARİ, NEON ŞEHİR ve GÜMÜŞ temaları çıkarıldı; 17 tema kaldı)
+  // İngilizce tema adları (sıra THEMES ile aynı)
+  const TEMA_EN = ['NEON HERO', 'OCEAN', 'SUNSET', 'FOREST', 'CANDY', 'LAVA', 'GLACIER', 'GALAXY', 'GOLDEN PALACE', 'CYBER', 'SAKURA', 'DESERT', 'NORTHERN LIGHTS', 'CORAL', 'RAINBOW', 'COFFEE', 'TROPICAL'];
+  const temaAdi = i => (DIL === 'en' && TEMA_EN[i]) || THEMES[i].name;
 
   /* Renk yumuşatma: neon tonlar göz yormasın diye bütün blok renkleri biraz koyulaşır ve doygunluğu azalır;
      parıltılar, patlama ışıkları ve tema ışıkları da kısılır. Hepsi buradan ayarlanır (1 = eski parlaklık). */
@@ -1316,7 +1331,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
   const easeInCubic = t => t * t * t;
   const easeOutBack = t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
-  const NF = new Intl.NumberFormat('tr-TR');
+  let NF = new Intl.NumberFormat('tr-TR'); // İngilizcede 1,234 biçimine geçer (dil bölümü)
   const fmt = n => NF.format(Math.round(n));
   // Raftaki sıra ve renkler de üreticinin kaynağından (düelloda iki oyuncuya aynı)
   const shuffle = a => {
@@ -1351,6 +1366,370 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const SKOR_API = (HASHQ.has('test') && HASHQ.get('skor')) || 'https://skor.herouygulama.com.tr/index.php';
   let LIGHT = store.get(K_MODE, 'dark') === 'light';
   document.documentElement.classList.toggle('light', LIGHT);
+
+  /* ================= Dil: Türkçe / İngilizce =================
+     Oyun ilk açılışta her zaman Türkçe başlar. Ana menüde (ve ilk açılıştaki takma ad penceresinde) İngilizce
+     seçilebilir; seçim cihazda saklanır, oyun sonra o dilde açılır. Sabit yazıların Türkçesi HTML'dedir:
+     data-t yazı, data-ta erişilebilir ad (ve ipucu), data-tp kutudaki örnek yazı, data-tt yalnızca ipucu.
+     Bunların Türkçesi açılışta HTML'den okunur, İngilizcesi SOZ_EN'de. Koddaki yazılar yaz('anahtar', ...) ile gelir.
+     Oyuncuların takma adları, şirket unvanı ve kurucu adı çevrilmez. */
+  const K_DIL = 'blokKahramani.dil';
+  let DIL = store.get(K_DIL, 'tr') === 'en' ? 'en' : 'tr';
+  NF = new Intl.NumberFormat(DIL === 'en' ? 'en-US' : 'tr-TR');
+  const coklu = (n, tek, cok) => (n === 1 ? tek : cok);   // İngilizcede tekil / çoğul
+  const SOZ_TR = {
+    temaYazi: n => 'TEMA: ' + n,
+    yeniTema: n => 'Yeni tema: ' + n,
+    tertemiz: 'TERTEMİZ!',
+    komboX: c => 'KOMBO ×' + c,
+    bonusY: b => 'BONUS +' + b,
+    patlamaDuyuru: (l, p, c, s) => l + ' çizgi patladı, +' + p + ' puan' + (c >= 2 ? ', kombo ×' + c : '') + '. Skor ' + s + '.',
+    kaybettinDuyuru: (s, yeni) => 'Kaybettin. Skor ' + s + (yeni ? '. Yeni rekor!' : '.'),
+    yeniSurum: 'YENİ SÜRÜM VAR · GÜNCELLE',
+    sesDurdu: 'SES DURDU · AÇMAK İÇİN DOKUN',
+    devamEt: 'DEVAM ET',
+    oyna: 'OYNA',
+    devamAlt: 'Kaldığın yerden devam et.',
+    oynaAlt: 'Parçaları sürükle, satır ve sütunları patlat!',
+    karanlikModa: 'Karanlık moda geç',
+    aydinlikModa: 'Aydınlık moda geç',
+    aydinlikMod: 'Aydınlık mod',
+    karanlikMod: 'Karanlık mod',
+    sesiKapat: 'Sesi kapat',
+    sesiAc: 'Sesi aç',
+    duellodanCikSoru: 'DÜELLODAN ÇIK?',
+    yenidenBaslaSoru: 'YENİDEN BAŞLA?',
+    duelloBiter: 'Düello biter, tek kişilik oyununa dönersin.',
+    skorKaybolur: 'Bu oyundaki skorun kaybolacak.',
+    cik: 'ÇIK',
+    yenidenBaslaBtn: 'BAŞLA',
+    basla: 'BAŞLA',
+    vazgec: 'VAZGEÇ',
+    kapat: 'KAPAT',
+    hedef: 'HEDEF',
+    sureEtiket: 'SÜRE',
+    oyuncuN: n => n + '. OYUNCU',
+    sureDurdu: 'SÜRE DURDU',
+    tur: n => n + '. TUR',
+    sira: w => 'SIRA: ' + w,
+    kalanSure: s => 'Kalan süre ' + s + '. Hazır olunca devam et.',
+    ilkTurBilgi: (m, n2) => m + ' dakikan var. Süre bitince sıra ' + trSuffix(n2, 'loc') + '.',
+    ikinciTurBilgi: (w, m) => 'Telefonu ' + trSuffix(w, 'dat') + ' ver. ' + m + ' dakikan var.',
+    siraDuyuru: w => 'Sıra ' + trSuffix(w, 'loc') + '.',
+    baslaFloat: 'BAŞLA!',
+    sureDoldu: 'SÜRE DOLDU!',
+    yerKalmadiFloat: 'YER KALMADI!',
+    puanDuyuru: (w, s) => w + ': ' + s + ' puan.',
+    esitlik: 'EŞİTLİK',
+    kazanan: 'KAZANAN',
+    berabere: 'BERABERE!',
+    kazandi: w => w + ' KAZANDI!',
+    dakikalikDuello: m => m + ' dakikalık düello',
+    cizgiKombo: (l, c) => l + ' çizgi · kombo ×' + c,
+    seriYazi: 'SERİ · ',
+    berabereDuyuru: 'Berabere.',
+    kazandiDuyuru: w => w + ' kazandı.',
+    gectin: 'GEÇTİN!',
+    siradaki: 'SIRADAKİ',
+    banYazi: d => 'Skor tablosuna katılımın ' + (d ? d + ' tarihine kadar ' : '') + 'engellendi. Oyunu oynamaya devam edebilirsin.',
+    adBos: 'Bir takma ad yaz.',
+    adUzunluk: 'Takma ad 2-14 karakter olmalı.',
+    adKarakter: 'Yalnızca harf, rakam, boşluk ve _ . - kullanılabilir.',
+    adUygunDegil: 'Bu takma ad uygun değil.',
+    kalan: (g, sa, dk) => 'SIFIRLANMAYA ' + (g ? g + ' GÜN' + (sa ? ' ' + sa + ' SAAT' : '') : sa ? sa + ' SAAT' + (dk ? ' ' + dk + ' DK' : '') : Math.max(1, dk) + ' DK'),
+    raporAria: a => a + ': şikayet et ya da engelle',
+    raporTitle: 'Şikayet et / engelle',
+    sen: 'SEN',
+    engelliGizlendi: 'Engellediğin oyuncular gizlendi.',
+    cevrimdisiTablo: 'Çevrimdışı: son görülen tablo',
+    kimseYok: 'Bu hafta henüz kimse yok.<br><b>İlk sen ol!</b>',
+    baglanilamadi: 'Skor tablosuna bağlanılamadı.<br>İnternet gelince kendiliğinden yenilenir.',
+    tekrarDene: 'TEKRAR DENE',
+    yukleniyor: 'Yükleniyor',
+    adYazPuanla: p => 'ADINI YAZ, ' + p + ' PUANLA TABLOYA GİR',
+    adYazGir: 'ADINI YAZ, TABLOYA GİR',
+    kosulOnaylaKal: 'KULLANIM KOŞULLARINI ONAYLA, TABLODA KAL',
+    senEtiket: 'Sen',
+    oyuncuSayisi: s => s + ' oyuncu',
+    adiniDegistir: 'ADINI DEĞİŞTİR',
+    engelliSayisi: s => 'Engellediğin ' + s + ' oyuncu gösterilmiyor',
+    engelleriKaldir: 'ENGELLERİ KALDIR',
+    haftaninEnIyileri: 'HAFTANIN EN İYİLERİ',
+    herPazartesi: 'HER PAZARTESİ SIFIRLANIR',
+    gonderiliyor: 'Skorun tabloya gönderiliyor…',
+    kosulOnaylaGir: 'Koşulları onayla, haftalık tabloya gir',
+    adYazHaftalik: 'Adını yaz, haftalık tabloya gir',
+    adBulunmadi: 'Takma adın uygun bulunmadı. Yeni ad seç',
+    tabloyaBaglanilamadi: 'Tabloya bağlanılamadı; internet gelince gönderilir',
+    katilimEngellendi: 'Skor tablosuna katılımın engellendi',
+    buHafta: 'BU HAFTA',
+    haftalikRekor: 'Haftalık rekorun!',
+    enIyin: p => 'En iyin ' + p,
+    enIyileriGor: 'Haftanın en iyilerini gör',
+    adSil: 'TAKMA ADIMI VE SKORLARIMI SİL',
+    simdilikGec: 'ŞİMDİLİK GEÇ',
+    kosulOnaylaHata: 'Devam etmek için Kullanım Koşulları\'nı onayla.',
+    biraz: 'Biraz bekle, sonra tekrar dene.',
+    adKaydedildi: a => 'Takma adın ' + a + ' olarak kaydedildi.',
+    eminMisin: 'EMİN MİSİN? SİLMEK İÇİN TEKRAR DOKUN',
+    adSilindi: 'Takma adın ve skor kayıtların silindi.',
+    silinemedi: 'Silinemedi: bağlantı yok. İnternet gelince tekrar dene.',
+    engellerKaldirildi: 'Engeller kaldırıldı.',
+    oyuncu: 'OYUNCU',
+    sikayetAlindi: 'Şikayetin alındı, teşekkürler. Ekibimiz 24 saat içinde inceleyecek. Bu oyuncuyu artık görmeyeceksin.',
+    sikayetGonderilemedi: 'Şikayet şu an gönderilemedi; bu oyuncuyu senin için gizledik.',
+    sikayetKonu: a => 'Hero Block şikayet: ' + a,
+    epostaylaBildir: 'E-postayla bildir',
+    sikayetAlindiKisa: 'Şikayetin alındı.',
+    sikayetGitmediKisa: 'Şikayet gönderilemedi; oyuncu gizlendi.',
+    oyuncuEngellendi: 'Oyuncu engellendi; tabloda artık görünmeyecek.',
+    muzikKapat: 'Menü müziğini kapat',
+    muzikAc: 'Menü müziğini aç',
+    yuzde: n => '%' + n,
+    muzikAcik: 'Menü müziği açık',
+    muzikKapali: 'Menü müziği kapalı',
+    kosulEklendi: 'Skor tablosu için Kullanım Koşulları eklendi. Tabloda kalmak için okuyup onayla.',
+    dilDegisti: 'Dil: Türkçe'
+  };
+  const SOZ_EN = {
+    // Sabit yazılar (Türkçeleri HTML'de)
+    rekor: 'BEST',
+    kombo: 'COMBO',
+    oyunAlani: 'Hero Block game board. Drag the pieces below onto the 8x8 grid; full rows and columns clear.',
+    ipucu1: 'DRAG THE PIECES',
+    ipucu2: 'Fill a row or column to clear it!',
+    gizlilik: 'Privacy',
+    kosullar: 'Terms',
+    destek: 'Support',
+    kurucu: 'Founder',
+    yenidenBaslat: 'Restart',
+    duelloAria: 'Two-player duel',
+    haftalikTablo: 'Weekly leaderboard',
+    yeniRekor: 'NEW BEST!',
+    kaybettin: 'GAME OVER',
+    yerKalmadi: 'No room left for your pieces',
+    skor: 'SCORE',
+    cizgi: 'LINES',
+    enIyiKombo: 'BEST COMBO',
+    tekrarOyna: 'PLAY AGAIN',
+    duelloOyna: 'TWO-PLAYER DUEL',
+    ikiKisilik: 'TWO PLAYERS',
+    menuMuzigi: 'Menu music',
+    menuMuzigiBaslik: 'MENU MUSIC',
+    haftaninEnIyileriAria: 'This week’s best',
+    dil: 'Language',
+    tabloRozet: 'WEEKLY LEADERBOARD',
+    oyuncuAdin: 'YOUR PLAYER NAME',
+    adAciklama: 'This name will appear on this week’s leaderboard.',
+    takmaAd: 'NICKNAME',
+    adOrnek: 'E.G. BLOCKSTAR',
+    kosulOn: 'I have read and accept the ',
+    kosulLink: 'Terms of Use',
+    kosulSon: '. I am 13 or older. There is zero tolerance for offensive names and behaviour.',
+    kaydet: 'SAVE',
+    adAlt: 'You don’t have to use your real name. Names with swearing, sexual content, insults or someone else’s personal information aren’t accepted. If you make the top 10, your nickname and score are visible to everyone.',
+    gizlilikPol: 'Privacy Policy',
+    raporAciklama: 'Is this nickname offensive? If you report it, our team reviews it within 24 hours; if it is offensive, we remove the name and block the player. If you block this player, you won’t see them on the board again.',
+    sikayetEt: 'REPORT',
+    engelle: 'BLOCK',
+    duello: 'DUEL',
+    duelloAciklama: 'Take turns. When time runs out, the highest score wins.',
+    oyuncu1: 'PLAYER 1',
+    oyuncu2: 'PLAYER 2',
+    adPh: 'NAME',
+    sure: 'TIME',
+    dk1: '1 MIN', dk2: '2 MIN', dk3: '3 MIN', dk5: '5 MIN',
+    ayniParcalar: 'You both start with the same pieces.',
+    duellodanCik: 'LEAVE DUEL',
+    rovans: 'REMATCH',
+    tekKisilikDon: 'BACK TO SINGLE PLAYER',
+    // Koddaki yazılar
+    temaYazi: n => 'THEME: ' + n,
+    yeniTema: n => 'New theme: ' + n,
+    tertemiz: 'ALL CLEAR!',
+    komboX: c => 'COMBO ×' + c,
+    bonusY: b => 'BONUS +' + b,
+    patlamaDuyuru: (l, p, c, s) => l + coklu(l, ' line', ' lines') + ' cleared, +' + p + ' points' + (c >= 2 ? ', combo ×' + c : '') + '. Score ' + s + '.',
+    kaybettinDuyuru: (s, yeni) => 'Game over. Score ' + s + (yeni ? '. New best!' : '.'),
+    yeniSurum: 'NEW VERSION · UPDATE',
+    sesDurdu: 'SOUND STOPPED · TAP TO RESUME',
+    devamEt: 'CONTINUE',
+    oyna: 'PLAY',
+    devamAlt: 'Pick up where you left off.',
+    oynaAlt: 'Drag the pieces, clear rows and columns!',
+    karanlikModa: 'Switch to dark mode',
+    aydinlikModa: 'Switch to light mode',
+    aydinlikMod: 'Light mode',
+    karanlikMod: 'Dark mode',
+    sesiKapat: 'Turn sound off',
+    sesiAc: 'Turn sound on',
+    duellodanCikSoru: 'LEAVE THE DUEL?',
+    yenidenBaslaSoru: 'START OVER?',
+    duelloBiter: 'The duel ends and you go back to your single-player game.',
+    skorKaybolur: 'You’ll lose your score in this game.',
+    cik: 'LEAVE',
+    yenidenBaslaBtn: 'RESTART',
+    basla: 'START',
+    vazgec: 'CANCEL',
+    kapat: 'CLOSE',
+    hedef: 'TARGET',
+    sureEtiket: 'TIME',
+    oyuncuN: n => 'PLAYER ' + n,
+    sureDurdu: 'TIME PAUSED',
+    tur: n => 'ROUND ' + n,
+    sira: w => 'TURN: ' + w,
+    kalanSure: s => 'Time left ' + s + '. Continue when you’re ready.',
+    ilkTurBilgi: (m, n2) => 'You have ' + m + coklu(m, ' minute', ' minutes') + '. When time runs out, it’s ' + n2 + '’s turn.',
+    ikinciTurBilgi: (w, m) => 'Hand the phone to ' + w + '. You have ' + m + coklu(m, ' minute', ' minutes') + '.',
+    siraDuyuru: w => w + '’s turn.',
+    baslaFloat: 'GO!',
+    sureDoldu: 'TIME’S UP!',
+    yerKalmadiFloat: 'NO ROOM LEFT!',
+    puanDuyuru: (w, s) => w + ': ' + s + ' points.',
+    esitlik: 'TIE',
+    kazanan: 'WINNER',
+    berabere: 'IT’S A TIE!',
+    kazandi: w => w + ' WINS!',
+    dakikalikDuello: m => m + '-minute duel',
+    cizgiKombo: (l, c, n) => l + coklu(n, ' line', ' lines') + ' · combo ×' + c,
+    seriYazi: 'SERIES · ',
+    berabereDuyuru: 'It’s a tie.',
+    kazandiDuyuru: w => w + ' wins.',
+    gectin: 'AHEAD!',
+    siradaki: 'NEXT',
+    banYazi: d => 'You’re blocked from the leaderboard' + (d ? ' until ' + d : '') + '. You can keep playing the game.',
+    banOto: n => 'You’ve been blocked from the leaderboard for ' + n + coklu(n, ' day', ' days') + ' because of offensive nickname attempts. You can keep playing the game.',
+    adUygunsuz: 'This nickname isn’t allowed: names with swearing, sexual content or insults can’t be used.',
+    sonUyari: n => ' Final warning: one more offensive name and you’ll be blocked from the leaderboard for ' + n + coklu(n, ' day.', ' days.'),
+    uyari: ' If you keep trying names like this, you’ll be blocked from the leaderboard.',
+    adBos: 'Enter a nickname.',
+    adUzunluk: 'Your nickname must be 2-14 characters.',
+    adKarakter: 'Only letters, numbers, spaces and _ . - are allowed.',
+    adUygunDegil: 'This nickname isn’t allowed.',
+    kalan: (g, sa, dk) => 'RESETS IN ' + (g ? g + coklu(g, ' DAY', ' DAYS') + (sa ? ' ' + sa + coklu(sa, ' HR', ' HRS') : '') : sa ? sa + coklu(sa, ' HR', ' HRS') + (dk ? ' ' + dk + ' MIN' : '') : Math.max(1, dk) + ' MIN'),
+    raporAria: a => a + ': report or block',
+    raporTitle: 'Report / block',
+    sen: 'YOU',
+    engelliGizlendi: 'Players you blocked are hidden.',
+    cevrimdisiTablo: 'Offline: last leaderboard seen',
+    kimseYok: 'Nobody here yet this week.<br><b>Be the first!</b>',
+    baglanilamadi: 'Couldn’t reach the leaderboard.<br>It refreshes by itself when you’re back online.',
+    tekrarDene: 'TRY AGAIN',
+    yukleniyor: 'Loading',
+    adYazPuanla: p => 'ADD YOUR NAME, JOIN WITH ' + p + ' POINTS',
+    adYazGir: 'ADD YOUR NAME, JOIN THE BOARD',
+    kosulOnaylaKal: 'ACCEPT THE TERMS TO STAY ON THE BOARD',
+    senEtiket: 'You',
+    oyuncuSayisi: (s, n) => s + coklu(n, ' player', ' players'),
+    adiniDegistir: 'CHANGE NAME',
+    engelliSayisi: (s, n) => s + coklu(n, ' blocked player', ' blocked players') + ' hidden',
+    engelleriKaldir: 'UNBLOCK ALL',
+    haftaninEnIyileri: 'THIS WEEK’S BEST',
+    herPazartesi: 'RESETS EVERY MONDAY',
+    gonderiliyor: 'Sending your score…',
+    kosulOnaylaGir: 'Accept the terms to join the weekly board',
+    adYazHaftalik: 'Add your name to join the weekly board',
+    adBulunmadi: 'Your nickname wasn’t accepted. Pick a new one',
+    tabloyaBaglanilamadi: 'Couldn’t reach the board; it will be sent when you’re online',
+    katilimEngellendi: 'You’re blocked from the leaderboard',
+    buHafta: 'THIS WEEK',
+    haftalikRekor: 'Your weekly best!',
+    enIyin: p => 'Your best ' + p,
+    enIyileriGor: 'See this week’s best',
+    adSil: 'DELETE MY NICKNAME AND SCORES',
+    simdilikGec: 'SKIP FOR NOW',
+    kosulOnaylaHata: 'Accept the Terms of Use to continue.',
+    biraz: 'Wait a moment, then try again.',
+    adKaydedildi: a => 'Your nickname was saved as ' + a + '.',
+    eminMisin: 'ARE YOU SURE? TAP AGAIN TO DELETE',
+    adSilindi: 'Your nickname and scores were deleted.',
+    silinemedi: 'Couldn’t delete: no connection. Try again when you’re online.',
+    engellerKaldirildi: 'Blocks removed.',
+    oyuncu: 'PLAYER',
+    sikayetAlindi: 'Thanks, your report was received. Our team will review it within 24 hours. You won’t see this player anymore.',
+    sikayetGonderilemedi: 'Your report couldn’t be sent right now; we’ve hidden this player for you.',
+    sikayetKonu: a => 'Hero Block report: ' + a,
+    epostaylaBildir: 'Report by email',
+    sikayetAlindiKisa: 'Report received.',
+    sikayetGitmediKisa: 'Report not sent; player hidden.',
+    oyuncuEngellendi: 'Player blocked; they won’t appear on the board anymore.',
+    muzikKapat: 'Turn menu music off',
+    muzikAc: 'Turn menu music on',
+    yuzde: n => n + '%',
+    muzikAcik: 'Menu music on',
+    muzikKapali: 'Menu music off',
+    kosulEklendi: 'We’ve added Terms of Use for the leaderboard. Read and accept them to stay on the board.',
+    dilDegisti: 'Language: English'
+  };
+  function yaz(k, ...a) {
+    const v = DIL === 'en' && k in SOZ_EN ? SOZ_EN[k] : k in SOZ_TR ? SOZ_TR[k] : SOZ_EN[k];
+    return typeof v === 'function' ? v(...a) : v == null ? k : v;
+  }
+  // Sabit yazıları seçili dile çevirir (kok verilirse yalnızca onun içinde); Türkçesi ilk geçişte HTML'den okunur
+  function dilUygula(kok) {
+    const k = kok || document;
+    const her = (sec, fn) => { if (k !== document && k.matches(sec)) fn(k); k.querySelectorAll(sec).forEach(fn); };
+    her('[data-t]', el => { const a = el.dataset.t; if (!(a in SOZ_TR)) SOZ_TR[a] = el.textContent; el.textContent = yaz(a); });
+    her('[data-ta]', el => {
+      const a = el.dataset.ta;
+      if (!(a in SOZ_TR)) SOZ_TR[a] = el.getAttribute('aria-label') || '';
+      const v = yaz(a);
+      el.setAttribute('aria-label', v);
+      if (el.hasAttribute('title')) el.title = v;
+    });
+    her('[data-tp]', el => { const a = el.dataset.tp; if (!(a in SOZ_TR)) SOZ_TR[a] = el.getAttribute('placeholder') || ''; el.setAttribute('placeholder', yaz(a)); });
+    her('[data-tt]', el => { const a = el.dataset.tt; if (!(a in SOZ_TR)) SOZ_TR[a] = el.title || ''; el.title = yaz(a); });
+  }
+  // Sunucunun Türkçe uyarıları (takma ad reddi, engel) İngilizcede karşılıklarıyla gösterilir; tanınmayan uyarıda '' döner
+  function sunucuMesaj(m) {
+    if (!m || DIL !== 'en') return m || '';
+    const g = /(\d+) gün/.exec(m), n = g ? +g[1] : 0;
+    if (/^Uygunsuz takma ad denemeleri/.test(m)) return SOZ_EN.banOto(n);
+    if (/^Skor tablosuna katılımın/.test(m)) return banYazi();
+    if (/^Bu takma ad uygun değil/.test(m)) return SOZ_EN.adUygunsuz + (/Son uyarı/.test(m) ? SOZ_EN.sonUyari(n) : /devam edersen/.test(m) ? SOZ_EN.uyari : '');
+    if (/karakter olmalı/.test(m)) return SOZ_EN.adUzunluk;
+    if (/yalnızca harf/i.test(m)) return SOZ_EN.adKarakter;
+    if (/boş olamaz/.test(m)) return SOZ_EN.adBos;
+    return '';
+  }
+  function dilDugmeleri() {
+    document.querySelectorAll('[data-dil]').forEach(b => b.setAttribute('aria-checked', String(b.dataset.dil === DIL)));
+  }
+  // Dil değişimi yalnızca ana menüden ya da takma ad penceresinden yapılır (düello ve oyun pencereleri o an kapalı)
+  function dilSec(d, duyur) {
+    d = d === 'en' ? 'en' : 'tr';
+    store.set(K_DIL, d);
+    if (d !== DIL) {
+      DIL = d;
+      NF = new Intl.NumberFormat(DIL === 'en' ? 'en-US' : 'tr-TR');
+      document.documentElement.lang = DIL;
+      dilUygula();
+      setModeButton();
+      sesDugmesi();
+      muzikCiz();
+      baslangicYazilari();
+      if (!ovNick.hidden) adYazilari();
+      showNotice();
+      tabloCiz();
+      oyunSonuCiz();
+      // Sayı biçimi ve yazı genişlikleri değişti: üst bilgi, alt bilgi ve REKOR düğmesi yeniden sığdırılır
+      scoreText = ''; bestText = '';
+      setScoreText(displayScore);
+      updateHud();
+      fitScore();
+      fitCredits();
+      placeBoardBtn();
+      if (duyur) announce(yaz('dilDegisti'));
+    }
+    dilDugmeleri();
+  }
+  document.documentElement.lang = DIL;
+  dilUygula();
+  dilDugmeleri();
+  document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('[data-dil]');
+    if (b) dilSec(b.dataset.dil, true);
+  });
 
   /* ================= DOM ================= */
   const cvBg = $('bg'), cvCells = $('cells'), cvHl = $('hl'), cvTray = $('trayCv'), canvas = $('game'), dragEl = $('dragEl');
@@ -2107,9 +2486,16 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     ['MÜKEMMEL!', 'İNANILMAZ!', 'MUHTEŞEMSİN!', 'EFSANESİN!', 'DURDURULAMAZSIN!']
   ];
   const STREAK = ['DEVAM ET!', 'DURMAK YOK!', 'SERİYİ BOZMA!', 'ATEŞ GİBİSİN!'];
+  const PRAISE_EN = [
+    null,
+    ['NICE!', 'BRAVO!', 'WELL DONE!', 'KEEP GOING!', 'SUPER!', 'GREAT!', 'VERY GOOD!', 'LOOKING GOOD!'],
+    ['GREAT!', 'SUPER!', 'EXCELLENT!', 'AWESOME!', 'BRILLIANT!', 'LOVE IT!'],
+    ['PERFECT!', 'INCREDIBLE!', 'AMAZING!', 'LEGENDARY!', 'UNSTOPPABLE!']
+  ];
+  const STREAK_EN = ['KEEP GOING!', 'NO STOPPING!', 'KEEP THE STREAK!', 'YOU’RE ON FIRE!'];
   let lastPraise = '';
   function pickPraise(lines, cmb) {
-    const pool = lines === 1 && cmb >= 5 && cmb % 5 === 0 ? STREAK : PRAISE[Math.min(3, lines)]; // her 5 komboda seriyi kutla
+    const en = DIL === 'en', pool = lines === 1 && cmb >= 5 && cmb % 5 === 0 ? (en ? STREAK_EN : STREAK) : (en ? PRAISE_EN : PRAISE)[Math.min(3, lines)]; // her 5 komboda seriyi kutla
     const options = pool.filter(t => t !== lastPraise);
     lastPraise = options[(Math.random() * options.length) | 0];
     return lastPraise;
@@ -2257,8 +2643,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (typeof flashEl.animate === 'function') {
         try { flashEl.animate([{ opacity: 0 }, { opacity: 1, offset: 0.2 }, { opacity: 0 }], { duration: 700, easing: 'ease-out' }); } catch (e) { /* desteklenmiyor */ }
       }
-      spawnFloat('TEMA: ' + T.name, L.bx + L.bs / 2, L.by + L.bs * 0.13, 'theme', 0, 1700);
-      announce('Yeni tema: ' + T.name);
+      spawnFloat(yaz('temaYazi', temaAdi(k)), L.bx + L.bs / 2, L.by + L.bs * 0.13, 'theme', 0, 1700);
+      announce(yaz('yeniTema', temaAdi(k)));
     }
   }
 
@@ -2302,9 +2688,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const mx = bx + bs / 2;
     const fx = mx + (bx + (sc / set.size + 0.5) * cs - mx) * 0.3;
     const fy = clamp(by + (sr / set.size + 0.5) * cs, by + bs * 0.25, by + bs * 0.75);
-    const items = [[perfect ? 'TERTEMİZ!' : pickPraise(lines, combo), 'praise']];
-    if (combo >= 2) items.push(['KOMBO ×' + fmt(combo), 'combo']);
-    if (bonus) items.push(['BONUS +' + fmt(bonus), 'combo']);
+    const items = [[perfect ? yaz('tertemiz') : pickPraise(lines, combo), 'praise']];
+    if (combo >= 2) items.push([yaz('komboX', fmt(combo)), 'combo']);
+    if (bonus) items.push([yaz('bonusY', fmt(bonus)), 'combo']);
     items.push(['+' + fmt(pts), 'pts']);
     const gap = cs * 0.9, y0 = fy - ((items.length - 1) * gap) / 2;
     items.forEach((it, k) => spawnFloat(it[0], fx, y0 + k * gap, it[1], k * 60));
@@ -2316,7 +2702,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
     if (combo >= 2) bump(hudCombo, 1.3);
     buzz(lines > 1 ? [18, 40, 22] : 16);
-    announce(lines + ' çizgi patladı, +' + fmt(pts) + ' puan' + (combo >= 2 ? ', kombo ×' + combo : '') + '. Skor ' + fmt(score) + '.');
+    announce(yaz('patlamaDuyuru', lines, fmt(pts), combo, fmt(score)));
   }
 
   function triggerGameOver() {
@@ -2358,7 +2744,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     setModal();
     countUp(goScore, score, 900);
     setTimeout(() => focusDialog('btnAgain', 'goCard'), 60);
-    announce('Kaybettin. Skor ' + fmt(score) + (isNew ? '. Yeni rekor!' : '.'));
+    announce(yaz('kaybettinDuyuru', fmt(score), isNew));
   }
 
   function countUp(el, target, dur) {
@@ -3355,11 +3741,15 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   /* Başlangıç / devam ekranı: iPhone ve diğer tarayıcılar sesi yalnızca parmağı kaydırmadan yapılan bir dokunuşla
      açar; parça sürüklemek sayılmaz. Bu yüzden ses açıkken oyun tek dokunuşla başlar, ses ilk andan çalar. */
+  function baslangicYazilari() {
+    const cont = !!ovStart.dataset.devam;
+    $('btnStart').textContent = yaz(cont ? 'devamEt' : 'oyna');
+    $('stSub').textContent = yaz(cont ? 'devamAlt' : 'oynaAlt');
+  }
   function showStart(resume) {
     if (duel || !ovOver.hidden || !ovConfirm.hidden || !ovDuel.hidden) return;
-    const cont = resume || moves > 0;
-    $('btnStart').textContent = cont ? 'DEVAM ET' : 'OYNA';
-    $('stSub').textContent = cont ? 'Kaldığın yerden devam et.' : 'Parçaları sürükle, satır ve sütunları patlat!';
+    ovStart.dataset.devam = resume || moves > 0 ? '1' : '';
+    baslangicYazilari();
     ovStart.hidden = false;
     setModal();
     if (SKOR_API) { $('lbStart').hidden = false; tabloCiz(); tabloYukle(false); }
@@ -3388,8 +3778,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     updateDuelBar();
     if (!kind) return;
     noticeEl.innerHTML = kind === 'update'
-      ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0-4.5-4.5M12 14l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>YENİ SÜRÜM VAR · GÜNCELLE'
-      : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" fill-opacity=".25" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="m16 9 5 6m0-6-5 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>SES DURDU · AÇMAK İÇİN DOKUN';
+      ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0-4.5-4.5M12 14l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' + yaz('yeniSurum')
+      : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" fill-opacity=".25" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="m16 9 5 6m0-6-5 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>' + yaz('sesDurdu');
     placeNotice();
   }
   // Tahta ile parça rafı arasındaki boşluğa (yan yana düzende tahtanın üstüne) yerleşir
@@ -3437,7 +3827,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const ICON_MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6z" fill="currentColor" fill-opacity=".22"/></svg>';
   function setModeButton() {
     btnMode.innerHTML = LIGHT ? ICON_MOON : ICON_SUN;
-    const lbl = LIGHT ? 'Karanlık moda geç' : 'Aydınlık moda geç';
+    const lbl = yaz(LIGHT ? 'karanlikModa' : 'aydinlikModa');
     btnMode.setAttribute('aria-label', lbl);
     btnMode.title = lbl;
   }
@@ -3459,14 +3849,18 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
   }
   setModeButton();
-  btnMode.addEventListener('click', () => { applyMode(!LIGHT, true); announce(LIGHT ? 'Aydınlık mod' : 'Karanlık mod'); });
+  btnMode.addEventListener('click', () => { applyMode(!LIGHT, true); announce(yaz(LIGHT ? 'aydinlikMod' : 'karanlikMod')); });
 
+  function sesDugmesi() {
+    btnSound.innerHTML = soundOn ? ICON_ON : ICON_OFF;
+    const lbl = yaz(soundOn ? 'sesiKapat' : 'sesiAc');
+    btnSound.setAttribute('aria-label', lbl);
+    btnSound.title = lbl;
+  }
   function setSound(on, fromUser) {
     soundOn = on;
     store.set(K_SOUND, on);
-    btnSound.innerHTML = on ? ICON_ON : ICON_OFF;
-    btnSound.setAttribute('aria-label', on ? 'Sesi kapat' : 'Sesi aç');
-    btnSound.title = on ? 'Sesi kapat' : 'Sesi aç';
+    sesDugmesi();
     if (on && fromUser) { Sound.unlock(true); Sound.uyandir(); Sound.pick(); }
     if (!on) Sound.pause();
     if (typeof showNotice === 'function') showNotice();
@@ -3478,9 +3872,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   function askConfirm(mode) {
     confirmMode = mode;
     const d = mode === 'duel';
-    $('cfTitle').textContent = d ? 'DÜELLODAN ÇIK?' : 'YENİDEN BAŞLA?';
-    $('cfSub').textContent = d ? 'Düello biter, tek kişilik oyununa dönersin.' : 'Bu oyundaki skorun kaybolacak.';
-    $('btnConfirm').textContent = d ? 'ÇIK' : 'BAŞLA';
+    $('cfTitle').textContent = yaz(d ? 'duellodanCikSoru' : 'yenidenBaslaSoru');
+    $('cfSub').textContent = yaz(d ? 'duelloBiter' : 'skorKaybolur');
+    $('btnConfirm').textContent = yaz(d ? 'cik' : 'yenidenBaslaBtn');
     ovConfirm.hidden = false;
     setModal();
     focusDialog('btnCancel', 'cfCard');
@@ -3520,9 +3914,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const duelPrefs = Object.assign({ n1: '', n2: '', secs: 120 }, store.get(K_DUEL, null) || {});
   let duelFrom = '', duelClock = 0, duelCountT = [], duelNextT = 0, duelBarKey = '';
   const BEST_LABEL = hudBestLabel.innerHTML;
-  const CLOCK_LABEL = '<svg viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:var(--gold);stroke-width:2.6;stroke-linecap:round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.8l2.6 1.6M9.5 3h5"/></svg>SÜRE';
+  const CLOCK_LABEL = () => '<svg viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:var(--gold);stroke-width:2.6;stroke-linecap:round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.8l2.6 1.6M9.5 3h5"/></svg>' + yaz('sureEtiket');
   const CROWN = '<svg viewBox="-11 -9 22 16" aria-hidden="true"><path d="M-9 6L-10 -5L-4 0L0 -8L4 0L10 -5L9 6Z"/></svg>';
-  const upTR = v => v.toLocaleUpperCase('tr-TR');
+  const upTR = v => v.toLocaleUpperCase(DIL === 'en' ? 'en-US' : 'tr-TR'); // i → İ yalnızca Türkçede
   const duelName = t => duel.names[duel.order[t]]; // t. turu oynayan
   function fmtClock(ms) { const v = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0'); }
   const newSeed = () => (Math.random() * 4294967296) >>> 0;
@@ -3580,10 +3974,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     duelPrefs.n2 = n2;
     store.set(K_DUEL, duelPrefs);
     if (gameState === 'play') save(); // tek kişilik oyun kaldığı yerde bekler
-    const names = [upTR(n1) || '1. OYUNCU', upTR(n2) || '2. OYUNCU'];
+    const names = [upTR(n1) || yaz('oyuncuN', 1), upTR(n2) || yaz('oyuncuN', 2)];
     if (names[0] === names[1]) names[1] += ' 2';
     duel = { names, secs: duelPrefs.secs, order: [0, 1], turn: 0, results: [], wins: [0, 0], seed: newSeed(), phase: 'ready', left: duelPrefs.secs * 1000, endsAt: 0 };
-    hudBestLabel.innerHTML = CLOCK_LABEL;
+    hudBestLabel.innerHTML = CLOCK_LABEL();
     btnDuel.hidden = true;
     btnMode.hidden = true; // düelloda başlıktaki oyuncu adına yer kalsın
     bestText = '';
@@ -3608,20 +4002,20 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   function showDuelReady(resume) {
     const t = duel.turn, who = duelName(t), mins = duel.secs / 60;
-    $('dRound').textContent = resume ? 'SÜRE DURDU' : (t + 1) + '. TUR';
-    $('dWho').textContent = 'SIRA: ' + who;
+    $('dRound').textContent = resume ? yaz('sureDurdu') : yaz('tur', t + 1);
+    $('dWho').textContent = yaz('sira', who);
     $('dInfo').textContent = resume
-      ? 'Kalan süre ' + fmtClock(duel.left) + '. Hazır olunca devam et.'
-      : t === 0 ? mins + ' dakikan var. Süre bitince sıra ' + trSuffix(duelName(1), 'loc') + '.'
-      : 'Telefonu ' + trSuffix(who, 'dat') + ' ver. ' + mins + ' dakikan var.';
+      ? yaz('kalanSure', fmtClock(duel.left))
+      : t === 0 ? yaz('ilkTurBilgi', mins, duelName(1))
+      : yaz('ikinciTurBilgi', who, mins);
     $('dTarget').hidden = t === 0;
     if (t === 1) {
       $('dTargetVal').textContent = fmt(duel.results[0].score);
       $('dTargetWho').textContent = duelName(0);
     }
-    $('dStart').textContent = resume ? 'DEVAM ET' : 'BAŞLA';
+    $('dStart').textContent = yaz(resume ? 'devamEt' : 'basla');
     showDuelPanel('ready');
-    announce('Sıra ' + trSuffix(who, 'loc') + '.');
+    announce(yaz('siraDuyuru', who));
   }
 
   // BAŞLA / DEVAM ET: 3-2-1 geri sayım, sonra süre işler
@@ -3636,7 +4030,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       Sound.play('pick', 1 + k * 0.15);
     }, k * 650)));
     duelCountT.push(setTimeout(() => {
-      spawnFloat('BAŞLA!', cx, cy, 'praise', 0, 900);
+      spawnFloat(yaz('baslaFloat'), cx, cy, 'praise', 0, 900);
       Sound.play('clear3');
       duel.phase = 'play';
       gameState = 'play';
@@ -3705,9 +4099,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     updateHint();
     trayDirty = true;
     wake();
-    spawnFloat(reason === 'time' ? 'SÜRE DOLDU!' : 'YER KALMADI!', L.bx + L.bs / 2, L.by + L.bs * 0.42, 'praise', 0, 1500);
+    spawnFloat(yaz(reason === 'time' ? 'sureDoldu' : 'yerKalmadiFloat'), L.bx + L.bs / 2, L.by + L.bs * 0.42, 'praise', 0, 1500);
     Sound.over();
-    announce(duelName(duel.turn) + ': ' + fmt(score) + ' puan.');
+    announce(yaz('puanDuyuru', duelName(duel.turn), fmt(score)));
     duelNextT = setTimeout(() => {
       if (!duel) return;
       gameState = 'over';
@@ -3721,9 +4115,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const win = sc[0] === sc[1] ? -1 : sc[0] > sc[1] ? 0 : 1;
     if (win >= 0) duel.wins[win]++;
     duel.phase = 'result';
-    $('dResBadge').textContent = win < 0 ? 'EŞİTLİK' : 'KAZANAN';
-    $('dResTitle').textContent = win < 0 ? 'BERABERE!' : duel.names[win] + ' KAZANDI!';
-    $('dResSub').textContent = duel.secs / 60 + ' dakikalık düello';
+    $('dResBadge').textContent = yaz(win < 0 ? 'esitlik' : 'kazanan');
+    $('dResTitle').textContent = win < 0 ? yaz('berabere') : yaz('kazandi', duel.names[win]);
+    $('dResSub').textContent = yaz('dakikalikDuello', duel.secs / 60);
     const box = $('dRes');
     box.textContent = '';
     for (let i = 0; i < 2; i++) {
@@ -3738,14 +4132,14 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       sv.textContent = fmt(sc[i]);
       const sd = document.createElement('span');
       sd.className = 'pl-stat';
-      sd.textContent = fmt(st[i].lines) + ' çizgi · kombo ×' + fmt(st[i].combo);
+      sd.textContent = yaz('cizgiKombo', fmt(st[i].lines), fmt(st[i].combo), st[i].lines);
       el.append(nm, sv, sd);
       box.appendChild(el);
     }
-    $('dSeries').textContent = 'SERİ · ' + duel.names[0] + ' ' + duel.wins[0] + ' – ' + duel.wins[1] + ' ' + duel.names[1];
+    $('dSeries').textContent = yaz('seriYazi') + duel.names[0] + ' ' + duel.wins[0] + ' – ' + duel.wins[1] + ' ' + duel.names[1];
     showDuelPanel('result');
     Sound.play('clear5');
-    announce(win < 0 ? 'Berabere.' : duel.names[win] + ' kazandı.');
+    announce(win < 0 ? yaz('berabereDuyuru') : yaz('kazandiDuyuru', duel.names[win]));
   }
 
   function duelRematch() {
@@ -3766,6 +4160,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     RNG = Math.random;
     closeDuelPanel();
     hudBestLabel.innerHTML = BEST_LABEL;
+    dilUygula(hudBestLabel);
     hudBestBox.classList.remove('urgent');
     btnDuel.hidden = false;
     btnMode.hidden = false;
@@ -3787,7 +4182,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       duelBarKey = key;
       duelBar.textContent = '';
       const t1 = document.createElement('span'), t2 = document.createElement('b');
-      t1.textContent = second ? (ahead ? 'GEÇTİN!' : 'HEDEF') : 'SIRADAKİ';
+      t1.textContent = yaz(second ? (ahead ? 'gectin' : 'hedef') : 'siradaki');
       t2.textContent = second ? duelName(0) + ' ' + fmt(target) : duelName(1);
       duelBar.append(t1, t2);
       duelBar.classList.toggle('ahead', ahead);
@@ -3869,9 +4264,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const banli = () => !!oyuncu.ban && Date.parse(oyuncu.ban) > Date.now();
   function banTarih() {
     const t = new Date(oyuncu.ban);
-    return isNaN(t) ? '' : String(t.getDate()).padStart(2, '0') + '.' + String(t.getMonth() + 1).padStart(2, '0') + '.' + t.getFullYear();
+    if (isNaN(t)) return '';
+    if (DIL === 'en') return t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    return String(t.getDate()).padStart(2, '0') + '.' + String(t.getMonth() + 1).padStart(2, '0') + '.' + t.getFullYear();
   }
-  const banYazi = () => 'Skor tablosuna katılımın ' + (banTarih() ? banTarih() + ' tarihine kadar ' : '') + 'engellendi. Oyunu oynamaya devam edebilirsin.';
+  const banYazi = () => yaz('banYazi', banTarih());
   function banAyarla(d) {
     const yeni = d && d.banli ? String(d.ban_bitis || new Date(Date.now() + 30 * 86400000).toISOString()) : '';
     if (yeni === oyuncu.ban) return;
@@ -3883,10 +4280,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   // Takma ad: 2-14 karakter; harf, rakam, boşluk, _ . - (sunucu ayrıca uygunsuz adları reddeder)
   function adDenetle(v) {
     const ad = String(v || '').trim().replace(/\s+/g, ' ');
-    if (!ad) return { hata: 'Bir takma ad yaz.' };
+    if (!ad) return { hata: yaz('adBos') };
     const n = Array.from(ad).length;
-    if (n < 2 || n > 14) return { hata: 'Takma ad 2-14 karakter olmalı.' };
-    if (!/^[\p{L}\p{N} _.\-]+$/u.test(ad) || !/[\p{L}\p{N}]/u.test(ad)) return { hata: 'Yalnızca harf, rakam, boşluk ve _ . - kullanılabilir.' };
+    if (n < 2 || n > 14) return { hata: yaz('adUzunluk') };
+    if (!/^[\p{L}\p{N} _.\-]+$/u.test(ad) || !/[\p{L}\p{N}]/u.test(ad)) return { hata: yaz('adKarakter') };
     return { ad };
   }
 
@@ -4009,7 +4406,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   function kalanYazi() {
     const s = Math.max(0, Math.floor(tabloKalan(Skor.tablo)));
     const g = Math.floor(s / 86400), sa = Math.floor((s % 86400) / 3600), dk = Math.floor((s % 3600) / 60);
-    return 'SIFIRLANMAYA ' + (g ? g + ' GÜN' + (sa ? ' ' + sa + ' SAAT' : '') : sa ? sa + ' SAAT' + (dk ? ' ' + dk + ' DK' : '') : Math.max(1, dk) + ' DK');
+    return yaz('kalan', g, sa, dk);
   }
 
   const SECENEK = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5.5" r="1.9" fill="currentColor"/><circle cx="12" cy="12" r="1.9" fill="currentColor"/><circle cx="12" cy="18.5" r="1.9" fill="currentColor"/></svg>';
@@ -4017,10 +4414,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const r = k.sira | 0, crown = r === 1 ? CROWN : '';
     const ad = upTR(String(k.ad));
     const sec = !ben && typeof k.k === 'string' && /^[0-9a-f]{12}$/.test(k.k)
-      ? '<button class="lb-opt" type="button" data-lb="rapor" data-k="' + k.k + '" data-ad="' + esc(String(k.ad)) + '" aria-label="' + esc(ad) + ': şikayet et ya da engelle" title="Şikayet et / engelle">' + SECENEK + '</button>'
+      ? '<button class="lb-opt" type="button" data-lb="rapor" data-k="' + k.k + '" data-ad="' + esc(String(k.ad)) + '" aria-label="' + esc(yaz('raporAria', ad)) + '" title="' + esc(yaz('raporTitle')) + '">' + SECENEK + '</button>'
       : '<span aria-hidden="true"></span>';
     return '<li class="lb-row' + (r <= 3 ? ' r' + r : '') + (ben ? ' me' : '') + '"><span class="lb-rank">' + r + '</span><span class="lb-name">' + crown
-      + '<span>' + esc(ad) + '</span>' + (ben ? '<em>SEN</em>' : '') + '</span><span class="lb-score">' + fmt(k.puan) + '</span>' + sec + '</li>';
+      + '<span>' + esc(ad) + '</span>' + (ben ? '<em>' + yaz('sen') + '</em>' : '') + '</span><span class="lb-score">' + fmt(k.puan) + '</span>' + sec + '</li>';
   }
 
   // Tabloyu çizer (başlangıç ekranındaki ve ayrı penceredeki)
@@ -4030,32 +4427,33 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     let govde = '';
     const gorunen = gecerli ? t.ilk10.filter(k => k.sen || !engelli(k.k)) : [];
     if (gecerli && t.ilk10.length && !gorunen.length) {
-      govde = '<p class="lb-msg">Engellediğin oyuncular gizlendi.</p>';
+      govde = '<p class="lb-msg">' + yaz('engelliGizlendi') + '</p>';
     } else if (gecerli && t.ilk10.length) {
       govde = '<ol class="lb-list">' + gorunen.map(k => satir(k, !!k.sen)).join('') + '</ol>';
       if (t.ben && t.ben.sira > 10) govde += '<div class="lb-gap" aria-hidden="true">···</div><ol class="lb-list">' + satir(t.ben, true) + '</ol>';
-      if (Skor.durum === 'hata') govde += '<div class="lb-foot"><span>Çevrimdışı: son görülen tablo</span></div>';
+      if (Skor.durum === 'hata') govde += '<div class="lb-foot"><span>' + yaz('cevrimdisiTablo') + '</span></div>';
     } else if (gecerli && Skor.durum === 'tamam') {
-      govde = '<p class="lb-msg">Bu hafta henüz kimse yok.<br><b>İlk sen ol!</b></p>';
+      govde = '<p class="lb-msg">' + yaz('kimseYok') + '</p>';
     } else if (Skor.durum === 'hata') {
-      govde = '<p class="lb-msg">Skor tablosuna bağlanılamadı.<br>İnternet gelince kendiliğinden yenilenir.</p><button class="lb-act" type="button" data-lb="yenile">TEKRAR DENE</button>';
+      govde = '<p class="lb-msg">' + yaz('baglanilamadi') + '</p><button class="lb-act" type="button" data-lb="yenile">' + yaz('tekrarDene') + '</button>';
     } else {
-      govde = '<div class="lb-list" aria-label="Yükleniyor">' + '<div class="lb-skel"></div>'.repeat(5) + '</div>';
+      govde = '<div class="lb-list" aria-label="' + yaz('yukleniyor') + '">' + '<div class="lb-skel"></div>'.repeat(5) + '</div>';
     }
     if (banli()) {
-      govde += '<div class="lb-foot lb-ban" role="note"><span>' + esc(banYazi()).replace(/(\d\d\.\d\d\.\d{4})/, '<b>$1</b>') + '</span></div>';
+      const bt = esc(banTarih()), by = esc(banYazi());
+      govde += '<div class="lb-foot lb-ban" role="note"><span>' + (bt ? by.replace(bt, '<b>' + bt + '</b>') : by) + '</span></div>';
     } else if (!oyuncu.ad) {
       const b = bekleyenAl();
-      govde += '<button class="lb-act" type="button" data-lb="ad">' + (b ? 'ADINI YAZ, ' + fmt(b.puan) + ' PUANLA TABLOYA GİR' : 'ADINI YAZ, TABLOYA GİR') + '</button>';
+      govde += '<button class="lb-act" type="button" data-lb="ad">' + (b ? yaz('adYazPuanla', fmt(b.puan)) : yaz('adYazGir')) + '</button>';
     } else if (!kosulTamam()) {
-      govde += '<button class="lb-act" type="button" data-lb="ad">KULLANIM KOŞULLARINI ONAYLA, TABLODA KAL</button>';
+      govde += '<button class="lb-act" type="button" data-lb="ad">' + yaz('kosulOnaylaKal') + '</button>';
     } else {
-      govde += '<div class="lb-foot"><span>Sen: <b>' + esc(upTR(oyuncu.ad)) + '</b>' + (gecerli && t.toplam ? ' · ' + fmt(t.toplam) + ' oyuncu' : '') + '</span>'
-        + '<button class="lb-link" type="button" data-lb="ad">ADINI DEĞİŞTİR</button></div>';
+      govde += '<div class="lb-foot"><span>' + yaz('senEtiket') + ': <b>' + esc(upTR(oyuncu.ad)) + '</b>' + (gecerli && t.toplam ? ' · ' + yaz('oyuncuSayisi', fmt(t.toplam), t.toplam) : '') + '</span>'
+        + '<button class="lb-link" type="button" data-lb="ad">' + yaz('adiniDegistir') + '</button></div>';
     }
-    if (engelListe.length) govde += '<div class="lb-foot lb-engel"><span>Engellediğin ' + fmt(engelListe.length) + ' oyuncu gösterilmiyor</span><button class="lb-link" type="button" data-lb="engelkaldir">ENGELLERİ KALDIR</button></div>';
-    const html = '<header class="lb-head">' + TROPHY.replace('<svg', '<svg class="lb-trophy"') + '<div class="lb-titles"><h3 class="lb-title">HAFTANIN EN İYİLERİ</h3>'
-      + '<span class="lb-time">' + (gecerli ? kalanYazi() : 'HER PAZARTESİ SIFIRLANIR') + '</span></div></header>' + govde;
+    if (engelListe.length) govde += '<div class="lb-foot lb-engel"><span>' + yaz('engelliSayisi', fmt(engelListe.length), engelListe.length) + '</span><button class="lb-link" type="button" data-lb="engelkaldir">' + yaz('engelleriKaldir') + '</button></div>';
+    const html = '<header class="lb-head">' + TROPHY.replace('<svg', '<svg class="lb-trophy"') + '<div class="lb-titles"><h3 class="lb-title">' + yaz('haftaninEnIyileri') + '</h3>'
+      + '<span class="lb-time">' + (gecerli ? kalanYazi() : yaz('herPazartesi')) + '</span></div></header>' + govde;
     lbEls.forEach(el => { if (el) el.innerHTML = html; });
   }
 
@@ -4067,35 +4465,47 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (!SKOR_API || duel || !r) { goWeek.hidden = true; return; }
     const t = Skor.tablo, ben = tabloKalan(t) > 0 && t.ben;
     let html = '', ne = 'tablo';
-    if (r.durum === 'gidiyor') html = TROPHY + '<span>Skorun tabloya gönderiliyor…</span>';
-    else if (r.durum === 'adsiz') { html = TROPHY + '<span>' + (oyuncu.ad ? 'Koşulları onayla, haftalık tabloya gir' : 'Adını yaz, haftalık tabloya gir') + ' <i>›</i></span>'; ne = 'ad'; }
-    else if (r.durum === 'adhata') { html = TROPHY + '<span>Takma adın uygun bulunmadı. Yeni ad seç <i>›</i></span>'; ne = 'ad'; }
-    else if (r.durum === 'hata') html = TROPHY + '<span>Tabloya bağlanılamadı; internet gelince gönderilir <i>›</i></span>';
-    else if (r.durum === 'ban') html = TROPHY + '<span>Skor tablosuna katılımın engellendi <i>›</i></span>';
-    else if (ben) html = TROPHY + '<span>BU HAFTA</span><b>#' + fmt(ben.sira) + '</b><span>' + (r.yeni ? '<i>Haftalık rekorun!</i>' : 'En iyin ' + fmt(ben.puan)) + ' <i>›</i></span>';
-    else html = TROPHY + '<span>Haftanın en iyilerini gör <i>›</i></span>';
+    if (r.durum === 'gidiyor') html = TROPHY + '<span>' + yaz('gonderiliyor') + '</span>';
+    else if (r.durum === 'adsiz') { html = TROPHY + '<span>' + (oyuncu.ad ? yaz('kosulOnaylaGir') : yaz('adYazHaftalik')) + ' <i>›</i></span>'; ne = 'ad'; }
+    else if (r.durum === 'adhata') { html = TROPHY + '<span>' + yaz('adBulunmadi') + ' <i>›</i></span>'; ne = 'ad'; }
+    else if (r.durum === 'hata') html = TROPHY + '<span>' + yaz('tabloyaBaglanilamadi') + ' <i>›</i></span>';
+    else if (r.durum === 'ban') html = TROPHY + '<span>' + yaz('katilimEngellendi') + ' <i>›</i></span>';
+    else if (ben) html = TROPHY + '<span>' + yaz('buHafta') + '</span><b>#' + fmt(ben.sira) + '</b><span>' + (r.yeni ? '<i>' + yaz('haftalikRekor') + '</i>' : yaz('enIyin', fmt(ben.puan))) + ' <i>›</i></span>';
+    else html = TROPHY + '<span>' + yaz('enIyileriGor') + ' <i>›</i></span>';
     goWeek.innerHTML = html;
     goWeek.dataset.ne = ne;
     goWeek.hidden = false;
   }
 
   // Takma ad penceresi
-  let adSonra = null;
+  let adSonra = null, adMesajFn = null, nkSkipK = 'simdilikGec';
+  // Penceredeki uyarı: dil değişince yeniden yazılabilsin diye yazının kendisi değil, onu üreten işlev saklanır
+  function adHata(fn) {
+    adMesajFn = fn || null;
+    const e = $('nkErr');
+    e.textContent = adMesajFn ? adMesajFn() : '';
+    e.hidden = !adMesajFn;
+  }
+  function adYazilari() {
+    const del = $('nkDel');
+    del.textContent = yaz(del.dataset.emin ? 'eminMisin' : 'adSil');
+    $('nkSkip').textContent = yaz(nkSkipK);
+    if (adMesajFn) adHata(adMesajFn);
+  }
+  // mesaj: gösterilecek uyarı (yazı ya da yazıyı üreten işlev)
   function adSor(sonra, mesaj) {
     if (!SKOR_API) { if (sonra) sonra(); return; }
     adSonra = sonra || null;
     const inp = $('nkName');
     inp.value = oyuncu.ad || '';
-    if (banli()) mesaj = banYazi();
-    $('nkErr').hidden = !mesaj;
-    $('nkErr').textContent = mesaj || '';
+    adHata(banli() ? banYazi : typeof mesaj === 'function' ? mesaj : mesaj ? () => mesaj : null);
     $('nkSave').disabled = banli();
     $('nkKosul').checked = kosulTamam();
     const del = $('nkDel');
     del.hidden = !oyuncu.ad;
-    del.textContent = 'TAKMA ADIMI VE SKORLARIMI SİL';
     delete del.dataset.emin;
-    $('nkSkip').textContent = oyuncu.ad ? 'VAZGEÇ' : 'ŞİMDİLİK GEÇ';
+    nkSkipK = oyuncu.ad ? 'vazgec' : 'simdilikGec';
+    adYazilari();
     ovNick.hidden = false;
     setModal();
     setTimeout(() => { try { inp.focus({ preventScroll: true }); } catch (e) { /* odak yok */ } }, 80);
@@ -4109,8 +4519,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
   async function adKaydet() {
     const r = adDenetle($('nkName').value), err = $('nkErr'), btn = $('nkSave');
-    if (r.hata) { err.textContent = r.hata; err.hidden = false; return; }
-    if (!$('nkKosul').checked) { err.textContent = 'Devam etmek için Kullanım Koşulları\'nı onayla.'; err.hidden = false; return; }
+    if (r.hata) { const v = $('nkName').value; adHata(() => adDenetle(v).hata); return; }
+    if (!$('nkKosul').checked) { adHata(() => yaz('kosulOnaylaHata')); return; }
     btn.disabled = true;
     try {
       // Sunucu adı denetler (uygunsuz ad reddedilir); bağlantı yoksa ad şimdilik kabul edilir
@@ -4118,13 +4528,14 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (!d.ok && d.hata === 'ban') {
         // Engellendi: ad kaydedilmez, KAYDET kapalı kalır; pencere kapatılıp oyuna devam edilir
         banAyarla(d);
-        err.textContent = d.mesaj || banYazi(); err.hidden = false;
-        $('nkSkip').textContent = 'KAPAT';
+        const bm = d.mesaj;
+        adHata(() => sunucuMesaj(bm) || banYazi());
+        nkSkipK = 'kapat'; adYazilari();
         tabloCiz(); oyunSonuCiz();
         return;
       }
-      if (!d.ok && d.hata === 'ad') { err.textContent = d.mesaj || 'Bu takma ad uygun değil.'; err.hidden = false; btn.disabled = false; return; }
-      if (!d.ok && d.hata === 'yavas') { err.textContent = 'Biraz bekle, sonra tekrar dene.'; err.hidden = false; btn.disabled = false; return; }
+      if (!d.ok && d.hata === 'ad') { const am = d.mesaj; adHata(() => sunucuMesaj(am) || yaz('adUygunDegil')); btn.disabled = false; return; }
+      if (!d.ok && d.hata === 'yavas') { adHata(() => yaz('biraz')); btn.disabled = false; return; }
       if (d.ok) tabloAl(d);
     } catch (e) { /* çevrimdışı */ }
     btn.disabled = false;
@@ -4132,7 +4543,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     oyuncu.atla = false;
     oyuncu.kosul = KOSUL_SURUM;
     store.set(K_OYUNCU, oyuncu);
-    announce('Takma adın ' + r.ad + ' olarak kaydedildi.');
+    announce(yaz('adKaydedildi', r.ad));
     if (Skor.sonuc && (Skor.sonuc.durum === 'adsiz' || Skor.sonuc.durum === 'adhata')) Skor.sonuc = { durum: 'gidiyor' };
     tabloCiz();
     oyunSonuCiz();
@@ -4142,16 +4553,16 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
   $('nkSave').addEventListener('click', adKaydet);
   $('nkName').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); adKaydet(); } });
-  $('nkName').addEventListener('input', () => { $('nkErr').hidden = true; });
-  $('nkKosul').addEventListener('change', () => { $('nkErr').hidden = true; });
+  $('nkName').addEventListener('input', () => adHata(null));
+  $('nkKosul').addEventListener('change', () => adHata(null));
   // Skor kayıtlarını silme: iki dokunuşla (yanlışlıkla silinmesin); sonra yeni, bağlantısız bir oyuncu kimliği
   $('nkDel').addEventListener('click', async () => {
     const del = $('nkDel'), err = $('nkErr');
     if (!del.dataset.emin) {
       del.dataset.emin = '1';
-      del.textContent = 'EMİN MİSİN? SİLMEK İÇİN TEKRAR DOKUN';
+      del.textContent = yaz('eminMisin');
       clearTimeout(del._t);
-      del._t = setTimeout(() => { delete del.dataset.emin; del.textContent = 'TAKMA ADIMI VE SKORLARIMI SİL'; }, 5000);
+      del._t = setTimeout(() => { delete del.dataset.emin; del.textContent = yaz('adSil'); }, 5000);
       return;
     }
     del.disabled = true;
@@ -4168,14 +4579,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       Skor.tablo = null;
       Skor.durum = 'yok';
       Skor.sonuc = null;
-      announce('Takma adın ve skor kayıtların silindi.');
+      announce(yaz('adSilindi'));
       adKapat();
       tabloCiz();
       oyunSonuCiz();
       tabloYukle(true);
     } catch (e) {
-      err.textContent = 'Silinemedi: bağlantı yok. İnternet gelince tekrar dene.';
-      err.hidden = false;
+      adHata(() => yaz('silinemedi'));
     }
     del.disabled = false;
   });
@@ -4204,7 +4614,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !ovBoard.hidden && ovRapor.hidden) tabloKapat(); });
   btnBoard.addEventListener('click', tabloAc);
   goWeek.addEventListener('click', () => {
-    if (goWeek.dataset.ne === 'ad') adSor(null, Skor.sonuc && Skor.sonuc.durum === 'adhata' ? Skor.sonuc.mesaj : '');
+    if (goWeek.dataset.ne === 'ad') {
+      const m = Skor.sonuc && Skor.sonuc.durum === 'adhata' ? Skor.sonuc.mesaj : '';
+      adSor(null, m ? () => sunucuMesaj(m) || yaz('adUygunDegil') : null);
+    }
     else tabloAc();
   });
   // Tablodaki düğmeler (her iki kopyada da)
@@ -4214,7 +4627,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (b.dataset.lb === 'ad') adSor();
     else if (b.dataset.lb === 'yenile') tabloYukle(true);
     else if (b.dataset.lb === 'rapor') raporAc(b.dataset.k, b.dataset.ad || '');
-    else if (b.dataset.lb === 'engelkaldir') { engelleriKaldir(); tabloCiz(); announce('Engeller kaldırıldı.'); }
+    else if (b.dataset.lb === 'engelkaldir') { engelleriKaldir(); tabloCiz(); announce(yaz('engellerKaldirildi')); }
   }));
 
   // Şikayet et / engelle penceresi
@@ -4222,12 +4635,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   function raporAc(k, ad) {
     if (!k) return;
     rapor = { k, ad };
-    $('rpAd').textContent = upTR(ad || 'OYUNCU');
+    $('rpAd').textContent = upTR(ad || yaz('oyuncu'));
     const du = $('rpDurum');
     du.hidden = true; du.textContent = '';
     $('rpSikayet').hidden = false; $('rpSikayet').disabled = false;
     $('rpEngel').hidden = false;
-    $('rpKapat').textContent = 'VAZGEÇ';
+    $('rpKapat').textContent = yaz('vazgec');
     ovRapor.hidden = false;
     setModal();
     focusDialog('rpKapat', 'rpCard');
@@ -4249,19 +4662,19 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     } catch (e) { tamam = false; }
     engelle(r.k, r.ad);   // şikayet edilen oyuncu bu cihazda hemen gizlenir
     if (rapor !== r) return;
-    if (tamam) du.textContent = 'Şikayetin alındı, teşekkürler. Ekibimiz 24 saat içinde inceleyecek. Bu oyuncuyu artık görmeyeceksin.';
-    else du.innerHTML = 'Şikayet şu an gönderilemedi; bu oyuncuyu senin için gizledik. <a href="mailto:iletisim@herouygulama.com.tr?subject=' + encodeURIComponent('Hero Block şikayet: ' + r.ad) + '">E-postayla bildir</a>';
+    if (tamam) du.textContent = yaz('sikayetAlindi');
+    else du.innerHTML = esc(yaz('sikayetGonderilemedi')) + ' <a href="mailto:iletisim@herouygulama.com.tr?subject=' + encodeURIComponent(yaz('sikayetKonu', r.ad)) + '">' + esc(yaz('epostaylaBildir')) + '</a>';
     du.hidden = false;
     btn.hidden = true;
     $('rpEngel').hidden = true;
-    $('rpKapat').textContent = 'KAPAT';
-    announce(tamam ? 'Şikayetin alındı.' : 'Şikayet gönderilemedi; oyuncu gizlendi.');
+    $('rpKapat').textContent = yaz('kapat');
+    announce(yaz(tamam ? 'sikayetAlindiKisa' : 'sikayetGitmediKisa'));
     tabloCiz();
   });
   $('rpEngel').addEventListener('click', () => {
     if (!rapor) return;
     engelle(rapor.k, rapor.ad);
-    announce('Oyuncu engellendi; tabloda artık görünmeyecek.');
+    announce(yaz('oyuncuEngellendi'));
     raporKapat();
   });
   $('rpKapat').addEventListener('click', raporKapat);
@@ -4369,11 +4782,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const acik = muzikAyar.acik && muzikAyar.ses > 0;
     muzikBtn.innerHTML = acik ? NOTA_ACIK : NOTA_KAPALI;
     muzikBtn.setAttribute('aria-pressed', String(acik));
-    muzikBtn.setAttribute('aria-label', acik ? 'Menü müziğini kapat' : 'Menü müziğini aç');
+    muzikBtn.setAttribute('aria-label', yaz(acik ? 'muzikKapat' : 'muzikAc'));
     muzikSes.value = String(muzikAyar.ses);
     muzikSes.disabled = !muzikAyar.acik;
-    muzikSes.setAttribute('aria-valuetext', '%' + muzikAyar.ses);
-    muzikDeger.textContent = '%' + muzikAyar.ses;
+    muzikSes.setAttribute('aria-valuetext', yaz('yuzde', muzikAyar.ses));
+    muzikDeger.textContent = yaz('yuzde', muzikAyar.ses);
   }
   function muzikKaydet() {
     store.set(K_MUZIK, muzikAyar);
@@ -4387,7 +4800,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (muzikAyar.acik && !soundOn) setSound(true, true); // müziği açan, sesi de duymak ister
     Sound.unlock(true);
     muzikKaydet();
-    announce(muzikAyar.acik ? 'Menü müziği açık' : 'Menü müziği kapalı');
+    announce(yaz(muzikAyar.acik ? 'muzikAcik' : 'muzikKapali'));
   });
   muzikSes.addEventListener('input', () => {
     muzikAyar.ses = clamp(Math.round(Number(muzikSes.value) || 0), 0, 100);
@@ -4470,6 +4883,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       tabloYukle: () => tabloYukle(true),
       tabloAc: () => tabloAc(),
       adSor: () => adSor(),
+      dil: () => DIL,
+      dilSec: d => dilSec(d, true),
+      temaAdlari: () => THEMES.map((_, i) => temaAdi(i)),
       newGame
     };
   }
@@ -4520,7 +4936,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     // İlk girişte takma ad sorulur (geçilebilir); sonra başlangıç ekranı ve haftalık tablo.
     // Takma adı olup Kullanım Koşulları'nı henüz onaylamamış oyuncudan bir kez onay istenir (onaylamazsa puanı tabloya gitmez)
     if (SKOR_API && !oyuncu.ad && !oyuncu.atla && !banli()) adSor(() => showStart(false));
-    else if (SKOR_API && oyuncu.ad && !kosulTamam() && !banli()) adSor(() => showStart(false), 'Skor tablosu için Kullanım Koşulları eklendi. Tabloda kalmak için okuyup onayla.');
+    else if (SKOR_API && oyuncu.ad && !kosulTamam() && !banli()) adSor(() => showStart(false), () => yaz('kosulEklendi'));
     else showStart(false);
     if (SKOR_API) { bekleyenGonder('acilis'); tabloYukle(true); }
     muzikYukle();

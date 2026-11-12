@@ -18,6 +18,8 @@ ana ekranda görünür. Tablo her pazartesi 00:00'da (Türkiye saati) sıfırlan
 Ses kesilirse "SES DURDU" düğmesi çıkar, dokununca ses geri gelir. Yeni sürüm yayımlanınca açık oyunda
 "YENİ SÜRÜM VAR" düğmesi çıkar; oyun kayıtlı olduğu için güncelleme kaldığın yerden sürer.
 Her 10.000 puanda tema değişir: 17 tema sırayla döner. Puan arttıkça oyun zorlaşır.
+DİL: oyun Türkçe açılır; ana menüdeki (ve ilk açılıştaki takma ad penceresindeki) TÜRKÇE / ENGLISH seçiciyle
+bütün oyun İngilizceye geçer, seçim cihazda hatırlanır.
 Bütün şekiller (3x3 kare, çubuklar, L, T, S/Z, çapraz...) eşit sıklıkta gelir.
 
 **Oyna:** https://heroblock.herouygulama.com.tr/
