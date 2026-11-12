@@ -672,6 +672,35 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   .dil-row button[aria-checked="true"] { color: #241500; background: linear-gradient(180deg, #ffe892, #ffb51f); box-shadow: 0 0 14px rgba(255, 197, 49, .35); }
   .dil-row button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   .nk-dil { margin: 0 0 14px; }
+  /* Çapraz tanıtım (HeroPhysio): ana menüde, ayarların altında cam efektli kompakt kart */
+  .hp-kart {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 9px;
+    row-gap: 6px;
+    margin-top: 12px;
+    padding: 10px 11px 11px 10px;
+    border-radius: 14px;
+    text-align: left;
+    background: linear-gradient(135deg, rgba(130, 180, 255, .13), rgba(43, 227, 255, .05) 48%, rgba(255, 255, 255, .03));
+    border: 1px solid rgba(150, 200, 255, .2);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 8px 22px rgba(0, 0, 0, .22);
+    -webkit-backdrop-filter: blur(12px) saturate(135%);
+    backdrop-filter: blur(12px) saturate(135%);
+  }
+  .hp-simge { grid-row: 1; grid-column: 1; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; color: var(--cyan); background: rgba(43, 227, 255, .09); border: 1px solid rgba(43, 227, 255, .26); }
+  .hp-simge svg { width: 17px; height: 17px; }
+  .hp-baslik { grid-row: 1; grid-column: 2 / 4; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-width: 0; }
+  .hp-ad { font: 400 14px/1 var(--display); letter-spacing: .07em; color: var(--text); }
+  .hp-rozet { padding: 3px 6px 2px; border-radius: 6px; font: 700 9px/1 var(--ui); letter-spacing: .16em; color: rgba(142, 166, 216, .8); border: 1px solid rgba(142, 166, 216, .28); }
+  .hp-aciklama { grid-row: 2; grid-column: 1 / 3; margin: 0; font: 600 13px/1.3 var(--ui); color: var(--muted); }
+  .hp-git { grid-row: 2; grid-column: 3; align-self: end; display: inline-flex; align-items: center; gap: 5px; min-height: 32px; padding: 0 11px; border-radius: 10px; font: 700 13px/1 var(--ui); letter-spacing: .08em; color: #9fe9ff; text-decoration: none; white-space: nowrap; background: rgba(43, 227, 255, .08); border: 1px solid rgba(43, 227, 255, .34); transition: background .2s ease, border-color .2s ease; }
+  .hp-git:hover { background: rgba(43, 227, 255, .15); border-color: rgba(43, 227, 255, .55); }
+  .hp-git:active { transform: translateY(1px); }
+  .hp-git:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .hp-ok { font-size: 15px; transition: transform .2s ease; }
+  .hp-git:hover .hp-ok { transform: translateX(2px); }
   /* ================= Jokerler, ikinci şans ve reklamlar ================= */
   /* Joker sırası: rafın altında üç kompakt düğme. Hak sayısı köşedeki altın rozette; hak bitince rozet "▶ +1" olur (reklam izle) */
   #jokerBar { position: fixed; z-index: 5; left: 0; top: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--jk-gap, 8px); transition: opacity .25s ease; }
@@ -997,6 +1026,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   html.light .dil-row { background: #eef3fb; border-color: rgba(43, 120, 220, .2); }
   html.light .dil-row svg, html.light .dil-row button { color: #5b6b8c; }
   html.light .dil-row button[aria-checked="true"] { color: #241500; }
+  html.light .hp-kart { background: linear-gradient(135deg, rgba(255, 255, 255, .92), rgba(232, 241, 253, .86)); border-color: rgba(43, 120, 220, .18); box-shadow: inset 0 1px 0 #fff, 0 6px 16px rgba(30, 60, 120, .1); }
+  html.light .hp-simge { color: #0a74c9; background: rgba(10, 116, 201, .07); border-color: rgba(10, 116, 201, .24); }
+  html.light .hp-ad { color: #1d2b4d; }
+  html.light .hp-rozet { color: #6b7a99; border-color: rgba(91, 107, 140, .3); }
+  html.light .hp-aciklama { color: #5b6b8c; }
+  html.light .hp-git { color: #0a74c9; background: rgba(10, 116, 201, .06); border-color: rgba(10, 116, 201, .32); }
+  html.light .hp-git:hover { background: rgba(10, 116, 201, .12); }
   html.light .jk { background: linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(232, 240, 252, .96)); color: #1d3a78; border-color: rgba(40, 90, 180, .25); box-shadow: 0 4px 12px rgba(30, 60, 120, .12), inset 0 1px 0 rgba(255, 255, 255, .9); }
   html.light .jk > svg { color: #e39b00; filter: none; }
   html.light .jk:hover, html.light .jk.on { color: #0b2a66; }
@@ -1148,6 +1184,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     </div>
     <div class="dil-row" role="radiogroup" aria-label="Dil" data-ta="dil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9s1.3-6.3 3.8-9z"/></svg><button type="button" role="radio" aria-checked="true" data-dil="tr" lang="tr">TÜRKÇE</button><button type="button" role="radio" aria-checked="false" data-dil="en" lang="en">ENGLISH</button></div>
     <button id="btnReklamGizlilik" class="link-btn" type="button" data-t="reklamGizlilik" hidden>REKLAM GİZLİLİK AYARLARI</button>
+    <aside id="hpKart" class="hp-kart" data-ta="hpAria" aria-label="Şirketimizin diğer uygulaması">
+      <span class="hp-simge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.5h3.6l2.2-5.5 4.2 11 2.4-5.5H21"/></svg></span>
+      <span class="hp-baslik"><span class="hp-ad">HEROPHYSIO</span><span class="hp-rozet" data-t="hpRozet">UYGULAMAMIZ</span></span>
+      <p class="hp-aciklama" data-t="hpAciklama">Yapay zeka destekli yeni nesil fizyoterapi ve egzersiz takip platformu.</p>
+      <a id="hpKesfet" class="hp-git" href="https://herophysio.com" target="_blank" rel="noopener" data-ta="hpKesfetAria" aria-label="HeroPhysio'yu keşfet (tarayıcıda açılır)"><span data-t="hpKesfet">Keşfet</span><span class="hp-ok" aria-hidden="true">→</span></a>
+    </aside>
     <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br><span data-t="kurucu">Kurucu</span>: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></p>
   </div>
   <section id="lbStart" class="lb" data-ta="haftaninEnIyileriAria" aria-label="Haftanın en iyileri" hidden></section>
@@ -1768,6 +1810,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     ikinciSansAlt: 'CLEAR THE BOARD & CONTINUE',
     ikinciSansAria: 'Watch an ad — clear the board and continue',
     reklamGizlilik: 'AD PRIVACY SETTINGS',
+    hpAria: 'Our other app',
+    hpRozet: 'OUR APP',
+    hpAciklama: 'AI-powered, next-generation physiotherapy and exercise tracking platform.',
+    hpKesfet: 'Explore',
+    hpKesfetAria: 'Explore HeroPhysio (opens in your browser)',
     // Koddaki yazılar
     temaYazi: n => 'THEME: ' + n,
     yeniTema: n => 'New theme: ' + n,
