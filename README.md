@@ -24,7 +24,8 @@ JOKERLER: rafın altındaki DÖNDÜR (parçayı saat yönünde 90° çevirir), Y
 patlatır) her yeni oyunda birer hakla başlar. Hiçbir parça sığmadığında işe yarar joker varsa oyun hemen bitmez.
 REKLAMLAR (yalnızca Google Play ve App Store uygulamalarında, Google AdMob): altta şerit reklam, ilk 2 oyundan sonra her
 3. TEKRAR OYNA'da bir oyun arası reklam, isteğe bağlı ödüllü reklamla jokere +1 hak ya da oyun başına bir kez ikinci şans
-(3x3 alan temizlenir). Sitede reklam yoktur: hakkı biten joker sönük kalır, ikinci şans düğmesi çıkmaz.
+(tahta tamamen temizlenir; skor, kombo ve eldeki parçalar aynen kalır). Sitede reklam yoktur: hakkı biten joker sönük kalır,
+ikinci şans düğmesi çıkmaz.
 Bütün şekiller (3x3 kare, çubuklar, L, T, S/Z, çapraz...) eşit sıklıkta gelir.
 
 **Oyna:** https://heroblock.herouygulama.com.tr/

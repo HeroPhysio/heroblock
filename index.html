@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="bk-build" content="c754e91786">
+<meta name="bk-build" content="960cf172a3">
 <meta name="theme-color" content="#050817">
 <meta name="author" content="Baran Yavuz, Hero Uygulama Yazılım Teknolojileri Limited Şirketi">
 <meta name="color-scheme" content="dark">
@@ -1142,7 +1142,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       <div class="stat"><span data-t="enIyiKombo">EN İYİ KOMBO</span><b id="goCombo">×0</b></div>
     </div>
     <button id="goWeek" class="go-week" type="button" hidden></button>
-    <button id="goDevam" class="btn btn-devam" type="button" hidden><span class="bd-ust"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4v16l13-8z" fill="currentColor"/></svg><span data-t="ikinciSans">REKLAM İZLE VE DEVAM ET</span></span><span class="bd-alt" data-t="ikinciSansAlt">3×3 ALAN TEMİZLE</span></button>
+    <button id="goDevam" class="btn btn-devam" type="button" data-ta="ikinciSansAria" aria-label="Reklam izle — tahtayı temizle ve devam et" hidden><span class="bd-ust"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4v16l13-8z" fill="currentColor"/></svg><span data-t="ikinciSans">REKLAM İZLE</span></span><span class="bd-alt" data-t="ikinciSansAlt">TAHTAYI TEMİZLE VE DEVAM ET</span></button>
     <button id="btnAgain" class="btn btn-primary" type="button" data-t="tekrarOyna">TEKRAR OYNA</button>
     <button id="btnDuelOver" class="btn btn-ghost btn-gap btn-ico" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg><span data-t="duelloOyna">İKİ KİŞİLİK OYNA</span></button>
     <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br><span data-t="kurucu">Kurucu</span>: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></p>
@@ -1722,7 +1722,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     jkKazandin: a => a + ' jokerine 1 hak eklendi.',
     jkTikandiDuyuru: 'Yer kalmadı. Joker kullanabilir ya da oyunu bitirebilirsin.',
     devamFloat: 'DEVAM!',
-    ikinciDuyuru: 'İkinci şans: 3×3 alan temizlendi, oyun sürüyor.'
+    ikinciDuyuru: 'İkinci şans: tahta temizlendi. Skorun, kombon ve parçaların aynı; oyun sürüyor.'
   };
   const SOZ_EN = {
     // Sabit yazılar (Türkçeleri HTML'de)
@@ -1780,8 +1780,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     jkDondur: 'ROTATE',
     jkYenile: 'REROLL',
     jkSil: 'ERASE',
-    ikinciSans: 'WATCH AD & CONTINUE',
-    ikinciSansAlt: 'CLEAR A 3×3 AREA',
+    ikinciSans: 'WATCH AD',
+    ikinciSansAlt: 'CLEAR THE BOARD & CONTINUE',
+    ikinciSansAria: 'Watch an ad — clear the board and continue',
     reklamGizlilik: 'AD PRIVACY SETTINGS',
     // Koddaki yazılar
     temaYazi: n => 'THEME: ' + n,
@@ -1925,7 +1926,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     jkKazandin: a => a + ': +1 power-up.',
     jkTikandiDuyuru: 'No room left. Use a power-up or end the game.',
     devamFloat: 'CONTINUE!',
-    ikinciDuyuru: 'Second chance: a 3×3 area was cleared. Keep playing.'
+    ikinciDuyuru: 'Second chance: the board is clear. Your score, combo and pieces are unchanged. Keep playing.'
   };
   function yaz(k, ...a) {
     const v = DIL === 'en' && k in SOZ_EN ? SOZ_EN[k] : k in SOZ_TR ? SOZ_TR[k] : SOZ_EN[k];
@@ -3383,9 +3384,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
        KARE SİL : dokunulan tek dolu kareyi patlatır (puan vermez, komboyu bozmaz)
      Hiçbir parça sığmadığında elde işe yarar ücretsiz joker varsa oyun hemen bitmez: "YER KALMADI · JOKER KULLAN" çıkar, oyuncu
      joker kullanır ya da BİTİR'e dokunur. Düelloda jokerler yok (iki oyuncu aynı koşullarda oynar).
-     İkinci şans: KAYBETTİN ekranında, oyun başına en çok bir kez. Ödüllü reklam izlenince en işe yarar 3x3 alan (raftaki bir
-     parçayı sığdıran, en dolu, eşitse merkeze en yakın) patlatılır ve oyun aynı skorla sürer. Kullanıldığı oyunda düğme bir daha
-     görünmez (haftalık skor tablosu adaleti). */
+     İkinci şans: KAYBETTİN ekranında, oyun başına en çok bir kez ("REKLAM İZLE / TAHTAYI TEMİZLE VE DEVAM ET"; yalnızca ödüllü
+     reklam sunulabilen yerde: uygulama ya da #test). Ödüllü reklam izlenince tahtadaki bütün bloklar patlar; skor, kombo, joker
+     hakları ve raftaki parçalar olduğu gibi kalır, oyun boş tahtada sürer. Kullanıldığı oyunda düğme bir daha görünmez
+     (haftalık skor tablosu adaleti). */
   const JOKER_ADLAR = ['dondur', 'yenile', 'sil'];
   const JK_ETIKET = { dondur: 'jkDondur', yenile: 'jkYenile', sil: 'jkSil' };
   let jk = { dondur: 1, yenile: 1, sil: 1 };
@@ -3674,57 +3676,52 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     });
   });
 
-  // İkinci şansta temizlenecek 3x3 alan: önce raftaki bir parçayı sığdıranlar, sonra en dolu olan, eşitse merkeze en yakın
-  function temizlenecekAlan() {
-    let en = null;
-    const bd = new Int8Array(N * N), orta = (N - 1) / 2;
-    for (let r0 = 0; r0 <= N - 3; r0++) {
-      for (let c0 = 0; c0 <= N - 3; c0++) {
-        bd.set(board);
-        let dolu = 0;
-        for (let r = r0; r < r0 + 3; r++) for (let c = c0; c < c0 + 3; c++) { const i = r * N + c; if (bd[i] >= 0) { dolu++; bd[i] = -1; } }
-        const sigar = tray.some(p => p && fitsOn(bd, p)) ? 1 : 0, uzak = Math.abs(r0 + 1 - orta) + Math.abs(c0 + 1 - orta);
-        if (!en || sigar > en.sigar || (sigar === en.sigar && (dolu > en.dolu || (dolu === en.dolu && uzak < en.uzak)))) en = { r0, c0, sigar, dolu, uzak };
-      }
-    }
-    return en;
-  }
-
-  // Reklam izlendi: 3x3 alan patlar, pencere kapanır, oyun aynı skorla sürer
+  // Reklam izlendi: tahtadaki bütün bloklar patlar. Dalga merkezden kenarlara yayılır, her dolu satır ve sütunda ışın çakar.
+  // Skor, kombo (sayaç ve kalan hamle), joker hakları ve raftaki parçalar olduğu gibi kalır; temizlik puan ya da kombo vermez.
+  // Pencere kapanır ve oyun boş tahtada kaldığı yerden sürer.
   function ikinciSans() {
     if (ikinci || duel || gameState !== 'over') return;
     ikinci = true;
-    const a = temizlenecekAlan(), mr = a.r0 + 1, mc = a.c0 + 1, now = performance.now();
+    const now = performance.now(), orta = (N - 1) / 2;
+    const satirRenk = new Array(N).fill(-1), sutunRenk = new Array(N).fill(-1);  // ışın rengi: o çizgide merkeze en yakın blok
+    const satirUzak = new Array(N).fill(N), sutunUzak = new Array(N).fill(N);
+    let dolu = 0;
+    for (let i = 0; i < N * N; i++) if (board[i] >= 0) dolu++;
+    const kivilcim = dolu > 40 ? 4 : dolu > 24 ? 6 : 8;                          // çok blokta parçacık sınırı aşılmasın
     ovOver.hidden = true;
     goDevam.hidden = true;
     setModal();
     gameState = 'play';
     greyRows = -1;
-    for (let r = a.r0; r < a.r0 + 3; r++) {
-      for (let c = a.c0; c < a.c0 + 3; c++) {
+    for (let r = 0; r < N; r++) {
+      for (let c = 0; c < N; c++) {
         const i = r * N + c, v = board[i];
         if (v < 0) continue;
-        ghosts.push({ r, c, color: v, t0: now + 140 + Math.max(Math.abs(r - mr), Math.abs(c - mc)) * 90, dur: 380, burst: false, s: 1, a: 1, fl: 0, n: 9 });
+        const halka = Math.max(Math.abs(r - orta), Math.abs(c - orta));          // 0,5 … 3,5: merkezden dışa halkalar
+        ghosts.push({ r, c, color: v, t0: now + 110 + halka * 85, dur: 420, burst: false, s: 1, a: 1, fl: 0, n: kivilcim });
         board[i] = -1;
+        if (Math.abs(c - orta) < satirUzak[r]) { satirUzak[r] = Math.abs(c - orta); satirRenk[r] = v; }
+        if (Math.abs(r - orta) < sutunUzak[c]) { sutunUzak[c] = Math.abs(r - orta); sutunRenk[c] = v; }
       }
     }
+    const ox = L.bx + L.bs / 2, oy = L.by + L.bs / 2;
+    for (let r = 0; r < N; r++) if (satirRenk[r] >= 0) beams.push({ type: 'row', i: r, o: ox, t0: now + 80, dur: 560, color: satirRenk[r] });
+    for (let c = 0; c < N; c++) if (sutunRenk[c] >= 0) beams.push({ type: 'col', i: c, o: oy, t0: now + 190, dur: 560, color: sutunRenk[c] });
     pops = [];
     cellsDirty = true;
     fxDirty = true;
     if (!REDUCED && typeof flashEl.animate === 'function') {
-      try { flashEl.animate([{ opacity: 0 }, { opacity: 0.8, offset: 0.2 }, { opacity: 0 }], { duration: 650, easing: 'ease-out' }); } catch (e) { /* desteklenmiyor */ }
+      try { flashEl.animate([{ opacity: 0 }, { opacity: 1, offset: 0.16 }, { opacity: 0 }], { duration: 820, easing: 'ease-out' }); } catch (e) { /* desteklenmiyor */ }
     }
-    setTimeout(() => { Sound.clear(3, 1); shake(9); buzz([18, 40, 22]); }, 140);
-    spawnFloat(yaz('devamFloat'), L.bx + L.bs / 2, L.by + (mr + 0.5) * L.cs, 'praise', 120, 1200);
+    setTimeout(() => { Sound.clear(4, 1); shake(12); buzz([24, 40, 30, 40, 22]); }, 110);
+    spawnFloat(yaz('devamFloat'), ox, oy, 'praise', 200, 1400);
     refreshFits();
-    if (!tray.some(p => p && p.fits)) { tray = generateTray(); refreshFits(); }
     updateHud();
     updateHint();
     jokerSifirla();
     save();
-    animate(900);
+    animate(1200);
     announce(yaz('ikinciDuyuru'));
-    if (!tray.some(p => p && p.fits)) oyunTikandi();
   }
 
   // Reklam yöneticisinin oyuna dokunduğu yerler: pencere durumu, ses, banner yüksekliği, reklamların hazır olması, gizlilik düğmesi
@@ -5814,7 +5811,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       jkAyarla: o => { jk = jokerOku(Object.assign({}, jk, o)); jokerCiz(); },
       tikanma: () => { if (!tray.some(p => p && p.fits)) oyunTikandi(); },
       donus: () => Object.assign({}, DONUS),
-      ikinciAlan: () => { const a = temizlenecekAlan(); return a && { r0: a.r0, c0: a.c0, dolu: a.dolu, sigar: a.sigar }; },
+      kombo: () => ({ combo, comboMoves, maxCombo, linesTotal, moves }),
+      komboAyarla: o => { if ('combo' in o) combo = o.combo; if ('comboMoves' in o) comboMoves = o.comboMoves; if (combo > maxCombo) maxCombo = combo; updateHud(); },
+      efekt: () => ({ ghosts: ghosts.length, beams: beams.length, particles: particles.length }),
       reklam: () => AdManager.durum(),
       reklamSayac: o => AdManager.sayacAyarla(o),
       AdManager
