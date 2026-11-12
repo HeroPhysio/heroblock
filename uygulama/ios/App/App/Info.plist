@@ -27,7 +27,7 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<!-- Google AdMob uygulama kimliği. Şimdilik Google'ın TEST kimliği: yayından önce AdMob hesabındaki iOS uygulama kimliğiyle değiştir. -->
+	<!-- Google AdMob uygulama kimliği: uygulama/admob.config.json › ios.appId'den "npx cap sync" ile yazılır. Burayı değil o dosyayı değiştir. -->
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-3940256099942544~1458002511</string>
 	<!-- Uygulama takip izni (ATT) İSTEMEZ. Bu açıklama yalnızca AdMob eklentisi ATT kütüphanesini bağladığı için var

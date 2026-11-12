@@ -8,12 +8,15 @@ Bu klasör, Hero Block oyununun telefon uygulamasıdır. Oyun aynı oyun; [Capac
 
 ## Klasörler
 
-| Klasör | Ne var |
+| Klasör / dosya | Ne var |
 | --- | --- |
+| `capacitor.config.json` | Uygulama kimliği `tr.com.herouygulama.heroblock`, adı **Hero Block**, web klasörü `www` |
+| `admob.config.json` | **Bütün Google AdMob kimlikleri** (tek dosya; şimdilik Google'ın test kimlikleri) |
 | `www/` | Oyunun uygulama sürümü (yazı tipleri ve menü müziği içinde; internetsiz açılır) |
 | `android/` | Android Studio projesi (Google Play için `.aab`) |
 | `ios/` | Xcode projesi (App Store için) |
 | `assets/` | Simge ve açılış ekranı kaynakları |
+| `scripts/admob-ayarla.mjs` | `npx cap sync` sonrası reklam kimliklerini denetleyip iOS'a ve oyuna dağıtır |
 
 Oyun güncellenince `www/index.html` yenilenir, sonra paketlenir.
 
@@ -40,7 +43,21 @@ GitHub › Settings › Secrets and variables › Actions › **New repository s
 > Yükleme anahtarı, şifreler ve `.p8` dosyası **hiçbir zaman** bu depoya konmaz (`.gitignore` bunları dışarıda tutar).
 > Yükleme anahtarını kaybetmemek için iki ayrı yerde sakla.
 
-## Elle derleme (isteğe bağlı)
+## Android Studio ile AAB (App Bundle)
+
+Bir kez, bu klasörde (`uygulama/`):
+
+```bash
+npm ci                     # Capacitor ve AdMob paketleri (node_modules)
+npx cap sync android       # oyun dosyaları ve reklam ayarları Android projesine kopyalanır
+npx cap open android       # Android Studio açılır (ya da Android Studio'da uygulama/android klasörünü aç)
+```
+
+Android Studio'da **Build › Generate Signed App Bundle or APK › Android App Bundle**'ı seç, yükleme anahtarını (`heroblock-yukleme-anahtari.jks`, takma ad `upload`) ve şifresini gir, **release**'i seç. Çıkan dosya: `android/app/release/app-release.aab`. Her Google Play yüklemesinde `android/app/build.gradle` içindeki sürüm kodu bir öncekinden büyük olmalı (bulut derlemesinde `-PhbSurumKodu=` ile verilir).
+
+Oyun ya da reklam kimlikleri değişince yeniden `npx cap sync android` çalıştır.
+
+## Elle derleme (komut satırı, isteğe bağlı)
 
 ```bash
 npm ci
@@ -68,15 +85,24 @@ Uygulama, `@capacitor-community/admob` (8.3.0) eklentisiyle reklam gösterir. Si
 - **Ödüllü reklam:** isteğe bağlıdır. Hakkı biten jokere +1 hak verir. **KAYBETTİN** penceresindeki **REKLAM İZLE — TAHTAYI TEMİZLE VE DEVAM ET** düğmesiyle oyun başına bir kez ikinci şans verir: tahtadaki bütün bloklar patlar, skor, kombo ve eldeki parçalar aynen kalır.
 - **İzin:** AB, AEA, Birleşik Krallık ve İsviçre'de açılışta Google'ın izin penceresi (UMP) çıkar. Oyuncu kararını menüdeki **REKLAM GİZLİLİK AYARLARI** ile değiştirebilir. iOS takip izni (ATT) sorulmaz.
 
-**Şimdilik Google'ın TEST kimlikleri var** (yalnızca "Test Ad" çıkar). Yayından önce AdMob'da Android ve iOS için birer uygulama ve her birine 3 reklam birimi (ödüllü, geçiş, banner) açılır. Kimlikler şu yerlere yazılır:
+### Kimlikler: tek dosya, `admob.config.json`
 
-| Nerede | Ne |
-| --- | --- |
-| `www/index.html` › `REKLAM_KIMLIK` | 6 reklam birimi kimliği (`ca-app-pub-…/…`), Android ve iOS için ayrı |
-| `android/app/build.gradle` › `admobAppId` | Android uygulama kimliği (`ca-app-pub-…~…`). Derlemede `-PADMOB_APP_ID=…` ya da `ADMOB_APP_ID` ortam değişkeniyle de verilebilir |
-| `ios/App/App/Info.plist` › `GADApplicationIdentifier` | iOS uygulama kimliği (`ca-app-pub-…~…`) |
+Bütün AdMob kimlikleri yalnızca **`uygulama/admob.config.json`** dosyasındadır. **Şimdilik Google'ın resmi TEST kimlikleri var**: yalnızca "Test Ad" etiketli reklam çıkar, AdMob hesabın riske girmez.
 
-Ayrıca sitenin köküne `app-ads.txt` konur (`google.com, pub-…, DIRECT, f08c47fec0942fa0`).
+| Alan | Ne | Biçim |
+| --- | --- | --- |
+| `android.appId`, `ios.appId` | Uygulama kimliği (AdMob › Uygulamalar › uygulama ayarları) | `ca-app-pub-…~…` |
+| `banner`, `interstitial`, `rewarded` | Reklam birimleri: şerit, oyun arası, ödüllü | `ca-app-pub-…/…` |
+| `testDevices` | Gerçek kimliklerle kendi telefonunda denerken o telefonun test cihazı kimliği (Logcat'te `setTestDeviceIds` satırında yazar). O telefonda yalnızca test reklamı çıkar | `["33BE…"]` |
+
+Gerçek kimlikleri yazınca `npx cap sync` çalıştır. Gerisi kendiliğinden olur:
+
+- **Android:** `android/app/build.gradle` uygulama kimliğini her derlemede bu dosyadan okuyup `AndroidManifest.xml`'deki `com.google.android.gms.ads.APPLICATION_ID`'ye yazar.
+- **iOS:** `npx cap sync` sonrasında `scripts/admob-ayarla.mjs` çalışır ve uygulama kimliğini `ios/App/App/Info.plist` › `GADApplicationIdentifier`'a yazar.
+- **Oyun:** reklam birimlerini uygulamanın içine konan kopyadan okur. Dosya yoksa ya da bir kimlik bozuksa o kimlik için Google'ın test kimliğini kullanır.
+- **Denetim:** biçimi yanlış (`~` ile `/` karışmış) ya da başka hesaba ait bir kimlik varsa `npx cap sync` ve Android derlemesi hata verip durur. Elle denetlemek için `npm run admob` çalıştır.
+
+Ayrıca sitenin köküne `app-ads.txt` konur (`google.com, pub-…, DIRECT, f08c47fec0942fa0`; `pub-…` uygulama kimliğindeki numaradır).
 
 ## Mağaza bağlantıları
 

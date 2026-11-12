@@ -1,0 +1,22 @@
+{
+  "_aciklama": [
+    "Google AdMob kimlikleri: gerçek kimlikleri YALNIZCA bu dosyaya yaz.",
+    "Şimdilik Google'ın resmi TEST kimlikleri var: yalnızca 'Test Ad' etiketli reklam çıkar, AdMob hesabın riske girmez.",
+    "appId: AdMob › Uygulamalar › uygulama ayarları (ca-app-pub-…~…). banner / interstitial / rewarded: reklam birimleri (ca-app-pub-…/…).",
+    "testDevices: gerçek kimliklerle kendi telefonunda denerken o telefonun test cihazı kimliği (Android Studio Logcat'te 'setTestDeviceIds' satırında yazar). O telefonda yalnızca test reklamı çıkar.",
+    "Değiştirdikten sonra 'npx cap sync' çalıştır: Android, iOS ve oyunun içindeki kopya kendiliğinden güncellenir."
+  ],
+  "android": {
+    "appId": "ca-app-pub-3940256099942544~3347511713",
+    "banner": "ca-app-pub-3940256099942544/9214589741",
+    "interstitial": "ca-app-pub-3940256099942544/1033173712",
+    "rewarded": "ca-app-pub-3940256099942544/5224354917"
+  },
+  "ios": {
+    "appId": "ca-app-pub-3940256099942544~1458002511",
+    "banner": "ca-app-pub-3940256099942544/2435281174",
+    "interstitial": "ca-app-pub-3940256099942544/4411468910",
+    "rewarded": "ca-app-pub-3940256099942544/1712485313"
+  },
+  "testDevices": []
+}

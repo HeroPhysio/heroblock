@@ -2051,8 +2051,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
        • Web sitesi: reklam yok, hata da yok. Ödüllü reklam isteyen düğmeler gizlenir (odulluVar()), geçiş reklamı atlanır.
        • Test (adreste #test, uygulama dışında): ödüllü reklam 2 saniyelik "REKLAM İZLENİYOR…" penceresiyle taklit edilir ve ödül
          verilir; geçiş reklamı da kısa bir pencereyle. #test&banner ile 50 piksellik deneme banner alanı açılır.
-     Reklam birimi kimlikleri şimdilik Google'ın deneme kimlikleri (yalnızca "Test Ad" çıkar). YAYINDAN ÖNCE AdMob hesabındaki
-     kimliklerle değiştir; uygulama kimlikleri ayrıca Android (app/build.gradle) ve iOS (Info.plist) ayarlarında. */
+     Kimlikler: bütün AdMob kimlikleri uygulama projesindeki TEK dosyada, uygulama/admob.config.json. "npx cap sync" (ve Android
+     derlemesi) onun bir kopyasını uygulamanın içine koyar; oyun reklam birimi kimliklerini açılışta oradan okur. Dosya yoksa ya
+     da bir kimlik biçime uymuyorsa o kimlik için aşağıdaki Google deneme kimliği kullanılır (yalnızca "Test Ad" çıkar). */
+  // Yedek: Google'ın resmi deneme (test) reklam birimleri
   const REKLAM_KIMLIK = {
     android: { odullu: 'ca-app-pub-3940256099942544/5224354917', gecis: 'ca-app-pub-3940256099942544/1033173712', banner: 'ca-app-pub-3940256099942544/9214589741' },
     ios: { odullu: 'ca-app-pub-3940256099942544/1712485313', gecis: 'ca-app-pub-3940256099942544/4411468910', banner: 'ca-app-pub-3940256099942544/2435281174' }
@@ -2069,12 +2071,27 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const sim = !yerel && HASHQ.has('test');
     let ios = false;
     try { ios = yerel && typeof CAP.getPlatform === 'function' && CAP.getPlatform() === 'ios'; } catch (e) { ios = false; }
-    const KIM = REKLAM_KIMLIK[ios ? 'ios' : 'android'];
+    let KIM = Object.assign({}, REKLAM_KIMLIK[ios ? 'ios' : 'android']);
+    let testCihazlari = [];   // bu cihazlarda gerçek kimliklerle de yalnızca test reklamı çıkar (admob.config.json › testDevices)
     const s0 = store.get(K_REKLAM, null) || {};
     const sayac = { biten: Math.max(0, s0.biten | 0), tekrar: Math.max(0, s0.tekrar | 0) };
     const D = { basladi: false, izinSuruyor: false, altyapi: false, hazir: false, odullu: null, gecisHazir: false, gecisYukleniyor: false,
       banner: 0, bannerIstendi: false, acik: false, kapanis: 0, gizlilik: false, izin: null };
     let kanca = {}, istek = null, bannerT = 0, bannerDeneme = 0, izinT = 0, odulT = 0, gecisT = 0;
+    // Reklam kimlikleri: uygulamanın içindeki admob.config.json (uygulama projesindeki ayar dosyasının kopyası).
+    // Okunamazsa ya da bir kimlik biçime uymuyorsa o kimlik için Google'ın deneme kimliği kalır.
+    const ayarSozu = !yerel ? Promise.resolve() : fetch('admob.config.json', { cache: 'no-store' })
+      .then(r => (r.ok ? r.json() : null))
+      .then(a => {
+        const p = a && a[ios ? 'ios' : 'android'];
+        const birim = v => (typeof v === 'string' && /^ca-app-pub-\d{16}\/\d{10}$/.test(v.trim()) ? v.trim() : '');
+        if (p) KIM = { odullu: birim(p.rewarded) || KIM.odullu, gecis: birim(p.interstitial) || KIM.gecis, banner: birim(p.banner) || KIM.banner };
+        if (a && Array.isArray(a.testDevices)) {
+          testCihazlari = a.testDevices.filter(d => typeof d === 'string' && /^[A-Za-z0-9-]{8,64}$/.test(d.trim())).map(d => d.trim()).slice(0, 20);
+        }
+        D.ayar = p ? 'dosya' : 'yedek';
+      })
+      .catch(() => { D.ayar = 'yedek'; });
     const cagir = (ad, ...a) => { try { if (typeof kanca[ad] === 'function') kanca[ad](...a); } catch (e) { /* oyun tarafı */ } };
     const kaydet = () => store.set(K_REKLAM, sayac);
     // Eklenti çağrısı: her zaman bir söz döner, hata fırlatmaz
@@ -2163,7 +2180,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     function altyapi() {
       if (D.altyapi) return;
       D.altyapi = true;
-      yap('initialize', { maxAdContentRating: REKLAM_AYAR.icerik }).catch(() => {}).then(() => {
+      ayarSozu.then(() => {
+        const ilk = { maxAdContentRating: REKLAM_AYAR.icerik };
+        if (testCihazlari.length) { ilk.initializeForTesting = true; ilk.testingDevices = testCihazlari; }
+        return yap('initialize', ilk);
+      }).catch(() => {}).then(() => {
         D.hazir = true;
         if (D.bannerIstendi) bannerGoster();
         odulluYukle();
@@ -2271,7 +2292,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       gizlilikAyarlari,
       baglan(k) { kanca = k || {}; },
       durum: () => ({ yerel, sim, ios, hazir: D.hazir, odulluHazir: !!D.odullu, gecisHazir: D.gecisHazir, banner: D.banner, acik: D.acik,
-        sayac: Object.assign({}, sayac), izin: D.izin, gizlilik: D.gizlilik }),
+        sayac: Object.assign({}, sayac), izin: D.izin, gizlilik: D.gizlilik, ayar: D.ayar || '', kimlik: Object.assign({}, KIM), testCihazi: testCihazlari.length }),
       sayacAyarla(o) { if (o && typeof o === 'object') { if (Number.isFinite(o.biten)) sayac.biten = Math.max(0, o.biten | 0); if (Number.isFinite(o.tekrar)) sayac.tekrar = Math.max(0, o.tekrar | 0); kaydet(); } }
     };
   })();

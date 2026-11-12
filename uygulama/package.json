@@ -5,6 +5,11 @@
   "description": "Hero Block: Google Play ve App Store uygulaması (Capacitor)",
   "scripts": {
     "sync": "cap sync",
+    "android:sync": "cap sync android",
+    "android:ac": "cap open android",
+    "admob": "node scripts/admob-ayarla.mjs",
+    "capacitor:copy:after": "node scripts/admob-ayarla.mjs",
+    "capacitor:sync:after": "node scripts/admob-ayarla.mjs",
     "simgeler": "capacitor-assets generate --iconBackgroundColor '#050817' --iconBackgroundColorDark '#050817' --splashBackgroundColor '#050817' --splashBackgroundColorDark '#050817'"
   },
   "dependencies": {

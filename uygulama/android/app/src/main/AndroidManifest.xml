@@ -28,8 +28,8 @@
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- Google AdMob uygulama kimliği (app/build.gradle'daki ADMOB_APP_ID'den gelir).
-             Şimdilik Google'ın TEST kimliği: yayından önce AdMob hesabındaki Android uygulama kimliğiyle değiştir. -->
+        <!-- Google AdMob uygulama kimliği. Değer uygulama/admob.config.json › android.appId'den derlemede gelir
+             (şimdilik Google'ın TEST kimliği ca-app-pub-3940256099942544~3347511713). Burayı değil o dosyayı değiştir. -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="${admobAppId}" />
