@@ -9,7 +9,9 @@ Puanlama: yerleştirilen her kare 1 puan, patlayan her kare 10 puan;
 aynı hamlede 2 çizgi 2 kat, 3 çizgi 3 kat puan getirir ve hepsi kombo ile çarpılır.
 Art arda her patlatma komboyu 1 artırır; 5 hamle boyunca hiç patlatma yapılmazsa kombo sıfırlanır.
 Tahtayı birkaç çizgiyi ya da tüm tahtayı birden patlatacak şekilde hazırlarsan oyun çoğu zaman o işi bitirecek
-parçayı da verir. Tahtayı tamamen boşaltmak (TERTEMİZ!) 1.000 × kombo bonus getirir.
+parçayı da verir. Tahtayı tamamen boşaltmak (TAM TEMİZLİK!) 1.000 bonus puan getirir.
+Adil zorluk: tahta %65-85 doluyken gelen üç parçanın hiçbiri sığmıyorsa son parça, boşluklara sığan küçük bir parçayla
+değişir (en az bir hamlelik kurtuluş şansı); tahta daha doluysa oyun normal biter.
 Parçalar çeşitli gelir: aynı parça art arda pek gelmez, oyun ilerledikçe (puan ya da hamle) zorlaşır.
 İKİ KİŞİLİK düello: sırayla aynı sürede (1, 2, 3 ya da 5 dakika) oynanır, en yüksek puanı yapan kazanır;
 iki oyuncu da aynı parçalarla başlar. Düello tek kişilik oyunu ve rekoru etkilemez.
@@ -27,6 +29,12 @@ REKLAMLAR (yalnızca Google Play ve App Store uygulamalarında, Google AdMob): a
 (tahta tamamen temizlenir; skor, kombo ve eldeki parçalar aynen kalır). Sitede reklam yoktur: hakkı biten joker sönük kalır,
 ikinci şans düğmesi çıkmaz.
 Bütün şekiller (3x3 kare, çubuklar, L, T, S/Z, çapraz...) eşit sıklıkta gelir.
+GÜNLÜK BULMACA: her gün herkese aynı 12-15 bloklu tahta ve aynı parça sırası (tarih tohum olur). Tahtayı temizle ya da günün
+hedef puanına ulaş; çözülen günler takvimde işaretlenir, art arda çözülen günler seriyi (🔥) oluşturur. Joker ve ikinci şans yok.
+ARKADAŞINA MEYDAN OKU: KAYBETTİN ekranındaki düğme oyunun bağlantısını paylaşır (?challenge=KOD&target=SKOR&name=AD). Bağlantıyı
+açan arkadaş aynı parçaları aynı sırayla alır, üstte HEDEF görünür; hedefi geçince kutlama olur.
+BLOK TEMALARI: NEON (varsayılan), KRİSTAL (ilk TAM TEMİZLİK), AHŞAP (3 günlük bulmaca), HEROPHYSIO (rekor 10.000).
+Günlük bulmaca ve meydan okuma puanı rekoru ve haftalık tabloyu etkilemez.
 
 **Oyna:** https://heroblock.herouygulama.com.tr/
 
