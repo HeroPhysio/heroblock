@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="bk-build" content="2f0b147859">
+<meta name="bk-build" content="0f1cf4d86c">
 <meta name="theme-color" content="#050817">
 <meta name="author" content="Baran Yavuz, Hero Uygulama Yazılım Teknolojileri Limited Şirketi">
 <meta name="color-scheme" content="dark">
@@ -3820,7 +3820,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const mx = bx + bs / 2;
     // Tam temizlikte büyük yazı tahtanın ortasında; kombo ve çizgi puanı onun altında
     const fx = perfect ? mx : mx + (bx + (sc / set.size + 0.5) * cs - mx) * 0.3;
-    const fy = perfect ? by + bs * 0.76 : clamp(by + (sr / set.size + 0.5) * cs, by + bs * 0.25, by + bs * 0.75);
+    const fy = perfect ? by + bs * 0.85 : clamp(by + (sr / set.size + 0.5) * cs, by + bs * 0.25, by + bs * 0.75);
     const items = perfect ? [] : [[pickPraise(lines, combo), 'praise']];
     if (combo >= 2) items.push([yaz('komboX', fmt(combo)), 'combo']);
     items.push(['+' + fmt(pts - bonus), 'pts']);
