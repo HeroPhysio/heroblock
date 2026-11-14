@@ -1040,6 +1040,21 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     .gn-seri.pop b, .gn-gun.yeni, .bt.salla { animation: none; }
   }
 
+  /* ================= Ana menü duyurusu (uzaktan ayar) ================= */
+  .duyuru { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; column-gap: 10px; margin: -6px 0 16px; padding: 10px 34px 10px 10px; border-radius: 14px; text-align: left;
+    background: linear-gradient(135deg, rgba(255, 197, 49, .14), rgba(43, 227, 255, .06) 60%, rgba(255, 255, 255, .03)); border: 1px solid rgba(255, 197, 49, .42); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 8px 20px rgba(0, 0, 0, .22); }
+  .duyuru[hidden] { display: none; }
+  .dy-simge { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 10px; color: #241500; background: linear-gradient(180deg, #ffe892, #ffb51f); box-shadow: 0 0 12px rgba(255, 197, 49, .35); }
+  .dy-simge svg { width: 19px; height: 19px; }
+  .dy-govde { min-width: 0; }
+  .dy-rozet { display: block; font: 700 11px/1.2 var(--ui); letter-spacing: .14em; color: var(--gold); margin: 1px 0 3px; }
+  .dy-metin { margin: 0; font: 600 13.5px/1.4 var(--ui); color: var(--text); overflow-wrap: anywhere; white-space: pre-line; }
+  .dy-git { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; padding: 5px 10px 4px; border-radius: 999px; font: 700 12px/1.1 var(--ui); letter-spacing: .08em; color: #9fe9ff; text-decoration: none; border: 1px solid rgba(95, 240, 255, .4); background: rgba(43, 227, 255, .08); }
+  .dy-git[hidden] { display: none; }
+  .dy-kapat { appearance: none; -webkit-appearance: none; position: absolute; top: 6px; right: 6px; display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer; }
+  .dy-kapat svg { width: 16px; height: 16px; }
+  .dy-kapat:hover { color: var(--text); background: rgba(255, 255, 255, .06); }
+  .dy-kapat:focus-visible, .dy-git:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   /* ================= Aydınlık mod ================= */
   /* Bloklar aynı renklerde kalır; zemin, tahta, raf, üst bilgi ve kartlar açık tonlara geçer */
   html.light { --bg: #e7edf7; --text: #14213d; --muted: #5b6b8c; --line: rgba(40, 90, 180, .25); color-scheme: light; }
@@ -1128,6 +1143,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   html.light .hp-aciklama { color: #5b6b8c; }
   html.light .hp-git { color: #0a74c9; background: rgba(10, 116, 201, .06); border-color: rgba(10, 116, 201, .32); }
   html.light .hp-git:hover { background: rgba(10, 116, 201, .12); }
+  html.light .duyuru { background: linear-gradient(135deg, rgba(255, 236, 190, .9), rgba(232, 241, 253, .86)); border-color: rgba(214, 150, 0, .45); box-shadow: inset 0 1px 0 #fff, 0 6px 16px rgba(30, 60, 120, .1); }
+  html.light .dy-rozet { color: #a86b00; }
+  html.light .dy-metin { color: #1d2b4d; }
+  html.light .dy-git { color: #0a74c9; background: rgba(10, 116, 201, .06); border-color: rgba(10, 116, 201, .32); }
   html.light .jk { background: linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(232, 240, 252, .96)); color: #1d3a78; border-color: rgba(40, 90, 180, .25); box-shadow: 0 4px 12px rgba(30, 60, 120, .12), inset 0 1px 0 rgba(255, 255, 255, .9); }
   html.light .jk > svg { color: #e39b00; filter: none; }
   html.light .jk:hover, html.light .jk.on { color: #0b2a66; }
@@ -1295,6 +1314,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   <div id="stCard" class="card" tabindex="-1">
     <h2 id="stTitle" class="title">HERO BLOCK</h2>
     <p id="stSub" class="sub">Parçaları sürükle, satır ve sütunları patlat!</p>
+    <aside id="duyuru" class="duyuru" role="note" aria-labelledby="dyRozet" hidden>
+      <span class="dy-simge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10v4a1 1 0 0 0 1 1H7l5.5 4V5L7 9H4.5a1 1 0 0 0-1 1z"/><path d="M16 8.5a5 5 0 0 1 0 7M18.6 6a8.6 8.6 0 0 1 0 12"/></svg></span>
+      <div class="dy-govde"><b id="dyRozet" class="dy-rozet" data-t="duyuruRozet">DUYURU</b><p id="dyMetin" class="dy-metin"></p>
+        <a id="dyGit" class="dy-git" href="https://heroblock.herouygulama.com.tr/" target="_blank" rel="noopener" hidden><span data-t="duyuruAc">AYRINTILAR</span> <span aria-hidden="true">→</span></a></div>
+      <button id="dyKapat" class="dy-kapat" type="button" data-ta="duyuruKapatAria" aria-label="Duyuruyu kapat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11m0-11-11 11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+    </aside>
     <button id="btnStart" class="btn btn-primary" type="button">OYNA</button>
     <button id="btnGunluk" class="btn btn-ghost btn-gap btn-ico btn-gunluk" type="button" aria-label="Günlük bulmaca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="m9 15.2 2 2 4-4"/></svg><span data-t="gunlukBtn">GÜNLÜK BULMACA</span><b id="gunlukCip" class="gn-cip" aria-hidden="true" hidden></b></button>
     <button id="btnDuelStart" class="btn btn-ghost btn-gap btn-ico" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg><span data-t="ikiKisilik">İKİ KİŞİLİK</span></button>
@@ -1679,48 +1704,56 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
 
   // [kimlik, desen, ağırlık, kademe (0 küçük, 1 orta, 2 büyük)]
-  // Eşit dağılım: her şekil ailesi (1x1, 2-3-4-5'lik çubuklar, 2x2, 3x3, 2x3, küçük köşe, L, T, S/Z, büyük köşe, çapraz)
-  // toplamda aynı sıklıkta gelir; ailenin ağırlığı (1) yönleri arasında paylaştırılır.
+  // Ağırlıklı parça havuzu: oyunda GELEN parçaların dağılımı dört kategoride hedeflenir:
+  //   Çekirdek %65 : 2x2 kare, 1x2, 1x3, 1x4, küçük L (3 kare), orta L (4 kare), T, S/Z
+  //   Büyük    %22 : 3x3 kare, 1x5, büyük L (5 kare), 2x3
+  //   Tek kare  %8 : 1x1 (art arda iki elde gelmez; tahta %70'ten fazla doluysa kurtarıcıdır)
+  //   Çapraz    %5 : 3'lü çapraz (oyunda 2'li çapraz parça yok)
+  // Aşağıdaki ağırlıklar (ailenin payı yönleri arasında eşit bölünür) el kuralları, yardım parçaları ve çeşitlilik sonrası gerçekleşen
+  // dağılım bu hedefe otursun diye simülasyonla ayarlandı (iyi oyuncu, 150 oyun: %65,3 / %21,8 / %8,0 / %5,0). Tek kare kuralı
+  // 1x1'i seyrelttiği için ağırlığı yüksek; büyük parçalar yardım parçası olarak sık seçildiği için ağırlıkları düşük.
+  //   Çekirdek: 2x2 12, 1x2 9, 1x3 9, 1x4 8, küçük L 9, orta L 8, T 6, S/Z 4 · Büyük: 3x3 6, 1x5 5, büyük L 5, 2x3 2 · 1x1 16 · Çapraz 5,5
+  // Şekillerin sırası ve kimlikleri değişmez: meydan okuma bağlantıları parça sırasını bu sırayla kodlar.
   const SHAPE_DEFS = [
-    ['o1',  ['#'], 1, 0],
-    ['i2h', ['##'], 0.5, 0],
-    ['i2v', ['#', '#'], 0.5, 0],
-    ['i3h', ['###'], 0.5, 1],
-    ['i3v', ['#', '#', '#'], 0.5, 1],
-    ['i4h', ['####'], 0.5, 1],
-    ['i4v', ['#', '#', '#', '#'], 0.5, 1],
-    ['i5h', ['#####'], 0.5, 2],
-    ['i5v', ['#', '#', '#', '#', '#'], 0.5, 2],
-    ['o2',  ['##', '##'], 1, 1],
-    ['o3',  ['###', '###', '###'], 1, 2],
-    ['r23', ['###', '###'], 0.5, 2],
-    ['r32', ['##', '##', '##'], 0.5, 2],
-    ['l3a', ['#.', '##'], 0.25, 0],
-    ['l3b', ['.#', '##'], 0.25, 0],
-    ['l3c', ['##', '#.'], 0.25, 0],
-    ['l3d', ['##', '.#'], 0.25, 0],
-    ['l4a', ['#.', '#.', '##'], 0.125, 1],
-    ['l4b', ['.#', '.#', '##'], 0.125, 1],
-    ['l4c', ['##', '#.', '#.'], 0.125, 1],
-    ['l4d', ['##', '.#', '.#'], 0.125, 1],
-    ['l4e', ['###', '#..'], 0.125, 1],
-    ['l4f', ['###', '..#'], 0.125, 1],
-    ['l4g', ['#..', '###'], 0.125, 1],
-    ['l4h', ['..#', '###'], 0.125, 1],
-    ['t4a', ['###', '.#.'], 0.25, 1],
-    ['t4b', ['.#.', '###'], 0.25, 1],
-    ['t4c', ['#.', '##', '#.'], 0.25, 1],
-    ['t4d', ['.#', '##', '.#'], 0.25, 1],
-    ['s4a', ['.##', '##.'], 0.25, 1],
-    ['s4b', ['##.', '.##'], 0.25, 1],
-    ['s4c', ['#.', '##', '.#'], 0.25, 1],
-    ['s4d', ['.#', '##', '#.'], 0.25, 1],
-    ['l5a', ['#..', '#..', '###'], 0.25, 2],
-    ['l5b', ['..#', '..#', '###'], 0.25, 2],
-    ['l5c', ['###', '#..', '#..'], 0.25, 2],
-    ['l5d', ['###', '..#', '..#'], 0.25, 2],
-    ['d3a', ['..#', '.#.', '#..'], 0.5, 1],
-    ['d3b', ['#..', '.#.', '..#'], 0.5, 1]
+    ['o1',  ['#'], 16, 0],
+    ['i2h', ['##'], 4.5, 0],
+    ['i2v', ['#', '#'], 4.5, 0],
+    ['i3h', ['###'], 4.5, 1],
+    ['i3v', ['#', '#', '#'], 4.5, 1],
+    ['i4h', ['####'], 4, 1],
+    ['i4v', ['#', '#', '#', '#'], 4, 1],
+    ['i5h', ['#####'], 2.5, 2],
+    ['i5v', ['#', '#', '#', '#', '#'], 2.5, 2],
+    ['o2',  ['##', '##'], 12, 1],
+    ['o3',  ['###', '###', '###'], 6, 2],
+    ['r23', ['###', '###'], 1, 2],
+    ['r32', ['##', '##', '##'], 1, 2],
+    ['l3a', ['#.', '##'], 2.25, 0],
+    ['l3b', ['.#', '##'], 2.25, 0],
+    ['l3c', ['##', '#.'], 2.25, 0],
+    ['l3d', ['##', '.#'], 2.25, 0],
+    ['l4a', ['#.', '#.', '##'], 1, 1],
+    ['l4b', ['.#', '.#', '##'], 1, 1],
+    ['l4c', ['##', '#.', '#.'], 1, 1],
+    ['l4d', ['##', '.#', '.#'], 1, 1],
+    ['l4e', ['###', '#..'], 1, 1],
+    ['l4f', ['###', '..#'], 1, 1],
+    ['l4g', ['#..', '###'], 1, 1],
+    ['l4h', ['..#', '###'], 1, 1],
+    ['t4a', ['###', '.#.'], 1.5, 1],
+    ['t4b', ['.#.', '###'], 1.5, 1],
+    ['t4c', ['#.', '##', '#.'], 1.5, 1],
+    ['t4d', ['.#', '##', '.#'], 1.5, 1],
+    ['s4a', ['.##', '##.'], 1, 1],
+    ['s4b', ['##.', '.##'], 1, 1],
+    ['s4c', ['#.', '##', '.#'], 1, 1],
+    ['s4d', ['.#', '##', '#.'], 1, 1],
+    ['l5a', ['#..', '#..', '###'], 1.25, 2],
+    ['l5b', ['..#', '..#', '###'], 1.25, 2],
+    ['l5c', ['###', '#..', '#..'], 1.25, 2],
+    ['l5d', ['###', '..#', '..#'], 1.25, 2],
+    ['d3a', ['..#', '.#.', '#..'], 2.75, 1],
+    ['d3b', ['#..', '.#.', '..#'], 2.75, 1]
   ];
 
   /* ================= Yardımcılar ================= */
@@ -1984,7 +2017,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     kilitliEk: 'kilitli',
     seciliEk: 'seçili',
     yeniBlokTema: a => 'YENİ BLOK TEMASI AÇILDI: ' + a + ' · Ana menüden seçebilirsin',
-    blokTemaDuyuru: a => 'Blok teması: ' + a
+    blokTemaDuyuru: a => 'Blok teması: ' + a,
+    adAnonim: a => 'Takma adın şikayet üzerine ' + a + ' olarak değiştirildi. İstersen yeni bir ad seçebilirsin.'
   };
   const SOZ_EN = {
     // Sabit yazılar (Türkçeleri HTML'de)
@@ -2259,7 +2293,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     kilitliEk: 'locked',
     seciliEk: 'selected',
     yeniBlokTema: a => 'NEW BLOCK SKIN UNLOCKED: ' + a + ' · Pick it in the main menu',
-    blokTemaDuyuru: a => 'Block skin: ' + a
+    blokTemaDuyuru: a => 'Block skin: ' + a,
+    adAnonim: a => 'Your nickname was changed to ' + a + ' after a report. You can pick a new one.',
+    adSikayetli: 'This nickname was removed after a report. Please choose another one.',
+    duyuruRozet: 'NEWS',
+    duyuruAc: 'DETAILS',
+    duyuruKapatAria: 'Close the announcement'
   };
   function yaz(k, ...a) {
     const v = DIL === 'en' && k in SOZ_EN ? SOZ_EN[k] : k in SOZ_TR ? SOZ_TR[k] : SOZ_EN[k];
@@ -2290,6 +2329,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (/karakter olmalı/.test(m)) return SOZ_EN.adUzunluk;
     if (/yalnızca harf/i.test(m)) return SOZ_EN.adKarakter;
     if (/boş olamaz/.test(m)) return SOZ_EN.adBos;
+    if (/şikayet üzerine kaldırıldı/.test(m)) return SOZ_EN.adSikayetli;
     return '';
   }
   function dilDugmeleri() {
@@ -2319,6 +2359,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (!ovOver.hidden) overMetinleri();
       blokSecimCiz();
       gunlukDugmeCiz();
+      duyuruCiz();
       if (!$('reklamAlani').hidden) $('reklamAlani').textContent = yaz('rkAlan');
       // Sayı biçimi ve yazı genişlikleri değişti: üst bilgi, alt bilgi ve REKOR düğmesi yeniden sığdırılır
       scoreText = ''; bestText = '';
@@ -2419,7 +2460,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   };
   // ilkOyunlar: reklamsız ilk oyun sayısı; herKac: sonra kaç TEKRAR OYNA'da bir geçiş reklamı; icerik: reklamların en yüksek içerik
   // derecesi (General / ParentalGuidance / Teen / MatureAudience); süreler milisaniye
-  const REKLAM_AYAR = { ilkOyunlar: 2, herKac: 3, icerik: 'ParentalGuidance', simOdul: 2000, simGecis: 1300, yukleBekle: 8000, odulBekle: 150000, gecisBekle: 90000 };
+  // araSn: iki geçiş reklamı arasında en az kaç saniye (0: sınır yok); herKac 0: geçiş reklamı yok. ilkOyunlar, herKac ve araSn
+  // skor sunucusunun uzaktan ayarıyla (?a=config) değişebilir
+  const REKLAM_AYAR = { ilkOyunlar: 2, herKac: 3, araSn: 0, icerik: 'ParentalGuidance', simOdul: 2000, simGecis: 1300, yukleBekle: 8000, odulBekle: 150000, gecisBekle: 90000 };
+  const REKLAM_VARSAYILAN = { ilkOyunlar: REKLAM_AYAR.ilkOyunlar, herKac: REKLAM_AYAR.herKac, araSn: REKLAM_AYAR.araSn };
   const K_REKLAM = 'blokKahramani.reklam';
   const AdManager = (() => {
     let yerel = false;
@@ -2432,7 +2476,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     let KIM = Object.assign({}, REKLAM_KIMLIK[ios ? 'ios' : 'android']);
     let testCihazlari = [];   // bu cihazlarda gerçek kimliklerle de yalnızca test reklamı çıkar (admob.config.json › testDevices)
     const s0 = store.get(K_REKLAM, null) || {};
-    const sayac = { biten: Math.max(0, s0.biten | 0), tekrar: Math.max(0, s0.tekrar | 0) };
+    const sayac = { biten: Math.max(0, s0.biten | 0), tekrar: Math.max(0, s0.tekrar | 0), son: Number.isFinite(s0.son) && s0.son > 0 ? s0.son : 0 };
     const D = { basladi: false, izinSuruyor: false, altyapi: false, hazir: false, odullu: null, gecisHazir: false, gecisYukleniyor: false,
       banner: 0, bannerIstendi: false, acik: false, kapanis: 0, gizlilik: false, izin: null };
     let kanca = {}, istek = null, bannerT = 0, bannerDeneme = 0, izinT = 0, odulT = 0, gecisT = 0;
@@ -2591,14 +2635,18 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     function showInterstitialAd(onComplete) {
       const son = typeof onComplete === 'function' ? onComplete : () => {};
       if (!(yerel || sim) || D.acik) { son(false); return; }
+      if (!REKLAM_AYAR.herKac) { son(false); return; }                    // uzaktan ayarla kapatıldı
       if (sayac.biten <= REKLAM_AYAR.ilkOyunlar) { son(false); return; } // ilk oyunlar reklamsız
       sayac.tekrar++;
       kaydet();
       if (sayac.tekrar < REKLAM_AYAR.herKac) { son(false); return; }
-      if (sim) { sayac.tekrar = 0; kaydet(); taklit('gecis', REKLAM_AYAR.simGecis, () => son(true)); return; }
+      // Son geçiş reklamından bu yana en az araSn saniye geçmeli; geçmediyse sayaç sıfırlanmaz, süre dolunca ilk TEKRAR OYNA'da çıkar
+      if (REKLAM_AYAR.araSn && Date.now() - sayac.son < REKLAM_AYAR.araSn * 1000) { son(false); return; }
+      if (sim) { sayac.tekrar = 0; sayac.son = Date.now(); kaydet(); taklit('gecis', REKLAM_AYAR.simGecis, () => son(true)); return; }
       // Reklam hazır değilse beklenmez: oyun hemen başlar, sayaç sıfırlanmaz (sonraki TEKRAR OYNA'da yine denenir)
       if (!D.hazir || !D.gecisHazir) { gecisYukle(); son(false); return; }
       sayac.tekrar = 0;
+      sayac.son = Date.now();
       kaydet();
       D.gecisHazir = false;
       tamEkran('gecis', () => yap('showInterstitial'), () => { setTimeout(gecisYukle, 1500); son(true); });
@@ -2651,7 +2699,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       baglan(k) { kanca = k || {}; },
       durum: () => ({ yerel, sim, ios, hazir: D.hazir, odulluHazir: !!D.odullu, gecisHazir: D.gecisHazir, banner: D.banner, acik: D.acik,
         sayac: Object.assign({}, sayac), izin: D.izin, gizlilik: D.gizlilik, ayar: D.ayar || '', kimlik: Object.assign({}, KIM), testCihazi: testCihazlari.length }),
-      sayacAyarla(o) { if (o && typeof o === 'object') { if (Number.isFinite(o.biten)) sayac.biten = Math.max(0, o.biten | 0); if (Number.isFinite(o.tekrar)) sayac.tekrar = Math.max(0, o.tekrar | 0); kaydet(); } }
+      sayacAyarla(o) { if (o && typeof o === 'object') { if (Number.isFinite(o.biten)) sayac.biten = Math.max(0, o.biten | 0); if (Number.isFinite(o.tekrar)) sayac.tekrar = Math.max(0, o.tekrar | 0); if (Number.isFinite(o.son)) sayac.son = Math.max(0, o.son); kaydet(); } }
     };
   })();
 
@@ -2670,6 +2718,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   let best = Math.max(0, Number(store.get(K_BEST, 0)) || 0);
   let bestAtStart = best;
   let combo = 0, comboMoves = 0, maxCombo = 0, linesTotal = 0, moves = 0;
+  // Skor doğrulaması için: aktif oyun süresi (ms; hamleler arası en çok 60 sn sayılır), patlatma hamlesi, tam temizlik.
+  // Eski kayıttan açılan ya da testte değiştirilen oyunda sayaçlar eksiktir (istatTam: false): sunucuya gönderilmez.
+  let oyunSure = 0, sonHamleT = 0, patlatma = 0, temizlik = 0, istatTam = true;
   let gameState = 'play';                          // play | ending | over | wait (düelloda geri sayım/duraklama)
   let duel = null;                                 // iki kişilik düello sürüyorsa durumu
   let kip = 'klasik';                              // klasik (tek kişilik, kayıtlı) | gunluk (günlük bulmaca) | meydan (meydan okuma)
@@ -3349,13 +3400,14 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
        multi    : 1. parça patlatan şekillerden seçilirken, tahta hazırsa aynı anda en çok çizgiyi (2+) patlatanın seçilme olasılığı
        perfect  : tahta hazırsa, tahtayı tamamen boşaltan bir parça verilme olasılığı
      Çeşitlilik (hep aynı parçalar gelmesin):
-       repeat     : son iki üçlüde çıkan her aynı aile için ağırlık çarpanı (aynı üçlüde iki kat sayılır)
+       repeat     : aynı üçlüde ikinci kez çıkan aile için ağırlık çarpanı (iki kat uygulanır: el içi çeşitlilik)
+       repeatPrev : son iki üçlüde çıkan her aynı aile için ağırlık çarpanı (hafif: ağırlık tablosu korunur)
        smallLimit : üçlüde en fazla bir küçük parça (tek kare, ikili, üçlü köşe) kuralının uygulanma olasılığı
                     (tahta yarıdan fazla doluysa uygulanmaz: sıkışık tahtada küçük parçalar can simididir)
        Yardım parçası (patlatan şekil) seçilirken büyük şekiller öne çıkar: hep küçük boşluk dolduranlar gelmez
        (tahta yarıdan fazla doluysa öne çıkarılmaz).
      MODE.combo : patlatma olmadan kaç hamle sonra kombonun bozulduğu */
-  const MODE = { combo: 5, ramp: 800000, curve: 0.6, rampMoves: 600, curveMoves: 0.9, guarantee: [1, 0.4], assist1: [0.8, 0.35], assist2: [0.35, 0.1], keep: [1, 0.35], bigLimit: [1, 0.3], multi: [0.8, 0.6], perfect: [0.9, 0.6], repeat: 0.45, smallLimit: 0.8 };
+  const MODE = { combo: 5, ramp: 800000, curve: 0.6, rampMoves: 600, curveMoves: 0.9, guarantee: [1, 0.4], assist1: [0.8, 0.35], assist2: [0.35, 0.1], keep: [1, 0.35], bigLimit: [1, 0.3], multi: [0.8, 0.6], perfect: [0.9, 0.6], repeat: 0.45, repeatPrev: 0.8, smallLimit: 0.8 };
 
   function difficulty(score, mode, moves) {
     const bySc = mode.ramp > 0 ? Math.pow(Math.min(1, Math.max(0, score / mode.ramp)), mode.curve) : 0;
@@ -3500,14 +3552,33 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     return pool[pool.length - 1];
   }
 
+  /* Parça kategorileri ve el kuralları (her kipte: klasik, düello, günlük bulmaca):
+       • üçlüde en çok 1 çapraz parça;
+       • en çok 2 büyük parça ve en çok bir 3x3 (üç 3x3 ya da üç 1x5 gibi tahtayı bir anda kilitleyen eller gelmez);
+       • tek kare (1x1) bir elde en çok bir kez ve art arda iki elde gelmez. Tahta %70'ten fazla doluysa tek kare kurtarıcıdır:
+         ağırlığı 3 katına çıkar, art arda gelebilir (elde en çok iki). */
+  const EL = { capraz: 1, buyuk: 2, o3: 1, tek: 1, tekKurtar: 2, kurtarma: 0.7, tekKat: 3 };
+  function katOf(s) { return s.kat || (s.kat = s.tier === 2 ? 'buyuk' : s.id === 'o1' ? 'tek' : s.id[0] === 'd' ? 'capraz' : 'cekirdek'); }
+  function elUygun(q, picks, oncekiTek, kurtar) {
+    const k = katOf(q);
+    if (k === 'cekirdek') return true;
+    let n = 0, o3 = 0;
+    for (const p of picks) { if (katOf(p) === k) n++; if (p.id === 'o3') o3++; }
+    if (k === 'capraz') return n < EL.capraz;
+    if (k === 'buyuk') return n < EL.buyuk && (q.id !== 'o3' || o3 < EL.o3);
+    return kurtar ? n < EL.tekKurtar : n < EL.tek && !oncekiTek;
+  }
+
   // need: kombo sürüyorsa kombonun bozulmasına kalan hamle sayısı, yoksa 0; score ve moves: zorluk için;
-  // recent: son çıkan parçaların aileleri (çeşitlilik için)
+  // recent: son çıkan parçaların aileleri (çeşitlilik ve art arda tek kare kuralı için; son üçü bir önceki üçlü)
   function chooseTrayShapes(bd, mode, need, score, moves, recent) {
     const d = difficulty(score || 0, mode, moves || 0), mix = ab => ab[0] + (ab[1] - ab[0]) * d;
-    const seen = {}, rep = mode.repeat == null ? 1 : mode.repeat;
+    const seen = {}, rep = mode.repeat == null ? 1 : mode.repeat, repPrev = mode.repeatPrev == null ? rep : mode.repeatPrev;
     for (const f of recent || []) seen[f] = (seen[f] || 0) + 1;
+    const oncekiTek = (recent || []).slice(-3).indexOf('o1') >= 0;
     let filled = 0;
     for (let i = 0; i < N * N; i++) if (bd[i] >= 0) filled++;
+    const kurtar = filled > N * N * EL.kurtarma; // sıkışık tahta: tek kare kurtarıcı
     const roomy = filled < (N * N) / 2; // tahta ferah mı
     const limitSmall = roomy && RNG() < (mode.smallLimit || 0);
     const fitting = SHAPES.filter(s => fitsOn(bd, s));
@@ -3527,8 +3598,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       picks = [];
       let big = false, nSmall = 0;
       const inTray = {};
-      // Son çıkan aileler ve bu üçlüde zaten olanlar seyrelir; yardım parçasında büyük şekiller öne çıkar
-      const wBase = q => q.weight * Math.pow(rep, (seen[famOf(q)] || 0) + 2 * (inTray[famOf(q)] || 0));
+      // Son çıkan aileler hafifçe, bu üçlüde zaten olanlar güçlü seyrelir; sıkışık tahtada tek kare öne çıkar;
+      // yardım parçasında büyük şekiller öne çıkar
+      const wBase = q => q.weight * (kurtar && q.id === 'o1' ? EL.tekKat : 1) * Math.pow(repPrev, seen[famOf(q)] || 0) * Math.pow(rep, 2 * (inTray[famOf(q)] || 0));
       const wHelp = roomy ? q => wBase(q) * q.cells.length / 3 : wBase;
       for (let i = 0; i < 3; i++) {
         let pool = base, help = false;
@@ -3540,6 +3612,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
         }
         if (big && limitBig) { const rest = pool.filter(q => q.tier < 2); if (rest.length) pool = rest; }
         if (nSmall && limitSmall && attempt < 24) { const rest = pool.filter(q => q.tier > 0); if (rest.length) pool = rest; }
+        // El kuralları: uymayan şekiller havuzdan çıkar (havuz boşalırsa temel havuzdan, o da boşsa bütün şekillerden seçilir)
+        const uyan = q => elUygun(q, picks, oncekiTek, kurtar);
+        let uygun = pool.filter(uyan);
+        if (!uygun.length) { help = false; uygun = base.filter(uyan); }
+        if (!uygun.length) uygun = SHAPES.filter(uyan);
+        pool = uygun;
         const s = pickWeighted(pool, help ? wHelp : wBase);
         if (s.tier === 2) big = true;
         if (s.tier === 0) nSmall++;
@@ -3562,16 +3640,17 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const PERFECT_BONUS = 1000;
   function perfectBonus() { return PERFECT_BONUS; }
 
-  /* Adil zorluk (merhamet): yeni üçlü gelirken tahta %65'ten fazla (en çok %85) doluysa ve üç parçanın hiçbiri tahtaya
-     sığmıyorsa son parça, boşluklara sığan küçük bir parçayla değişir: önce bir çizgi tamamlayanlar, sonra büyükten küçüğe
-     2x2, küçük L, 1x2, 1x1. Böylece oyuncunun en az bir hamlelik kurtuluş şansı olur; rastgele sayı çekilmez (parçanın rengi
-     aynı kalır). Tahta %85'ten fazla doluysa ya da oyuncu bu hamleyi iyi kullanamazsa oyun normal biter (KAYBETTİN).
-     Düello, günlük bulmaca ve meydan okumada uygulanmaz: onların parça dizisi sabittir. */
-  const MERHAMET = { alt: 0.65, ust: 0.85, sekiller: ['o2', 'l3a', 'l3b', 'l3c', 'l3d', 'i2h', 'i2v', 'o1'] };
+  /* Adil zorluk (merhamet): yeni üçlüde en az bir parça tahtadaki boşluklara sığar. Tahta en çok %85 doluyken üç parçanın
+     hiçbiri sığmıyorsa son parça, boşluklara sığan küçük bir parçayla değişir: önce bir çizgi tamamlayanlar, sonra büyükten
+     küçüğe 2x2, küçük L, 1x2, 1x1. Böylece oyuncunun en az bir hamlelik kurtuluş şansı olur; rastgele sayı çekilmez (parçanın
+     rengi aynı kalır). Tahta %85'ten fazla doluysa ya da oyuncu bu hamleyi iyi kullanamazsa oyun normal biter (KAYBETTİN).
+     Düello, günlük bulmaca ve meydan okumada uygulanmaz: onların parça dizisi tohumdan gelir (ağırlık tablosu ve el kuralları
+     onlarda da aynıdır). */
+  const MERHAMET = { ust: 0.85, sekiller: ['o2', 'l3a', 'l3b', 'l3c', 'l3d', 'i2h', 'i2v', 'o1'] };
   function merhamet(bd, pieces) {
     let dolu = 0;
     for (let i = 0; i < N * N; i++) if (bd[i] >= 0) dolu++;
-    if (dolu <= N * N * MERHAMET.alt || dolu > N * N * MERHAMET.ust) return false;
+    if (dolu > N * N * MERHAMET.ust) return false;
     if (pieces.some(p => fitsOn(bd, p.shape))) return false;
     const aday = MERHAMET.sekiller.map(id => SHAPE_BY_ID[id]).filter(s => fitsOn(bd, s));
     if (!aday.length) return false;
@@ -3691,6 +3770,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (ghosts.length) ghosts = ghosts.filter(g => idx.indexOf(g.r * N + g.c) < 0);
     for (const i of idx) { board[i] = p.color; pops.push({ i, t0: now, s: 1, fl: 0 }); }
     moves++;
+    if (oyunSure !== null) oyunSure += Math.min(60000, Math.max(0, now - sonHamleT));
+    sonHamleT = now;
     addScore(p.cells.length); // yerleştirilen her kare +1
     const ln = fullLines();
     if (ln.rows.length || ln.cols.length) {
@@ -3774,11 +3855,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     let pts = clearPoints(set.size, lines, combo);
     if (combo > maxCombo) maxCombo = combo;
     linesTotal += lines;
+    patlatma++;
     let perfect = true; // patlamadan sonra tahta tamamen boş mu?
     for (let i = 0; i < N * N; i++) if (board[i] >= 0 && !set.has(i)) { perfect = false; break; }
     Sound.clear(perfect ? Math.max(lines, 4) : lines, combo); // ses önce, efekt hazırlığı sonra
     const big = perfect || lines >= 3;
     const bonus = perfect ? perfectBonus() : 0;
+    if (perfect) temizlik++;
     pts += bonus;
 
     // Patlama dalgası: parçanın merkezinden çizgi boyunca dışarı doğru
@@ -3830,6 +3913,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     jokerSifirla();
     Skor.sonuc = null;
     if (kip === 'klasik') { skorGonder(score, moves, 'bitti'); store.del(K_SAVE); } // günlük bulmaca ve meydan okuma tek kişilik kaydı silmez
+    if (!ikinci) istatGonder(kip); // ikinci şanstan sonraki bitiş aynı oyun sayılır
     clearTimeout(themeTimer);
     overT0 = performance.now() + 650;
     clearTimeout(overTimer);
@@ -3884,6 +3968,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (bulmaca) board.set(bulmaca.tahta); else board.fill(-1);
     score = 0; displayScore = 0;
     combo = 0; comboMoves = 0; maxCombo = 0; linesTotal = 0; moves = 0;
+    oyunSure = 0; sonHamleT = performance.now(); patlatma = 0; temizlik = 0; istatTam = true; istatGitti = false;
     bestAtStart = best;
     pops = []; ghosts = []; beams = []; particles = []; konfeti = [];
     floatsEl.textContent = '';
@@ -3925,7 +4010,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       v: 2, board: Array.from(board), tray: tray.map(p => (p ? [p.shape.id, p.color] : null)),
       score, combo, comboMoves, maxCombo, linesTotal, moves, bestAtStart,
       jk: { dondur: jk.dondur, yenile: jk.yenile, sil: jk.sil }, ikinci,
-      tohum: oyunTohum, kayit: ucluKayit
+      tohum: oyunTohum, kayit: ucluKayit,
+      sure: oyunSure, pt: patlatma, tt: temizlik, istat: istatTam
     };
   }
 
@@ -3963,6 +4049,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       oyunTohum = Number.isInteger(s.tohum) && s.tohum >= 0 && s.tohum <= 0xffffffff ? s.tohum : yeniTohum();
       ucluKayit = typeof s.kayit === 'string' && s.kayit.length <= KAYIT_MAX * 4 && KAYIT_RE.test(s.kayit) ? s.kayit : null;
       RNG = seededRng(yeniTohum());
+      // Süre ve sayaçlar: eski kayıtta yoksa bu oyunun sayaçları eksik sayılır (puan yine gönderilir, sayaçsız)
+      oyunSure = Number.isFinite(s.sure) && s.sure >= 0 ? s.sure : null;
+      sonHamleT = performance.now();
+      patlatma = Number.isInteger(s.pt) && s.pt >= 0 ? s.pt : 0;
+      temizlik = Number.isInteger(s.tt) && s.tt >= 0 ? s.tt : 0;
+      istatTam = s.istat === true && Number.isInteger(s.pt) && Number.isInteger(s.tt) && patlatma <= moves && maxCombo <= patlatma;
+      istatGitti = false;
       jokerSifirla();
       clearTimeout(themeTimer);
       setTheme(themeFor(score), false);
@@ -4103,11 +4196,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   jokerIpucuBtn.addEventListener('click', () => { if (ipucuEylem) ipucuEylem(); });
 
   let toastT = 0;
-  function toast(msg) {
+  function toast(msg, ms) {
     toastEl.textContent = msg;
     toastEl.classList.add('on');
     clearTimeout(toastT);
-    toastT = setTimeout(() => toastEl.classList.remove('on'), 2800);
+    toastT = setTimeout(() => toastEl.classList.remove('on'), ms || 2800);
   }
 
   // Yeni oyunda, kayıt yüklenince ve oyun biterken: seçili joker ve sıkışma uyarısı temizlenir
@@ -5411,6 +5504,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (confirmMode === 'duel') { exitDuel(); return; }
     if (confirmMode === 'kip') { kipCik(); return; }
     if (gameState === 'play' && score > 0) skorGonder(score, moves, 'yeniden');
+    if (gameState === 'play') istatGonder(kip); // yarıda bırakılan oyun da sayılır
     newGame();
   });
   // TEKRAR OYNA: sırası geldiyse önce geçiş reklamı (ilk 2 oyunda yok, sonra her 3 tıklamada bir), sonra yeni oyun
@@ -5624,6 +5718,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (reason === 'time') duel.left = 0;
     duel.phase = 'over';
     duel.results[duel.turn] = { score, lines: linesTotal, combo: maxCombo };
+    istatGonder('duello');
     gameState = 'ending';
     overT0 = performance.now() + 300;
     updateHud();
@@ -5859,6 +5954,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   function tabloAl(d) {
     banAyarla(d);
+    // Takma ad şikayet üzerine değiştirildiyse (Oyuncu_XXXX) oyun yeni adı benimser; oyuncu istediğinde başka bir ad seçebilir
+    if (typeof d.ad_zorla === 'string' && oyuncu.ad && d.ad_zorla !== oyuncu.ad && adDenetle(d.ad_zorla).ad) {
+      oyuncu.ad = d.ad_zorla;
+      store.set(K_OYUNCU, oyuncu);
+      setTimeout(() => toast(yaz('adAnonim', upTR(oyuncu.ad)), 6500), 400);
+    }
     Skor.tablo = { hafta: d.hafta, bitis: d.bitis, kalan: d.kalan, alindi: Date.now(), ilk10: Array.isArray(d.ilk10) ? d.ilk10 : [], ben: d.ben || null, toplam: d.toplam | 0 };
     Skor.durum = 'tamam';
     store.set(K_TABLO, Skor.tablo);
@@ -5888,9 +5989,17 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
     return b;
   }
+  // Oyunun sunucuya giden bilgileri: süre, tohum ve sayaçlar (yalnızca şu anki oyunun puanıysa ve sayaçlar eksiksizse)
+  function oyunBilgisi(puan, hamle) {
+    if (puan !== score || hamle !== moves) return {};
+    const o = { oyun: oyunTohum >>> 0 };
+    if (oyunSure !== null) o.sure = Math.round(oyunSure);
+    if (istatTam) o.st = { pt: patlatma, cz: linesTotal, kb: maxCombo, tt: temizlik };
+    return o;
+  }
   function bekleyenEkle(puan, hamle) {
     const b = bekleyenAl();
-    if (!b || puan > b.puan) store.set(K_BEKLEYEN, { puan, hamle: Math.max(1, hamle | 0), t: Date.now() });
+    if (!b || puan > b.puan) store.set(K_BEKLEYEN, Object.assign({ puan, hamle: Math.max(1, hamle | 0), t: Date.now() }, oyunBilgisi(puan, hamle)));
   }
 
   function skorGonder(puan, hamle, neden) {
@@ -5918,7 +6027,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (bekle > 0) { clearTimeout(Skor.zaman); Skor.zaman = setTimeout(() => bekleyenGonder(neden), bekle); return; }
     Skor.gonderiyor = true;
     Skor.sonGonderim = Date.now();
-    skorIstek('gonder', { pid: oyuncu.id, ad: oyuncu.ad, puan: b.puan, hamle: b.hamle, v: 1 })
+    const ek = {};
+    if (Number.isInteger(b.sure) && b.sure >= 0) ek.sure = b.sure;
+    if (Number.isInteger(b.oyun) && b.oyun >= 0) ek.oyun = b.oyun;
+    if (b.st && typeof b.st === 'object' && ['pt', 'cz', 'kb', 'tt'].every(k => Number.isInteger(b.st[k]) && b.st[k] >= 0)) ek.st = { pt: b.st.pt, cz: b.st.cz, kb: b.st.kb, tt: b.st.tt };
+    skorIstek('gonder', Object.assign({ pid: oyuncu.id, ad: oyuncu.ad, puan: b.puan, hamle: b.hamle, v: 2 }, ek))
       .then(d => {
         if (d.ok) {
           tabloAl(d);
@@ -5947,6 +6060,97 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
         if (Skor.tekrar) { Skor.tekrar = false; bekleyenGonder('oyun'); }
       });
   }
+  /* Anonim oyun sonu istatistiği (skor tablosuna katılmayanlar dahil): kip, puan, hamle ve süre ile her hafta (pazartesi) yenilenen
+     rastgele bir sayaç kodu gönderilir; takma ad ve oyuncu kimliği gönderilmez. Sunucu günlük toplamları tutar (oyun sayısı,
+     ortalama skor, benzersiz oyuncu tahmini). Oyun başına bir kez; internet yoksa gönderilmez (beklemez). */
+  const K_SAYAC = 'blokKahramani.sayac';
+  let istatGitti = false;
+  function sayacKodu() {
+    const d = new Date(), pzt = new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() + 6) % 7);
+    const hafta = pzt.getFullYear() + '-' + String(pzt.getMonth() + 1).padStart(2, '0') + '-' + String(pzt.getDate()).padStart(2, '0');
+    let v = store.get(K_SAYAC, null);
+    if (!v || v.h !== hafta || typeof v.s !== 'string' || !/^[0-9a-f]{16}$/.test(v.s)) {
+      const b = new Uint8Array(8);
+      try { crypto.getRandomValues(b); } catch (e) { for (let i = 0; i < 8; i++) b[i] = Math.random() * 256 | 0; }
+      v = { h: hafta, s: Array.from(b, x => x.toString(16).padStart(2, '0')).join('') };
+      store.set(K_SAYAC, v);
+    }
+    return v.s;
+  }
+  function istatGonder(k) {
+    if (!SKOR_API || SKOR_GONDERILMEZ || istatGitti || !(moves > 0)) return;
+    istatGitti = true;
+    const g = { s: sayacKodu(), k, puan: Math.max(0, score | 0), hamle: moves };
+    if (oyunSure !== null) g.sure = Math.round(oyunSure);
+    try {
+      fetch(SKOR_API + '?a=oyun', { method: 'POST', body: JSON.stringify(g), headers: { 'Content-Type': 'text/plain;charset=UTF-8' }, keepalive: true, cache: 'no-store' }).catch(() => {});
+    } catch (e) { /* gönderilemedi */ }
+  }
+
+  /* ================= Uzaktan ayar (skor sunucusu ?a=config) =================
+     Açılışta okunur (en çok 6 sn beklenir, oyun beklemez); son alınan ayar cihazda saklanır ve sonraki açılışta hemen uygulanır.
+     Geçiş reklamı sıklığı: ilk kaç oyun reklamsız, kaç TEKRAR OYNA'da bir, iki reklam arasında en az kaç saniye (sınırlar içinde).
+     Duyuru: ana menüde kısa bir kart (Türkçe / İngilizce, isteğe bağlı https bağlantısı ve son gün). Oyuncu kapatınca aynı duyuru
+     ona bir daha gösterilmez; metin değişince (yeni kimlik) yeniden gösterilir. */
+  const K_UZAK = 'blokKahramani.uzakAyar', K_DUYURU_KAPALI = 'blokKahramani.duyuruKapali';
+  let duyuru = null;
+  function duyuruGecerli(d) {
+    if (!d || typeof d !== 'object' || typeof d.id !== 'string' || !/^[0-9a-f]{1,32}$/.test(d.id)) return null;
+    const metin = v => (typeof v === 'string' ? v.trim().slice(0, 300) : '');
+    const tr = metin(d.tr), en = metin(d.en);
+    if (!tr && !en) return null;
+    let baglanti = '';
+    try { if (typeof d.baglanti === 'string' && /^https:\/\//i.test(d.baglanti)) baglanti = new URL(d.baglanti).href; } catch (e) { baglanti = ''; }
+    const bitis = typeof d.bitis === 'string' ? Date.parse(d.bitis) : NaN;
+    if (Number.isFinite(bitis) && bitis <= Date.now()) return null;
+    return { id: d.id, tr: tr || en, en: en || tr, baglanti };
+  }
+  function duyuruCiz() {
+    const el = $('duyuru');
+    if (!el) return;
+    const kapali = store.get(K_DUYURU_KAPALI, []);
+    const d = duyuru && !(Array.isArray(kapali) && kapali.indexOf(duyuru.id) >= 0) ? duyuru : null;
+    el.hidden = !d;
+    if (!d) return;
+    $('dyMetin').textContent = DIL === 'en' ? d.en : d.tr;
+    const git = $('dyGit');
+    git.hidden = !d.baglanti;
+    if (d.baglanti) git.href = d.baglanti;
+  }
+  function uzakAyarUygula(a) {
+    if (!a || typeof a !== 'object') return;
+    const r = a.reklam && typeof a.reklam === 'object' ? a.reklam : {};
+    const sayi = (v, lo, hi, d) => (Number.isInteger(v) ? Math.max(lo, Math.min(hi, v)) : d);
+    REKLAM_AYAR.ilkOyunlar = sayi(r.gecis_ilk, 0, 50, REKLAM_VARSAYILAN.ilkOyunlar);
+    REKLAM_AYAR.herKac = sayi(r.gecis_her, 0, 20, REKLAM_VARSAYILAN.herKac);
+    REKLAM_AYAR.araSn = sayi(r.gecis_ara_sn, 0, 3600, REKLAM_VARSAYILAN.araSn);
+    duyuru = duyuruGecerli(a.duyuru);
+    duyuruCiz();
+  }
+  function uzakAyarYukle() {
+    uzakAyarUygula(store.get(K_UZAK, null));
+    if (!SKOR_API) return;
+    const ctl = typeof AbortController === 'function' ? new AbortController() : null;
+    const t = ctl ? setTimeout(() => ctl.abort(), 6000) : 0;
+    fetch(SKOR_API + '?a=config', ctl ? { signal: ctl.signal } : {})
+      .then(r => (r.ok ? r.json() : null))
+      .then(a => {
+        if (!a || a.ok !== true) return;
+        const sakla = { reklam: a.reklam, duyuru: a.duyuru || null, alindi: Date.now() };
+        store.set(K_UZAK, sakla);
+        uzakAyarUygula(sakla);
+      })
+      .catch(() => {})
+      .then(() => clearTimeout(t));
+  }
+  $('dyKapat').addEventListener('click', () => {
+    if (!duyuru) return;
+    const l = store.get(K_DUYURU_KAPALI, []);
+    store.set(K_DUYURU_KAPALI, (Array.isArray(l) ? l : []).filter(x => x !== duyuru.id).concat(duyuru.id).slice(-20));
+    duyuruCiz();
+    try { $('btnStart').focus({ preventScroll: true }); } catch (e) { /* odak yok */ }
+  });
+
   // Uzun oyunda tablo canlı kalsın: haftalık en iyiyi geçince en çok dakikada bir gönderilir
   function skorCanli() {
     if (SKOR_API && !duel && kip === 'klasik' && oyuncu.ad && kosulTamam() && !banli() && score > haftaEnIyi() && Date.now() - Skor.sonGonderim > 60000) skorGonder(score, moves, 'oyun');
@@ -6431,8 +6635,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
     return d;
   }
-  // Aday üçlü: (gün, sıra, deneme) tohumuyla; en çok bir büyük parça, üç farklı renk
-  function gunlukUcluAday(gun, k, a) {
+  // Aday üçlü: (gün, sıra, deneme) tohumuyla; ağırlık tablosu ve el kuralları (günlük bulmacada en çok bir büyük parça), üç farklı renk.
+  // oncekiTek: önceki üçlüde tek kare vardı (art arda gelmez)
+  function gunlukUcluAday(gun, k, a, oncekiTek) {
     const r = seededRng(fnv1a('heroblock-uclu|' + gun + '|' + k + '|' + a));
     let toplam = 0;
     for (const s of SHAPES) toplam += s.weight;
@@ -6442,10 +6647,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     for (let guard = 0; sekiller.length < 3 && guard < 60; guard++) {
       const s = sec();
       if (s.tier === 2 && buyuk) continue;
+      if (!elUygun(s, sekiller, !!oncekiTek, false)) continue;
       if (s.tier === 2) buyuk = true;
       sekiller.push(s);
     }
-    while (sekiller.length < 3) sekiller.push(SHAPE_BY_ID.o1);
+    while (sekiller.length < 3) sekiller.push(SHAPE_BY_ID.o2);
     const renk = [0, 1, 2, 3, 4];
     for (let i = 4; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const t = renk[i]; renk[i] = renk[j]; renk[j] = t; }
     return sekiller.map((s, i) => [s, renk[i]]);
@@ -6485,11 +6691,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     let durum = { bd: tahta, puan: 0, kmb: 0, kmbH: 0, hamle: 0, temiz: -1 }, tikandi = false;
     for (let k = 0; k < GUNLUK.uclu; k++) {
       let secilen = null, sonuc = null;
+      const oncekiTek = k > 0 && uclular[k - 1].some(x => x[0].id === 'o1');
       for (let a = 0; a < 40 && !tikandi; a++) {
-        const aday = gunlukUcluAday(gun, k, a), d = gunlukUcluOyna(durum, aday.map(x => x[0]));
+        const aday = gunlukUcluAday(gun, k, a, oncekiTek), d = gunlukUcluOyna(durum, aday.map(x => x[0]));
         if (d) { secilen = aday; sonuc = d; break; }
       }
-      if (!secilen) { tikandi = true; secilen = gunlukUcluAday(gun, k, 0); }
+      if (!secilen) { tikandi = true; secilen = gunlukUcluAday(gun, k, 0, oncekiTek); }
       uclular.push(secilen);
       if (sonuc) durum = sonuc;
       ilerleme.push(durum.puan);
@@ -6501,7 +6708,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
   // Günün k. üçlüsü (dizinin sonundan sonra: doğrulanmamış aday)
   function gunlukUcluUret(gun, k) {
-    const b = gunlukBulmaca(gun), u = k < b.uclular.length ? b.uclular[k] : gunlukUcluAday(gun, k, 0);
+    const b = gunlukBulmaca(gun), n = b.uclular.length;
+    const u = k < n ? b.uclular[k] : gunlukUcluAday(gun, k, 0, (k - 1 < n ? b.uclular[k - 1] : gunlukUcluAday(gun, k - 1, 0, false)).some(x => x[0].id === 'o1'));
     return u.map(([s, c]) => makePiece(s, c));
   }
   function gunlukUclu() { return gunluk ? gunlukUcluUret(gunluk.gun, gunluk.sira++) : null; }
@@ -6558,6 +6766,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     clearTimeout(themeTimer);
     const yeni = gunlukIsaretle(gunluk.gun);
     gunluk.sonuc = { basari: true, temiz, skor: score, yeni };
+    istatGonder('gunluk');
     updateHud();
     updateHint();
     trayDirty = true;
@@ -7125,7 +7334,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       setBoard: arr => { board.set(arr); pops = []; refreshFits(); cellsDirty = true; fxDirty = true; wake(); },
       setTray: ids => { tray = ids.map((id, i) => (id ? makePiece(SHAPE_BY_ID[id], i % PALETTE.length) : null)); refreshFits(); },
       check: () => { if (!tray.some(p => p && p.fits)) triggerGameOver(); },
-      setScore: n => { score = n; displayScore = n; if (!duel && kip === 'klasik' && score > best) setBest(score); setScoreText(score); updateHud(); queueTheme(0); },
+      setScore: n => { score = n; displayScore = n; istatTam = false; if (!duel && kip === 'klasik' && score > best) setBest(score); setScoreText(score); updateHud(); queueTheme(0); },
       audio: () => ({ state: Sound.ac ? Sound.ac.state : 'none', session: navigator.audioSession ? navigator.audioSession.type : 'yok',
         uyanik: !!(Sound.uyanik && Sound.uyanik.context === Sound.ac), uyanikTepe: Sound.uyanik ? Math.max.apply(null, Array.from(Sound.uyanik.buffer.getChannelData(0).subarray(0, 4096), Math.abs)) : 0 }),
       // Hazır sesi ana çıkıştan (sıkıştırıcı dahil) çevrimdışı geçirip tepe ve ortalama seviyesini döndürür.
@@ -7184,7 +7393,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       tikanma: () => { if (!tray.some(p => p && p.fits)) oyunTikandi(); },
       donus: () => Object.assign({}, DONUS),
       kombo: () => ({ combo, comboMoves, maxCombo, linesTotal, moves }),
-      komboAyarla: o => { if ('combo' in o) combo = o.combo; if ('comboMoves' in o) comboMoves = o.comboMoves; if (combo > maxCombo) maxCombo = combo; updateHud(); },
+      komboAyarla: o => { istatTam = false; if ('combo' in o) combo = o.combo; if ('comboMoves' in o) comboMoves = o.comboMoves; if (combo > maxCombo) maxCombo = combo; updateHud(); },
       efekt: () => ({ ghosts: ghosts.length, beams: beams.length, particles: particles.length }),
       reklam: () => AdManager.durum(),
       reklamSayac: o => AdManager.sayacAyarla(o),
@@ -7211,6 +7420,15 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       konfeti: () => konfeti.length,
       sprite: () => sprites.map(q => q.size),
       adUygunsuz: ad => adUygunsuz(ad),
+      istat: () => ({ sure: oyunSure, patlatma, temizlik, istatTam, istatGitti, tohum: oyunTohum, moves, linesTotal, maxCombo, sayac: sayacKodu() }),
+      istatAyarla: o => { if (Number.isInteger(o.hamle)) moves = o.hamle; if ('sure' in o) oyunSure = o.sure; if ('tam' in o) istatTam = !!o.tam; },
+      oyunBilgisi: () => oyunBilgisi(score, moves),
+      uzakAyar: () => ({ reklam: { ilkOyunlar: REKLAM_AYAR.ilkOyunlar, herKac: REKLAM_AYAR.herKac, araSn: REKLAM_AYAR.araSn }, duyuru }),
+      uzakAyarUygula: a => uzakAyarUygula(a),
+      uzakAyarYukle: () => uzakAyarYukle(),
+      katOf: id => katOf(SHAPE_BY_ID[id]),
+      // Düello gibi: aynı tohumla boş tahtada üretilen ilk üçlü (RNG sonra eski haline döner)
+      ilkUclu: tohum => { const eski = RNG; RNG = seededRng(tohum >>> 0); const t = chooseTrayShapes(new Int8Array(N * N).fill(-1), MODE, 0, 0, 0, []).map(q => q.id); RNG = eski; return t; },
       AdManager
     };
   }
@@ -7279,6 +7497,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     else if (SKOR_API && oyuncu.ad && !kosulTamam() && !banli()) adSor(() => showStart(false), () => yaz('kosulEklendi'));
     else showStart(false);
     if (SKOR_API) { bekleyenGonder('acilis'); tabloYukle(true); }
+    uzakAyarYukle();
     muzikYukle();
     wake();
   }
