@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="bk-build" content="2a8f8fe218">
+<meta name="bk-build" content="d62395e49c">
 <meta name="theme-color" content="#050817">
 <meta name="author" content="Baran Yavuz, Hero Uygulama Yazılım Teknolojileri Limited Şirketi">
 <meta name="color-scheme" content="dark">
@@ -1668,7 +1668,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
        NEON       : oyunun kendi parlak renkleri (her arka plan teması kendi blok renkleriyle). Varsayılan, hep açık.
        KRİSTAL    : buz mavisi, yontulmuş cam görünümü ve yansımalar. İlk TAM TEMİZLİK'te açılır.
        AHŞAP      : meşe ve ceviz tonlarında, damarlı ahşap. 3 günlük bulmaca tamamlayınca açılır.
-       HEROPHYSIO : medikal turkuaz, lacivert ve beyaz; blokta küçük bir artı işareti. REKOR 10.000 puana ulaşınca açılır.
+       HEROPHYSIO : medikal turkuaz, lacivert ve buz mavisi; blok yüzünde HeroPhysio logosu (beyaz zemin olmadan, bloğun rengine
+                    göre koyu ya da açık tonda; hiçbir blok beyaz değil). REKOR 10.000 puana ulaşınca açılır.
      Seçim ve açılan temalar cihazda saklanır (sunucuya gitmez). */
   const BLOK_SIRA = ['neon', 'kristal', 'ahsap', 'hp'];
   const blokRenk = (hex, stil, ek) => Object.assign(deriveColor(hex), { stil }, ek || {});
@@ -1677,11 +1678,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     kristal: ['#58c4f2', '#a6e4ff', '#4c8df0', '#6fe0d6', '#9db0ff'].map(h => blokRenk(h, 'kristal')),
     ahsap: ['#c4864a', '#8a5a2e', '#d9ab74', '#a66a3a', '#704628'].map(h => blokRenk(h, 'ahsap')),
     hp: [
-      blokRenk('#19bfc2', 'hp'),
-      blokRenk('#24427f', 'hp', { isaret: 'rgba(120,230,235,0.42)' }),
-      blokRenk('#eef6fa', 'hp', { light: '#ffffff', dark: '#a7bccb', face1: '#ffffff', face2: '#dde9f0', rim: 'rgba(36,66,127,.5)', spark: '#ffffff', rgb: '200,236,245', isaret: 'rgba(25,191,194,0.75)', gloss: 0.5 }),
-      blokRenk('#3aa7e4', 'hp'),
-      blokRenk('#0f8892', 'hp')
+      blokRenk('#19bfc2', 'hp', { logo: '#06294a', logoA: 0.84 }),
+      blokRenk('#24427f', 'hp', { isaret: 'rgba(120,230,235,0.42)', logo: '#c9f6ff', logoA: 0.9 }),
+      blokRenk('#a8dde8', 'hp', { light: '#e3f7fb', dark: '#6aa3b7', face1: '#cdeff5', face2: '#9fd5e2', rim: 'rgba(36,66,127,.42)', spark: '#ffffff', rgb: '168,221,232', isaret: 'rgba(25,191,194,0.75)', gloss: 0.4, logo: 'asil', logoA: 0.96 }),
+      blokRenk('#3aa7e4', 'hp', { logo: '#06213f', logoA: 0.8 }),
+      blokRenk('#0f8892', 'hp', { logo: '#e6fdff', logoA: 0.9 })
     ]
   };
 
@@ -2951,6 +2952,47 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
 
   /* ================= Önceden çizilen grafikler ================= */
+  /* HeroPhysio logosu (blok teması için): ana menüdeki HeroPhysio kartındaki saydam görselden alınır; beyaz zemin eklenmez.
+     Her blok renginde tek renge boyanır (koyu blokta açık, açık blokta koyu); beyaz blokta logonun kendi renkleri kullanılır.
+     Görsel yüklenmeden çizilen bloklarda artı işareti görünür; yüklenince bloklar ve menüdeki önizlemeler yeniden çizilir. */
+  const HP_LOGO = { img: null, kutu: [4, 17, 151, 126], boyali: new Map() };   // kutu: logonun görseldeki dolu alanı (x, y, en, boy)
+  (function () {
+    const kaynak = document.querySelector('.hp-logo');
+    const src = kaynak && kaynak.getAttribute('src');
+    if (!src) return;
+    const im = new Image();
+    im.onload = () => {
+      HP_LOGO.img = im;
+      HP_LOGO.boyali.clear();
+      if (blokTema === 'hp' && sprites.length) {
+        buildSprites();
+        if (drag) prepareDragEl(drag.piece);
+        cellsDirty = true; trayDirty = true; fxDirty = true; previewKey = ''; previewDirty = true;
+        wake();
+      }
+      blokOnizlemeleri();
+    };
+    im.src = src;
+  })();
+  // Logonun tek renge boyanmış hâli (saydamlığı korunur); renk başına bir kez hazırlanır
+  function hpLogo(renk) {
+    const im = HP_LOGO.img;
+    if (!im) return null;
+    if (renk === 'asil') return im;
+    let cv = HP_LOGO.boyali.get(renk);
+    if (!cv) {
+      cv = document.createElement('canvas');
+      cv.width = im.naturalWidth; cv.height = im.naturalHeight;
+      const g = cv.getContext('2d');
+      g.drawImage(im, 0, 0);
+      g.globalCompositeOperation = 'source-in';
+      g.fillStyle = renk;
+      g.fillRect(0, 0, cv.width, cv.height);
+      HP_LOGO.boyali.set(renk, cv);
+    }
+    return cv;
+  }
+
   // Blok temalarının çizimleri: (g, renk, x, y, kenar, köşe yarıçapı, kare boyu, piksel oranı)
   const BLOK_CIZ = {
     // Kristal: soğuk parıltı, dört yontulmuş yüz (mücevher kesimi), buzlu iç yüz, çapraz cam yansımaları ve parıltı yıldızı
@@ -3062,10 +3104,22 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       gr = g.createLinearGradient(0, fy, 0, fy + fs);
       gr.addColorStop(0, col.face1); gr.addColorStop(1, col.face2);
       g.fillStyle = gr; rr(g, fx, fy, fs, fs, r); g.fill();
-      const cx = fx + fs / 2, cy = fy + fs / 2, kol = fs * 0.4, kal = fs * 0.14;
-      g.fillStyle = col.isaret || 'rgba(255,255,255,0.4)';
-      rr(g, cx - kal / 2, cy - kol / 2, kal, kol, kal * 0.3); g.fill();
-      rr(g, cx - kol / 2, cy - kal / 2, kol, kal, kal * 0.3); g.fill();
+      const cx = fx + fs / 2, cy = fy + fs / 2, logo = hpLogo(col.logo || '#06294a');
+      if (logo) {
+        // HeroPhysio logosu: yüzün ortasında, beyaz zemin olmadan (logonun dolu alanı yüzün %90'ı genişliğinde)
+        const [kx, ky, kw, kh] = HP_LOGO.kutu, w = fs * 0.9, h = w * kh / kw;
+        g.save();
+        g.globalAlpha = col.logoA == null ? 0.85 : col.logoA;
+        g.imageSmoothingEnabled = true;
+        g.imageSmoothingQuality = 'high';
+        g.drawImage(logo, kx, ky, kw, kh, cx - w / 2, cy - h / 2 + fs * 0.02, w, h);
+        g.restore();
+      } else {
+        const kol = fs * 0.4, kal = fs * 0.14;
+        g.fillStyle = col.isaret || 'rgba(255,255,255,0.4)';
+        rr(g, cx - kal / 2, cy - kol / 2, kal, kol, kal * 0.3); g.fill();
+        rr(g, cx - kol / 2, cy - kal / 2, kol, kal, kal * 0.3); g.fill();
+      }
       gr = g.createLinearGradient(0, fy, 0, fy + fs * 0.45);
       gr.addColorStop(0, 'rgba(255,255,255,' + (col.gloss == null ? 0.3 : col.gloss) + ')');
       gr.addColorStop(1, 'rgba(255,255,255,0)');
@@ -7443,6 +7497,33 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       uzakAyarUygula: a => uzakAyarUygula(a),
       uzakAyarYukle: () => uzakAyarYukle(),
       katOf: id => katOf(SHAPE_BY_ID[id]),
+      hpLogo: () => ({ yuklendi: !!HP_LOGO.img, boyali: HP_LOGO.boyali.size, renkler: (BLOK_PALET.hp || []).map(c => [c.logo, c.logoA]) }),
+      // Her HeroPhysio rengi için logolu blok resmi, logosuz (görünmez artı) resimle karşılaştırılır: logonun değiştirdiği
+      // piksellerin sınır kutusu bulunur. Logonun arkasında zemin olsaydı kutunun neredeyse tamamı değişirdi (dolu ≈ 1).
+      hpLogoDene: () => {
+        const img = HP_LOGO.img;
+        if (!img) return null;
+        const cs = 64, pad = 0;
+        return (BLOK_PALET.hp || []).map(col => {
+          const a = spriteCiz(col, cs, pad);
+          HP_LOGO.img = null;
+          const b = spriteCiz(Object.assign({}, col, { isaret: 'rgba(0,0,0,0)' }), cs, pad);
+          HP_LOGO.img = img;
+          const w = a.cv.width, h = a.cv.height;
+          const da = a.cv.getContext('2d').getImageData(0, 0, w, h).data, db = b.cv.getContext('2d').getImageData(0, 0, w, h).data;
+          let n = 0, x0 = w, y0 = h, x1 = -1, y1 = -1;
+          for (let i = 0; i < w * h; i++) {
+            const j = i * 4;
+            if (Math.abs(da[j] - db[j]) + Math.abs(da[j + 1] - db[j + 1]) + Math.abs(da[j + 2] - db[j + 2]) + Math.abs(da[j + 3] - db[j + 3]) > 6) {
+              n++; const x = i % w, y = (i / w) | 0;
+              if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+            }
+          }
+          freeCanvas(a.cv); freeCanvas(b.cv);
+          const kutu = n ? (x1 - x0 + 1) * (y1 - y0 + 1) : 0;
+          return { degisen: +(n / (w * h)).toFixed(3), dolu: kutu ? +(n / kutu).toFixed(3) : 0, kutu: [x0 / w, y0 / h, (x1 + 1) / w, (y1 + 1) / h].map(v => +v.toFixed(3)) };
+        });
+      },
       // Düello gibi: aynı tohumla boş tahtada üretilen ilk üçlü (RNG sonra eski haline döner)
       ilkUclu: tohum => { const eski = RNG; RNG = seededRng(tohum >>> 0); const t = chooseTrayShapes(new Int8Array(N * N).fill(-1), MODE, 0, 0, 0, []).map(q => q.id); RNG = eski; return t; },
       AdManager

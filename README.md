@@ -36,7 +36,7 @@ GÜNLÜK BULMACA: her gün herkese aynı 12-15 bloklu tahta ve aynı parça sır
 hedef puanına ulaş; çözülen günler takvimde işaretlenir, art arda çözülen günler seriyi (🔥) oluşturur. Joker ve ikinci şans yok.
 ARKADAŞINA MEYDAN OKU: KAYBETTİN ekranındaki düğme oyunun bağlantısını paylaşır (?challenge=KOD&target=SKOR&name=AD). Bağlantıyı
 açan arkadaş aynı parçaları aynı sırayla alır, üstte HEDEF görünür; hedefi geçince kutlama olur.
-BLOK TEMALARI: NEON (varsayılan), KRİSTAL (ilk TAM TEMİZLİK), AHŞAP (3 günlük bulmaca), HEROPHYSIO (rekor 10.000).
+BLOK TEMALARI: NEON (varsayılan), KRİSTAL (ilk TAM TEMİZLİK), AHŞAP (3 günlük bulmaca), HEROPHYSIO (rekor 10.000; bloklarda zeminsiz HeroPhysio logosu).
 Günlük bulmaca ve meydan okuma puanı rekoru ve haftalık tabloyu etkilemez.
 
 **Oyna:** https://heroblock.herouygulama.com.tr/
