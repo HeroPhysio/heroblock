@@ -76,9 +76,9 @@ keyAlias=upload
 keyPassword=ŞİFRE
 ```
 
-## Paylaşım (Arkadaşına meydan oku)
+## Paylaşım (Arkadaşına meydan oku, Arkadaşınla düello)
 
-**KAYBETTİN** ekranındaki **ARKADAŞINA MEYDAN OKU** düğmesi, uygulamada `@capacitor/share` (8.0.3) eklentisiyle telefonun paylaşım menüsünü açar (eklenti yoksa bağlantı panoya kopyalanır). Paylaşılan bağlantı oyunun sitesidir: `https://heroblock.herouygulama.com.tr/?challenge=KOD&target=SKOR&name=AD`. Bağlantı şimdilik tarayıcıda, sitede açılır; telefonda uygulama yüklüyse doğrudan uygulamada açılması için Android App Links (sitede `/.well-known/assetlinks.json`, Play Console › Uygulama bütünlüğü › Uygulama imzalama anahtarı sertifikasının SHA-256 parmak izi) ve iOS Universal Links ayrıca kurulmalıdır.
+**KAYBETTİN** ekranındaki **ARKADAŞINA MEYDAN OKU** düğmesi ile düellodaki **BAĞLANTIYI GÖNDER** ve **SONUCU GÖNDER** düğmeleri, uygulamada `@capacitor/share` (8.0.3) eklentisiyle telefonun paylaşım menüsünü açar (eklenti yoksa bağlantı panoya kopyalanır). Paylaşılan bağlantı oyunun sitesidir: meydan okumada `https://heroblock.herouygulama.com.tr/?challenge=KOD&target=SKOR&name=AD`, düelloda `https://heroblock.herouygulama.com.tr/?duel=KOD&n1=AD&n2=AD` (düelloda önce açan oynar ve bağlantıyı gönderir; arkadaş aynı parçalarla, aynı sürede oynar, sonucu bağlantıyla geri yollar). Bağlantı şimdilik tarayıcıda, sitede açılır; arkadaşın uygulaması olmasa da oynayabilir; telefonda uygulama yüklüyse doğrudan uygulamada açılması için Android App Links (sitede `/.well-known/assetlinks.json`, Play Console › Uygulama bütünlüğü › Uygulama imzalama anahtarı sertifikasının SHA-256 parmak izi) ve iOS Universal Links ayrıca kurulmalıdır.
 
 ## Reklamlar (Google AdMob)
 

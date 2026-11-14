@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="bk-build" content="d62395e49c">
+<meta name="bk-build" content="34d5780f03">
 <meta name="theme-color" content="#050817">
 <meta name="author" content="Baran Yavuz, Hero Uygulama Yazılım Teknolojileri Limited Şirketi">
 <meta name="color-scheme" content="dark">
@@ -468,7 +468,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   .btn-ico { display: flex; align-items: center; justify-content: center; gap: 10px; }
   .btn-ico svg { width: 22px; height: 22px; flex: none; margin-top: -2px; }
 
-  /* İki kişilik düello */
+  /* Arkadaşınla düello (bağlantıyla) */
   .field { display: flex; flex-direction: column; gap: 7px; margin: 0 0 12px; text-align: left; }
   .field > label, .field > .flabel { font: 700 12px/1 var(--ui); letter-spacing: .16em; color: #7fb6ff; }
   .field input {
@@ -518,7 +518,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   .pl.win .pl-score { color: var(--gold); text-shadow: 0 0 12px rgba(255, 190, 40, .45); }
   .pl-stat { display: block; font: 600 12px/1.25 var(--ui); color: var(--muted); }
   .series { margin: 0 0 16px; font: 700 13px/1.35 var(--ui); letter-spacing: .1em; color: #9fe9ff; }
-  /* Düello çubuğu: tahta ile raf arasında; sıradakini ya da ikinci oyuncuya hedefi gösterir */
+  #dInvSeri { margin: -6px 0 14px; }
+  #dShStat { margin: -10px 0 16px; }
+  #dResult .link-btn, #dSetup #dSon { display: block; margin-left: auto; margin-right: auto; }
+  #dSetup #dSon + #dCancel { margin-top: 2px; }
+  /* Uzun düğme yazıları dar ekranda tek satırda kalsın */
+  .btn-duello, #dShGo, #dShExit, #dSend { font-size: clamp(14px, 4.4vw, 18px); letter-spacing: clamp(.04em, .3vw, .14em); white-space: nowrap; }
+  /* Düello çubuğu: tahta ile raf arasında; düelloyu açana sıradakini, bağlantıyla gelen arkadaşa hedefi gösterir */
   #duelBar {
     position: fixed;
     z-index: 5;
@@ -1287,7 +1293,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4v5h5"/></svg>
 </button>
 <button id="btnSound" class="icon-btn" type="button" aria-label="Sesi kapat" title="Sesi kapat"></button>
-<button id="btnDuel" class="icon-btn" type="button" data-ta="duelloAria" aria-label="İki kişilik oyna" title="İki kişilik oyna"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg></button>
+<button id="btnDuel" class="icon-btn" type="button" data-ta="duelloAria" aria-label="Arkadaşınla düello" title="Arkadaşınla düello"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg></button>
 <button id="btnKipCik" class="icon-btn" type="button" data-ta="kipCikAria" aria-label="Tek kişilik oyuna dön" title="Tek kişilik oyuna dön" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M6 9.6V20h12V9.6"/><path d="M10 20v-5.6h4V20"/></svg></button>
 <button id="btnMode" class="icon-btn" type="button" aria-label="Aydınlık moda geç" title="Aydınlık moda geç"></button>
 <button id="btnBoard" type="button" data-ta="haftalikTablo" aria-label="Haftalık skor tablosu" title="Haftalık skor tablosu" hidden></button>
@@ -1319,7 +1325,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     <button id="goDevam" class="btn btn-devam" type="button" data-ta="ikinciSansAria" aria-label="Reklam izle — tahtayı temizle ve devam et" hidden><span class="bd-ust"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4v16l13-8z" fill="currentColor"/></svg><span data-t="ikinciSans">REKLAM İZLE</span></span><span class="bd-alt" data-t="ikinciSansAlt">TAHTAYI TEMİZLE VE DEVAM ET</span></button>
     <button id="btnAgain" class="btn btn-primary" type="button" data-t="tekrarOyna">TEKRAR OYNA</button>
     <button id="goMeydan" class="btn btn-ghost btn-gap btn-ico btn-meydan" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="m8.3 10.8 7.4-4M8.3 13.2l7.4 4"/></svg><span data-t="meydanOku">ARKADAŞINA MEYDAN OKU</span></button>
-    <button id="btnDuelOver" class="btn btn-ghost btn-gap btn-ico" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg><span data-t="duelloOyna">İKİ KİŞİLİK OYNA</span></button>
+    <button id="btnDuelOver" class="btn btn-ghost btn-gap btn-ico btn-duello" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg><span data-t="duelloOyna">ARKADAŞINLA DÜELLO</span></button>
     <button id="goCik" class="btn btn-ghost btn-gap btn-kucuk" type="button" data-t="tekKisilikDon" hidden>TEK KİŞİLİK OYUNA DÖN</button>
     <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br><span data-t="kurucu">Kurucu</span>: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></p>
   </div>
@@ -1338,7 +1344,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     </aside>
     <button id="btnStart" class="btn btn-primary" type="button">OYNA</button>
     <button id="btnGunluk" class="btn btn-ghost btn-gap btn-ico btn-gunluk" type="button" aria-label="Günlük bulmaca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="m9 15.2 2 2 4-4"/></svg><span data-t="gunlukBtn">GÜNLÜK BULMACA</span><b id="gunlukCip" class="gn-cip" aria-hidden="true" hidden></b></button>
-    <button id="btnDuelStart" class="btn btn-ghost btn-gap btn-ico" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg><span data-t="ikiKisilik">İKİ KİŞİLİK</span></button>
+    <button id="btnDuelStart" class="btn btn-ghost btn-gap btn-ico btn-duello" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg><span data-t="duelloOyna">ARKADAŞINLA DÜELLO</span></button>
     <div id="muzikRow" class="music-row">
       <button id="muzikBtn" class="music-btn" type="button" aria-pressed="true" aria-label="Menü müziğini kapat" title="Menü müziği" data-tt="menuMuzigi"></button>
       <label for="muzikSes" class="music-lbl" data-t="menuMuzigiBaslik">MENÜ MÜZİĞİ</label>
@@ -1412,11 +1418,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 <div id="ovDuel" class="overlay" role="dialog" aria-modal="true" aria-labelledby="dTitle" hidden>
   <div id="dCard" class="card" tabindex="-1">
     <div id="dSetup">
-      <div class="badge badge-beta" data-t="ikiKisilik">İKİ KİŞİLİK</div>
+      <div class="badge badge-beta" data-t="arkadasinla">ARKADAŞINLA</div>
       <h2 id="dTitle" class="title small" data-t="duello">DÜELLO</h2>
-      <p class="sub" data-t="duelloAciklama">Sırayla oynayın. Süre bitince en yüksek puanı yapan kazanır.</p>
-      <div class="field"><label for="dName1" data-t="oyuncu1">1. OYUNCU</label><input id="dName1" type="text" maxlength="12" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="next" data-tp="adPh" placeholder="ADIN"></div>
-      <div class="field"><label for="dName2" data-t="oyuncu2">2. OYUNCU</label><input id="dName2" type="text" maxlength="12" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" data-tp="adPh" placeholder="ADIN"></div>
+      <p class="sub" data-t="duelloAciklama">Önce sen oyna, sonra bağlantıyı arkadaşına gönder. O da aynı parçalarla, aynı sürede oynar; yüksek puan kazanır.</p>
+      <div class="field"><label for="dName1" data-t="adin">ADIN</label><input id="dName1" type="text" maxlength="12" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" data-tp="adPh" placeholder="ADIN"></div>
+      <p id="dErr" class="nk-err" role="alert" hidden></p>
       <div class="field"><span class="flabel" id="dSecsLbl" data-t="sure">SÜRE</span>
         <div id="dSecs" class="seg" role="radiogroup" aria-labelledby="dSecsLbl">
           <button type="button" role="radio" aria-checked="false" data-secs="60" data-t="dk1">1 DK</button>
@@ -1425,26 +1431,48 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
           <button type="button" role="radio" aria-checked="false" data-secs="300" data-t="dk5">5 DK</button>
         </div>
       </div>
-      <p class="duel-note" data-t="ayniParcalar">İkiniz de aynı parçalarla başlarsınız.</p>
+      <p class="duel-note" data-t="duelloNot">Bağlantıyı mesajla gönderebilirsin. Arkadaşının uygulamayı yüklemesi gerekmez, oyun tarayıcıda da açılır.</p>
       <button id="dGo" class="btn btn-primary" type="button" data-t="basla">BAŞLA</button>
+      <button id="dSon" class="link-btn" type="button" hidden></button>
       <button id="dCancel" class="link-btn" type="button" data-t="vazgec">VAZGEÇ</button>
     </div>
+    <div id="dInvite" hidden>
+      <div class="badge" data-t="duelloDavet">DÜELLO DAVETİ</div>
+      <h2 id="dInvTitle" class="title small"></h2>
+      <p id="dInvSub" class="sub"></p>
+      <div class="duel-target"><span data-t="hedef">HEDEF</span><b id="dInvHedef">0</b><i id="dInvKim"></i></div>
+      <p id="dInvSeri" class="series" hidden></p>
+      <div class="field"><label for="dInvName" data-t="adin">ADIN</label><input id="dInvName" type="text" maxlength="12" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" data-tp="adPh" placeholder="ADIN"></div>
+      <p id="dInvErr" class="nk-err" role="alert" hidden></p>
+      <button id="dInvGo" class="btn btn-primary" type="button" data-t="basla">BAŞLA</button>
+      <button id="dInvNo" class="link-btn" type="button" data-t="vazgec">VAZGEÇ</button>
+    </div>
     <div id="dReady" hidden>
-      <div id="dRound" class="badge badge-beta">1. TUR</div>
-      <h2 id="dWho" class="title">SIRA: 1. OYUNCU</h2>
+      <div id="dRound" class="badge badge-beta">SÜRE DURDU</div>
+      <h2 id="dWho" class="title"></h2>
       <p id="dInfo" class="sub"></p>
       <div id="dTarget" class="duel-target" hidden><span data-t="hedef">HEDEF</span><b id="dTargetVal">0</b><i id="dTargetWho"></i></div>
-      <button id="dStart" class="btn btn-primary" type="button">BAŞLA</button>
+      <button id="dStart" class="btn btn-primary" type="button">DEVAM ET</button>
       <button id="dQuit" class="link-btn" type="button" data-t="duellodanCik">DÜELLODAN ÇIK</button>
     </div>
+    <div id="dShare" hidden>
+      <div id="dShBadge" class="badge badge-beta">DÜELLO</div>
+      <h2 id="dShTitle" class="title small"></h2>
+      <p class="sub" data-t="paylasAlt">Bağlantıyı gönder: arkadaşın aynı parçalarla, aynı sürede oynayıp puanını geçmeye çalışacak.</p>
+      <div class="duel-target"><span data-t="puanin">PUANIN</span><b id="dShPuan">0</b></div>
+      <p id="dShStat" class="duel-note"></p>
+      <button id="dShGo" class="btn btn-primary btn-ico" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="m8.3 10.8 7.4-4M8.3 13.2l7.4 4"/></svg><span data-t="baglantiGonder">BAĞLANTIYI GÖNDER</span></button>
+      <button id="dShExit" class="btn btn-ghost btn-gap" type="button" data-t="tekKisilikDon">TEK KİŞİLİK OYUNA DÖN</button>
+    </div>
     <div id="dResult" hidden>
-      <div id="dResBadge" class="badge">KAZANAN</div>
-      <h2 id="dResTitle" class="title">KAZANDI!</h2>
+      <div id="dResBadge" class="badge">DÜELLO SONUCU</div>
+      <h2 id="dResTitle" class="title"></h2>
       <p id="dResSub" class="sub"></p>
       <div id="dRes" class="duel-res"></div>
       <div id="dSeries" class="series"></div>
-      <button id="dAgain" class="btn btn-primary" type="button" data-t="rovans">RÖVANŞ</button>
-      <button id="dExit" class="btn btn-ghost btn-gap" type="button" data-t="tekKisilikDon">TEK KİŞİLİK OYUNA DÖN</button>
+      <button id="dSend" class="btn btn-primary btn-ico" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="m8.3 10.8 7.4-4M8.3 13.2l7.4 4"/></svg><span data-t="sonucuGonder">SONUCU GÖNDER</span></button>
+      <button id="dAgain" class="btn btn-ghost btn-gap" type="button" data-t="rovans">RÖVANŞ</button>
+      <button id="dExit" class="link-btn" type="button" data-t="tekKisilikDon">TEK KİŞİLİK OYUNA DÖN</button>
     </div>
   </div>
 </div>
@@ -1870,22 +1898,15 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     kapat: 'KAPAT',
     hedef: 'HEDEF',
     sureEtiket: 'SÜRE',
-    oyuncuN: n => n + '. OYUNCU',
     sureDurdu: 'SÜRE DURDU',
-    tur: n => n + '. TUR',
-    sira: w => 'SIRA: ' + w,
     kalanSure: s => 'Kalan süre ' + s + '. Hazır olunca devam et.',
-    ilkTurBilgi: (m, n2) => m + ' dakikan var. Süre bitince sıra ' + trSuffix(n2, 'loc') + '.',
-    ikinciTurBilgi: (w, m) => 'Telefonu ' + trSuffix(w, 'dat') + ' ver. ' + m + ' dakikan var.',
-    siraDuyuru: w => 'Sıra ' + trSuffix(w, 'loc') + '.',
     baslaFloat: 'BAŞLA!',
     sureDoldu: 'SÜRE DOLDU!',
     yerKalmadiFloat: 'YER KALMADI!',
     puanDuyuru: (w, s) => w + ': ' + s + ' puan.',
-    esitlik: 'EŞİTLİK',
-    kazanan: 'KAZANAN',
     berabere: 'BERABERE!',
     kazandi: w => w + ' KAZANDI!',
+    duelloKaybettin: 'KAYBETTİN',
     dakikalikDuello: m => m + ' dakikalık düello',
     cizgiKombo: (l, c) => l + ' çizgi · kombo ×' + c,
     seriYazi: 'SERİ · ',
@@ -1893,6 +1914,20 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     kazandiDuyuru: w => w + ' kazandı.',
     gectin: 'GEÇTİN!',
     siradaki: 'SIRADAKİ',
+    davetBaslik: a => (a || 'ARKADAŞIN') + ' SENİ DÜELLOYA ÇAĞIRDI',
+    davetAlt: m => m + ' dakikalık düello. Aynı parçalarla oynarsın; süre bitince yüksek puan kazanır.',
+    duelloRozet: m => 'DÜELLO · ' + m + ' DK',
+    duelloSonucRozet: m => 'DÜELLO SONUCU · ' + m + ' DK',
+    siraArkadasinda: 'SIRA ARKADAŞINDA',
+    siraKimde: a => 'SIRA ' + trSuffix(a, 'loc'),
+    paylasDuyuru: s => 'Puanın ' + s + '. Bağlantıyı arkadaşına gönder.',
+    duelloPaylasMetin: s => 'Hero Block düellosu: ' + s + ' puan yaptım. Aynı parçalarla, aynı sürede beni geçebilir misin?',
+    duelloPaylasBaslik: 'Arkadaşına düello gönder',
+    duelloSonucMetin: (k, b, o) => 'Hero Block düellomuz bitti: ' + (k > 0 ? 'ben kazandım, ' + b + ' – ' + o + '!' : k < 0 ? 'sen kazandın, ' + o + ' – ' + b + '.' : 'berabere, ' + b + ' – ' + o + '.') + ' Sonuca bak, rövanş seni bekliyor.',
+    duelloSonucBaslik: 'Düello sonucunu gönder',
+    duelloGecersiz: 'Düello bağlantısı açılamadı: bağlantı eksik ya da bozuk.',
+    sonBaglanti: s => 'SON BAĞLANTINI YENİDEN GÖNDER (' + s + ' PUAN)',
+    duelloAdHata: 'Bu ad kullanılamaz. Başka bir ad yaz ya da boş bırak.',
     banYazi: d => 'Skor tablosuna katılımın ' + (d ? d + ' tarihine kadar ' : '') + 'engellendi. Oyunu oynamaya devam edebilirsin.',
     adBos: 'Bir takma ad yaz.',
     adUzunluk: 'Takma ad 2-14 karakter olmalı.',
@@ -2049,7 +2084,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     destek: 'Support',
     kurucu: 'Founder',
     yenidenBaslat: 'Restart',
-    duelloAria: 'Two-player duel',
+    duelloAria: 'Duel a friend',
     haftalikTablo: 'Weekly leaderboard',
     yeniRekor: 'NEW BEST!',
     kaybettin: 'GAME OVER',
@@ -2058,8 +2093,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     cizgi: 'LINES',
     enIyiKombo: 'BEST COMBO',
     tekrarOyna: 'PLAY AGAIN',
-    duelloOyna: 'TWO-PLAYER DUEL',
-    ikiKisilik: 'TWO PLAYERS',
+    duelloOyna: 'DUEL A FRIEND',
     menuMuzigi: 'Menu music',
     menuMuzigiBaslik: 'MENU MUSIC',
     haftaninEnIyileriAria: 'This week’s best',
@@ -2079,13 +2113,18 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     sikayetEt: 'REPORT',
     engelle: 'BLOCK',
     duello: 'DUEL',
-    duelloAciklama: 'Take turns. When time runs out, the highest score wins.',
-    oyuncu1: 'PLAYER 1',
-    oyuncu2: 'PLAYER 2',
+    arkadasinla: 'WITH A FRIEND',
+    duelloAciklama: 'You play first, then send the link to a friend. They play with the same pieces in the same time; the higher score wins.',
+    adin: 'YOUR NAME',
     adPh: 'NAME',
     sure: 'TIME',
     dk1: '1 MIN', dk2: '2 MIN', dk3: '3 MIN', dk5: '5 MIN',
-    ayniParcalar: 'You both start with the same pieces.',
+    duelloNot: 'Send the link in any messaging app. Your friend doesn’t need the app: the game opens in the browser too.',
+    duelloDavet: 'DUEL INVITE',
+    paylasAlt: 'Send the link: your friend plays with the same pieces in the same time and tries to beat your score.',
+    puanin: 'YOUR SCORE',
+    baglantiGonder: 'SEND THE LINK',
+    sonucuGonder: 'SEND THE RESULT',
     duellodanCik: 'LEAVE DUEL',
     rovans: 'REMATCH',
     tekKisilikDon: 'BACK TO SINGLE PLAYER',
@@ -2133,22 +2172,15 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     kapat: 'CLOSE',
     hedef: 'TARGET',
     sureEtiket: 'TIME',
-    oyuncuN: n => 'PLAYER ' + n,
     sureDurdu: 'TIME PAUSED',
-    tur: n => 'ROUND ' + n,
-    sira: w => 'TURN: ' + w,
     kalanSure: s => 'Time left ' + s + '. Continue when you’re ready.',
-    ilkTurBilgi: (m, n2) => 'You have ' + m + coklu(m, ' minute', ' minutes') + '. When time runs out, it’s ' + n2 + '’s turn.',
-    ikinciTurBilgi: (w, m) => 'Hand the phone to ' + w + '. You have ' + m + coklu(m, ' minute', ' minutes') + '.',
-    siraDuyuru: w => w + '’s turn.',
     baslaFloat: 'GO!',
     sureDoldu: 'TIME’S UP!',
     yerKalmadiFloat: 'NO ROOM LEFT!',
     puanDuyuru: (w, s) => w + ': ' + s + ' points.',
-    esitlik: 'TIE',
-    kazanan: 'WINNER',
     berabere: 'IT’S A TIE!',
     kazandi: w => w + ' WINS!',
+    duelloKaybettin: 'YOU LOST',
     dakikalikDuello: m => m + '-minute duel',
     cizgiKombo: (l, c, n) => l + coklu(n, ' line', ' lines') + ' · combo ×' + c,
     seriYazi: 'SERIES · ',
@@ -2156,6 +2188,20 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     kazandiDuyuru: w => w + ' wins.',
     gectin: 'AHEAD!',
     siradaki: 'NEXT',
+    davetBaslik: a => (a || 'A FRIEND') + ' CHALLENGES YOU TO A DUEL',
+    davetAlt: m => 'A ' + m + '-minute duel with the same pieces. When time runs out, the higher score wins.',
+    duelloRozet: m => 'DUEL · ' + m + ' MIN',
+    duelloSonucRozet: m => 'DUEL RESULT · ' + m + ' MIN',
+    siraArkadasinda: 'YOUR FRIEND’S TURN',
+    siraKimde: a => a + '’S TURN',
+    paylasDuyuru: s => 'Your score is ' + s + '. Send the link to a friend.',
+    duelloPaylasMetin: s => 'Hero Block duel: I scored ' + s + '. Can you beat me with the same pieces in the same time?',
+    duelloPaylasBaslik: 'Send a duel to a friend',
+    duelloSonucMetin: (k, b, o) => 'Our Hero Block duel is over: ' + (k > 0 ? 'I won, ' + b + ' – ' + o + '!' : k < 0 ? 'you won, ' + o + ' – ' + b + '.' : 'it’s a tie, ' + b + ' – ' + o + '.') + ' See the result and take your rematch.',
+    duelloSonucBaslik: 'Send the duel result',
+    duelloGecersiz: 'Couldn’t open the duel link: it’s incomplete or broken.',
+    sonBaglanti: s => 'RESEND YOUR LAST LINK (' + s + ' POINTS)',
+    duelloAdHata: 'This name can’t be used. Type another one or leave it empty.',
     banYazi: d => 'You’re blocked from the leaderboard' + (d ? ' until ' + d : '') + '. You can keep playing the game.',
     banOto: n => 'You’ve been blocked from the leaderboard for ' + n + coklu(n, ' day', ' days') + ' because of offensive nickname attempts. You can keep playing the game.',
     adUygunsuz: 'This nickname isn’t allowed: names with swearing, sexual content or insults can’t be used.',
@@ -2739,7 +2785,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   // Eski kayıttan açılan ya da testte değiştirilen oyunda sayaçlar eksiktir (istatTam: false): sunucuya gönderilmez.
   let oyunSure = 0, sonHamleT = 0, patlatma = 0, temizlik = 0, istatTam = true;
   let gameState = 'play';                          // play | ending | over | wait (düelloda geri sayım/duraklama)
-  let duel = null;                                 // iki kişilik düello sürüyorsa durumu
+  let duel = null;                                 // arkadaşınla düello (bağlantıyla) sürüyorsa durumu
   let kip = 'klasik';                              // klasik (tek kişilik, kayıtlı) | gunluk (günlük bulmaca) | meydan (meydan okuma)
   let gunluk = null, meydan = null;                // günlük bulmacanın / meydan okumanın durumu
   let oyunTohum = 0;                               // bu oyunun tohumu (meydan okuma bağlantısında paylaşılır)
@@ -4048,7 +4094,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     clearTimeout(themeTimer);
     setTheme(0, themeIdx > 0);
     recentFams = [];
-    // Tohum: klasik oyunda her yeni oyunda yenisi; meydan okumada arkadaşınki; düelloda prepareTurn verir.
+    // Tohum: klasik oyunda her yeni oyunda yenisi; meydan okumada arkadaşınki; düelloda prepareTurn verir (bağlantıdaki tohum).
     // Günlük bulmacanın parçaları günün sabit dizisinden gelir.
     if (!duel) {
       if (kip === 'meydan' && meydan) { oyunTohum = meydan.tohum; meydan.sira = 0; meydan.gecti = false; }
@@ -5595,23 +5641,49 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     else if (!ovMeydan.hidden) $('mdVazgec').click();
     else if (!ovGunluk.hidden) gunlukGeri();
     else if (!ovDuel.hidden && !$('dSetup').hidden) cancelDuelSetup();
+    else if (!ovDuel.hidden && !$('dInvite').hidden) duelloDavetVazgec();
     else if (jokerMod) jokerModBitir();
   });
 
 
-  /* ================= İki kişilik düello ================= */
-  /* Sırayla, aynı sürede oynanır; en yüksek puan kazanır. İki oyuncu da aynı tohumla, yani aynı parçalarla
-     başlar (tahtalar farklılaştıkça parçalar da tahtaya göre değişir). Düello sürerken tek kişilik oyun kayıtlı
-     bekler ve rekor etkilenmez; düello bitince kaldığın yerden sürer. Uygulamadan çıkınca süre durur. */
+  /* ================= Arkadaşınla düello (bağlantıyla) =================
+     Aynı telefonda sırayla oynanan iki kişilik düellonun yerine: arkadaşlar uzaktan, bağlantıyla düello yapar. Kurallar aynı:
+     aynı süre (1, 2, 3 ya da 5 dakika), aynı tohum (ikisi de aynı parçalarla başlar; tahtalar farklılaştıkça parçalar da
+     tahtaya göre değişir), joker yok; süre bitince ya da yer kalmayınca tur biter, yüksek puan kazanır.
+     1) Düelloyu açan önce oynar. Tur bitince BAĞLANTIYI GÖNDER ile bağlantıyı paylaşır (uygulamada telefonun paylaşım
+        menüsü, tarayıcıda destekliyorsa paylaşım menüsü, yoksa panoya kopyalanır). Son bağlantı cihazda 7 gün saklanır,
+        kurulum ekranından yeniden gönderilebilir.
+     2) Bağlantıyı açan arkadaş DÜELLO DAVETİ'ni (HEDEF puan) görür, adını yazar, aynı tohum ve sürede oynar; üstte HEDEF
+        görünür. Tur bitince sonuç (KAZANDIN! / KAYBETTİN / BERABERE!) ve seri çıkar. SONUCU GÖNDER ile sonuç bağlantısı
+        düelloyu açana gider; o açınca aynı sonucu görür. RÖVANŞ'ta düğmeye dokunan önce oynar, seri sürer (adlar aynıysa).
+     Bağlantı: ?duel=KOD&n1=AÇAN&n2=ARKADAŞ. KOD (base64url): sürüm, tohum (6), süre (1), seri (2+2), her oyuncu için puan (6),
+     çizgi (3), en iyi kombo (2); davet bağlantısında bir oyuncu, sonuç bağlantısında iki. Son iki karakter adlar dahil
+     bütünlük işaretidir: eksik ya da bozuk bağlantı açılmaz. Adlar sunucudaki uygunsuz ad süzgecinin kısa kopyasından geçer
+     (uymayan ad gösterilmez, ARKADAŞIN yazar). Sunucuya bir şey gönderilmez (yalnızca oyun bitince anonim istatistik).
+     Düello sürerken tek kişilik oyun kayıtlı bekler, rekor etkilenmez; uygulamadan çıkınca süre durur. */
   const K_DUEL = 'bk-duel';
   const DUEL_SECS = [60, 120, 180, 300];
-  const duelPrefs = Object.assign({ n1: '', n2: '', secs: 120 }, store.get(K_DUEL, null) || {});
+  const DUELLO_SURUM = 'd';                    // bağlantı biçimi (parça üreticisi ya da kod düzeni değişirse artar)
+  const DUELLO_SON_GUN = 7;                    // son düello bağlantısı kaç gün yeniden gönderilebilir
+  const duelPrefs = (() => {                   // cihazda: düelloda yazdığın ad, süre seçimi, son bağlantı
+    const v = store.get(K_DUEL, null), d = { n1: '', secs: 120, son: null };
+    if (v && typeof v === 'object') {
+      if (typeof v.n1 === 'string') d.n1 = v.n1.slice(0, 12);
+      if (DUEL_SECS.indexOf(v.secs) >= 0) d.secs = v.secs;
+      const s = v.son;
+      if (s && typeof s === 'object' && typeof s.url === 'string' && s.url.length < 600 && s.url.indexOf('https://') === 0 && +s.t > 0) {
+        d.son = { url: s.url, puan: Math.max(0, Math.floor(+s.puan || 0)), t: +s.t };
+      }
+    }
+    return d;
+  })();
   let duelFrom = '', duelClock = 0, duelCountT = [], duelNextT = 0, duelBarKey = '';
+  let duelDavet = null;                        // açılışta bağlantıdan gelen, kabul bekleyen davet
+  let duelGorunum = null;                      // açılışta bağlantıdan gelen sonuç (düello sürmüyor; yalnızca gösterilir)
   const BEST_LABEL = hudBestLabel.innerHTML;
   const CLOCK_LABEL = () => '<svg viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:var(--gold);stroke-width:2.6;stroke-linecap:round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.8l2.6 1.6M9.5 3h5"/></svg>' + yaz('sureEtiket');
   const CROWN = '<svg viewBox="-11 -9 22 16" aria-hidden="true"><path d="M-9 6L-10 -5L-4 0L0 -8L4 0L10 -5L9 6Z"/></svg>';
   const upTR = v => v.toLocaleUpperCase(DIL === 'en' ? 'en-US' : 'tr-TR'); // i → İ yalnızca Türkçede
-  const duelName = t => duel.names[duel.order[t]]; // t. turu oynayan
   function fmtClock(ms) { const v = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0'); }
   const newSeed = () => (Math.random() * 4294967296) >>> 0;
 
@@ -5626,24 +5698,42 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     return name + '’' + (vowels.indexOf(last) >= 0 ? 'Y' : '') + (back ? 'A' : 'E');
   }
 
+  const DUEL_PANELLER = ['dSetup', 'dInvite', 'dReady', 'dShare', 'dResult'];
   function showDuelPanel(which) {
-    $('dSetup').hidden = which !== 'setup';
-    $('dReady').hidden = which !== 'ready';
-    $('dResult').hidden = which !== 'result';
+    DUEL_PANELLER.forEach(id => { $(id).hidden = id !== which; });
     ovDuel.hidden = false;
     setModal();
     const card = $('dCard');
     card.style.animation = 'none';
     void card.offsetWidth; // kart giriş animasyonu yeniden oynasın
     card.style.animation = '';
-    setTimeout(() => focusDialog(which === 'setup' ? 'dGo' : which === 'ready' ? 'dStart' : 'dAgain', 'dCard'), 60);
+    const odak = { dSetup: 'dGo', dInvite: 'dInvGo', dReady: 'dStart', dShare: 'dShGo', dResult: $('dSend').hidden ? 'dAgain' : 'dSend' }[which];
+    setTimeout(() => focusDialog(odak, 'dCard'), 60);
   }
   function closeDuelPanel() { ovDuel.hidden = true; setModal(); }
   function setDuelSecs(v) {
     duelPrefs.secs = v;
     $('dSecs').querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', String(+b.dataset.secs === v)));
   }
+  function duelHata(id, msg) { const e = $(id); e.textContent = msg || ''; e.hidden = !msg; }
+  function duelPrefsKaydet() { store.set(K_DUEL, { n1: duelPrefs.n1, secs: duelPrefs.secs, son: duelPrefs.son }); }
 
+  // Düelloda görünen ad: boş olabilir; doluysa takma ad kurallarına uymalı ve uygunsuz olmamalı (bağlantıyla başkasına gider)
+  function duelloAdDenetle(v) {
+    const ad = String(v || '').normalize('NFC').trim().replace(/\s+/g, ' ');
+    if (!ad) return { ad: '' };
+    const r = adDenetle(ad);
+    if (r.hata) return r;
+    if (adUygunsuz(ad)) return { hata: yaz('duelloAdHata') };
+    return { ad: upTR(ad) };
+  }
+  // Kayıtlı düello adı, yoksa takma ad (skor tablosundan engelliyse ad bağlantıya girmez)
+  function benimAdim() {
+    if (duelPrefs.n1) return duelloAdDenetle(duelPrefs.n1).ad || '';
+    return oyuncu.ad && !banli() ? (duelloAdDenetle(String(oyuncu.ad).slice(0, 12)).ad || '') : '';
+  }
+
+  // Ayarlar: düelloyu aç (önce oyna, sonra bağlantıyı gönder)
   function openDuelSetup(from) {
     if (duel) return;
     if (drag) endDrag(null, true);
@@ -5651,33 +5741,58 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     ovStart.hidden = true;
     ovOver.hidden = true;
     ovConfirm.hidden = true;
-    $('dName1').value = duelPrefs.n1 || (oyuncu.ad || '').slice(0, 12);
-    $('dName2').value = duelPrefs.n2 || '';
-    setDuelSecs(DUEL_SECS.indexOf(duelPrefs.secs) >= 0 ? duelPrefs.secs : 120);
-    showDuelPanel('setup');
+    $('dName1').value = benimAdim();
+    duelHata('dErr', '');
+    setDuelSecs(duelPrefs.secs);
+    sonBaglantiDugmesi();
+    showDuelPanel('dSetup');
+  }
+  function sonBaglantiTaze() { const s = duelPrefs.son; return !!s && Date.now() - s.t < DUELLO_SON_GUN * 864e5 && Date.now() >= s.t - 6e4; }
+  function sonBaglantiDugmesi() {
+    const b = $('dSon'), taze = sonBaglantiTaze();
+    b.hidden = !taze;
+    if (taze) b.textContent = yaz('sonBaglanti', fmt(duelPrefs.son.puan));
   }
   function cancelDuelSetup() {
     closeDuelPanel();
     if (duelFrom === 'over' && gameState === 'over') { ovOver.hidden = false; setModal(); }
+    else if (duelFrom === 'start') showStart(false);
   }
 
-  function startDuel() {
-    if (duel) return;
-    if (kip !== 'klasik') kipCik(); // günlük bulmaca ya da meydan okuma biter, tek kişilik oyun düello bitince sürer
-    const n1 = $('dName1').value.trim().slice(0, 12), n2 = $('dName2').value.trim().slice(0, 12);
-    duelPrefs.n1 = n1;
-    duelPrefs.n2 = n2;
-    store.set(K_DUEL, duelPrefs);
-    if (gameState === 'play') save(); // tek kişilik oyun kaldığı yerde bekler
-    const names = [upTR(n1) || yaz('oyuncuN', 1), upTR(n2) || yaz('oyuncuN', 2)];
-    if (names[0] === names[1]) names[1] += ' 2';
-    duel = { names, secs: duelPrefs.secs, order: [0, 1], turn: 0, results: [], wins: [0, 0], seed: newSeed(), phase: 'ready', left: duelPrefs.secs * 1000, endsAt: 0 };
+  // Düelloyu kurar ve hemen başlatır (3-2-1): a = { rol: 'ilk' | 'ikinci', adlar: [açan, arkadaş], seri, secs, tohum, hedef? }
+  function duelKur(a) {
+    if (drag) endDrag(null, true);
+    if (!duel && kip !== 'klasik') kipCik();          // günlük bulmaca ya da meydan okuma biter
+    if (!duel && gameState === 'play') save();        // tek kişilik oyun kaldığı yerde bekler
+    clearDuelTimers();
+    const ben = a.rol === 'ikinci' ? 1 : 0;
+    const adlar = [a.adlar[0] || '', a.adlar[1] || ''];
+    const names = adlar.map((ad, i) => ad || yaz(i === ben ? 'sen' : 'arkadasin'));
+    if (names[0] === names[1]) names[1 - ben] += ' 2';
+    duel = {
+      rol: a.rol, ben, adlar, names, secs: a.secs, order: [0, 1], turn: ben,
+      results: a.hedef ? [{ score: a.hedef.score, lines: a.hedef.lines, combo: a.hedef.combo }] : [],
+      wins: a.seri.slice(0, 2), seed: a.tohum >>> 0, phase: 'ready', left: a.secs * 1000, endsAt: 0, link: '', paylasildi: false
+    };
+    duelDavet = null;
+    duelGorunum = null;
     hudBestLabel.innerHTML = CLOCK_LABEL();
     btnDuel.hidden = true;
     btnMode.hidden = true; // düelloda başlıktaki oyuncu adına yer kalsın
     bestText = '';
+    ovStart.hidden = true; ovOver.hidden = true; ovConfirm.hidden = true; ovMeydan.hidden = true; ovGunluk.hidden = true;
+    closeDuelPanel();
     prepareTurn();
-    showDuelReady(false);
+    beginTurn();
+  }
+
+  function startDuel() {
+    if (duel) return;
+    const r = duelloAdDenetle($('dName1').value);
+    if (r.hata) { duelHata('dErr', r.hata); $('dName1').focus(); return; }
+    duelPrefs.n1 = r.ad;
+    duelPrefsKaydet();
+    duelKur({ rol: 'ilk', adlar: [r.ad, ''], seri: [0, 0], secs: duelPrefs.secs, tohum: newSeed() });
   }
 
   // Tura hazırlık: aynı tohumla temiz tahta; geri sayım bitene kadar parça alınamaz
@@ -5695,25 +5810,23 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     updateHint();
   }
 
-  function showDuelReady(resume) {
-    const t = duel.turn, who = duelName(t), mins = duel.secs / 60;
-    $('dRound').textContent = resume ? yaz('sureDurdu') : yaz('tur', t + 1);
-    $('dWho').textContent = yaz('sira', who);
-    $('dInfo').textContent = resume
-      ? yaz('kalanSure', fmtClock(duel.left))
-      : t === 0 ? yaz('ilkTurBilgi', mins, duelName(1))
-      : yaz('ikinciTurBilgi', who, mins);
-    $('dTarget').hidden = t === 0;
-    if (t === 1) {
+  // Süre durdu (uygulamadan çıkınca ya da çıkış sorulurken): kalan süre ve DEVAM ET
+  function showDuelReady() {
+    if (!duel) return;
+    $('dRound').textContent = yaz('sureDurdu');
+    $('dWho').textContent = duel.names[duel.ben];
+    $('dInfo').textContent = yaz('kalanSure', fmtClock(duel.left));
+    const ikinci = duel.rol === 'ikinci';
+    $('dTarget').hidden = !ikinci;
+    if (ikinci) {
       $('dTargetVal').textContent = fmt(duel.results[0].score);
-      $('dTargetWho').textContent = duelName(0);
+      $('dTargetWho').textContent = duel.names[0];
     }
-    $('dStart').textContent = yaz(resume ? 'devamEt' : 'basla');
-    showDuelPanel('ready');
-    announce(yaz('siraDuyuru', who));
+    $('dStart').textContent = yaz('devamEt');
+    showDuelPanel('dReady');
   }
 
-  // BAŞLA / DEVAM ET: 3-2-1 geri sayım, sonra süre işler
+  // 3-2-1 geri sayım, sonra süre işler (ilk başlangıçta ve DEVAM ET'te)
   function beginTurn() {
     if (!duel || (duel.phase !== 'ready' && duel.phase !== 'paused')) return;
     closeDuelPanel();
@@ -5780,7 +5893,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     return true;
   }
 
-  // Tur biter: süre doldu ya da yer kalmadı
+  // Tur biter: süre doldu ya da yer kalmadı. Açan için bağlantı ekranı, arkadaş için sonuç
   function endDuelTurn(reason) {
     if (!duel || duel.phase !== 'play') return;
     clearDuelTimers();
@@ -5797,23 +5910,119 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     wake();
     spawnFloat(yaz(reason === 'time' ? 'sureDoldu' : 'yerKalmadiFloat'), L.bx + L.bs / 2, L.by + L.bs * 0.42, 'praise', 0, 1500);
     Sound.over();
-    announce(yaz('puanDuyuru', duelName(duel.turn), fmt(score)));
+    announce(yaz('puanDuyuru', duel.names[duel.turn], fmt(score)));
     duelNextT = setTimeout(() => {
       if (!duel) return;
       gameState = 'over';
-      if (duel.turn === 0) { duel.turn = 1; prepareTurn(); showDuelReady(false); } else showDuelResult();
+      if (duel.rol === 'ilk') showDuelShare(); else showDuelResult();
     }, 1900);
   }
 
-  function showDuelResult() {
-    const sc = [0, 0], st = [null, null];
-    for (let t = 0; t < 2; t++) { const pi = duel.order[t]; sc[pi] = duel.results[t].score; st[pi] = duel.results[t]; }
-    const win = sc[0] === sc[1] ? -1 : sc[0] > sc[1] ? 0 : 1;
-    if (win >= 0) duel.wins[win]++;
-    duel.phase = 'result';
-    $('dResBadge').textContent = yaz(win < 0 ? 'esitlik' : 'kazanan');
-    $('dResTitle').textContent = win < 0 ? yaz('berabere') : yaz('kazandi', duel.names[win]);
-    $('dResSub').textContent = yaz('dakikalikDuello', duel.secs / 60);
+  /* ---- Bağlantı ---- */
+  function duelloImza(s) {
+    let h = 0x811c9dc5;
+    for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+    return sayiKod(h % 4096, 2);
+  }
+  const duelloSinir = (v, n) => Math.max(0, Math.min(Math.floor(+v || 0), Math.pow(64, n) - 1));
+  // d = { tohum, secs, seri: [açan, arkadaş], p: [{ score, lines, combo }, …], adlar: [açan, arkadaş] }
+  function duelloBaglanti(d) {
+    let kod = DUELLO_SURUM + sayiKod(d.tohum >>> 0, 6) + sayiKod(Math.max(0, DUEL_SECS.indexOf(d.secs)), 1)
+      + sayiKod(duelloSinir(d.seri[0], 2), 2) + sayiKod(duelloSinir(d.seri[1], 2), 2);
+    for (const r of d.p) kod += sayiKod(duelloSinir(r.score, 6), 6) + sayiKod(duelloSinir(r.lines, 3), 3) + sayiKod(duelloSinir(r.combo, 2), 2);
+    const a1 = d.adlar[0] || '', a2 = d.adlar[1] || '';
+    const q = new URLSearchParams();
+    q.set('duel', kod + duelloImza(kod + '|' + a1 + '|' + a2));
+    if (a1) q.set('n1', a1);
+    if (a2) q.set('n2', a2);
+    return PAYLAS_ADRES + '?' + q.toString();
+  }
+  // Bağlantıdaki adlar: skor tablosundan engelli oyuncunun kendi adı bağlantıya girmez
+  const duelLinkAdlari = () => duel.adlar.map((a, i) => (i === duel.ben && banli() ? '' : a));
+  // Bağlantıyı çözer; biçim, bütünlük işareti ya da değerler bozuksa null
+  function duelloCoz(adres) {
+    let q;
+    try { q = new URL(adres, location.href).searchParams; } catch (e) { return null; }
+    const ham = q.get('duel') || '';
+    if (!/^[A-Za-z0-9_-]+$/.test(ham) || (ham.length !== 25 && ham.length !== 36) || ham[0] !== DUELLO_SURUM) return null;
+    const kod = ham.slice(0, -2), a1h = q.get('n1') || '', a2h = q.get('n2') || '';
+    if (a1h.length > 40 || a2h.length > 40 || duelloImza(kod + '|' + a1h + '|' + a2h) !== ham.slice(-2)) return null;
+    const al = (i, n) => kodSayi(kod.slice(i, i + n));
+    const tohum = al(1, 6), ti = al(7, 1);
+    if (!(tohum >= 0 && tohum <= 0xffffffff) || !(ti >= 0 && ti < DUEL_SECS.length)) return null;
+    const p = [];
+    for (let i = 12; i < kod.length; i += 11) p.push({ score: al(i, 6), lines: al(i + 6, 3), combo: al(i + 9, 2) });
+    if (p.some(r => r.score < 0 || r.lines < 0 || r.combo < 0)) return null;
+    return { tohum, secs: DUEL_SECS[ti], seri: [al(8, 2), al(10, 2)], p, adlar: [meydanAdi(a1h), meydanAdi(a2h)] };
+  }
+  // Açılış: adreste düello varsa okunur, adres temizlenir (sayfa yenilenince yeniden sorulmaz)
+  function duelloAdrestenAl() {
+    if (!/[?&]duel=/.test(location.search)) return null;
+    const d = duelloCoz(location.href);
+    try {
+      const u = new URL(location.href);
+      ['duel', 'n1', 'n2'].forEach(k => u.searchParams.delete(k));
+      history.replaceState(history.state, '', u.pathname + u.search + u.hash);
+    } catch (e) { /* adres değiştirilemedi */ }
+    if (!d) setTimeout(() => toast(yaz('duelloGecersiz')), 500);
+    return d;
+  }
+  function duelloBaglantiAc(d) { if (d.p.length === 2) duelloSonucAc(d); else duelloDavetAc(d); }
+
+  /* ---- Davet (bağlantıyı açan arkadaş) ---- */
+  function duelloDavetAc(d) {
+    if (duel) return;
+    duelDavet = d;
+    const a = d.adlar[0];
+    $('dInvTitle').textContent = yaz('davetBaslik', a);
+    $('dInvSub').textContent = yaz('davetAlt', d.secs / 60);
+    $('dInvHedef').textContent = fmt(d.p[0].score);
+    $('dInvKim').textContent = a || '';
+    const seri = !!d.adlar[1] && d.seri[0] + d.seri[1] > 0;
+    $('dInvSeri').hidden = !seri;
+    $('dInvSeri').textContent = seri ? yaz('seriYazi') + (a || yaz('arkadasin')) + ' ' + d.seri[0] + ' – ' + d.seri[1] + ' ' + d.adlar[1] : '';
+    $('dInvName').value = benimAdim() || d.adlar[1] || '';
+    duelHata('dInvErr', '');
+    ovStart.hidden = true;
+    ovOver.hidden = true;
+    showDuelPanel('dInvite');
+  }
+  function duelloDavetKabul() {
+    const d = duelDavet;
+    if (!d || duel) return;
+    const r = duelloAdDenetle($('dInvName').value);
+    if (r.hata) { duelHata('dInvErr', r.hata); $('dInvName').focus(); return; }
+    duelPrefs.n1 = r.ad;
+    duelPrefsKaydet();
+    const ayni = !!r.ad && r.ad === d.adlar[1];   // rövanş bağlantısı ona gönderilmişse seri sürer
+    duelKur({ rol: 'ikinci', adlar: [d.adlar[0], r.ad], seri: ayni ? d.seri : [0, 0], secs: d.secs, tohum: d.tohum, hedef: d.p[0] });
+  }
+  function duelloDavetVazgec() { duelDavet = null; closeDuelPanel(); showStart(false); }
+
+  /* ---- Bağlantıyı gönder (düelloyu açan, turundan sonra) ---- */
+  function showDuelShare() {
+    duel.phase = 'paylas';
+    updateHud(); // düello çubuğu gizlenir
+    const r = duel.results[0];
+    duel.link = duelloBaglanti({ tohum: duel.seed, secs: duel.secs, seri: duel.wins, p: [r], adlar: duelLinkAdlari() });
+    duelPrefs.son = { url: duel.link, puan: Math.floor(r.score), t: Date.now() };
+    duelPrefsKaydet();
+    $('dShBadge').textContent = yaz('duelloRozet', duel.secs / 60);
+    $('dShTitle').textContent = duel.adlar[1] ? yaz('siraKimde', duel.adlar[1]) : yaz('siraArkadasinda');
+    $('dShPuan').textContent = fmt(r.score);
+    $('dShStat').textContent = yaz('cizgiKombo', fmt(r.lines), fmt(r.combo), r.lines);
+    showDuelPanel('dShare');
+    Sound.play('clear3');
+    announce(yaz('paylasDuyuru', fmt(r.score)));
+  }
+
+  /* ---- Sonuç ---- */
+  // o = { names, res: [açan, arkadaş], wins (bu turdan sonraki seri), secs, ben (yerel oyuncu), gonder }
+  function duelSonucCiz(o) {
+    const sc = o.res.map(r => r.score), win = sc[0] === sc[1] ? -1 : sc[0] > sc[1] ? 0 : 1;
+    $('dResBadge').textContent = yaz('duelloSonucRozet', o.secs / 60);
+    $('dResTitle').textContent = win < 0 ? yaz('berabere') : yaz(win === o.ben ? 'kazandin' : 'duelloKaybettin');
+    $('dResSub').textContent = yaz('dakikalikDuello', o.secs / 60);
     const box = $('dRes');
     box.textContent = '';
     for (let i = 0; i < 2; i++) {
@@ -5822,34 +6031,62 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       const nm = document.createElement('span');
       nm.className = 'pl-name';
       if (i === win) nm.innerHTML = CROWN;
-      nm.appendChild(document.createTextNode(duel.names[i])); // ad metin olarak (HTML değil)
+      nm.appendChild(document.createTextNode(o.names[i])); // ad metin olarak (HTML değil)
       const sv = document.createElement('b');
       sv.className = 'pl-score';
       sv.textContent = fmt(sc[i]);
       const sd = document.createElement('span');
       sd.className = 'pl-stat';
-      sd.textContent = yaz('cizgiKombo', fmt(st[i].lines), fmt(st[i].combo), st[i].lines);
+      sd.textContent = yaz('cizgiKombo', fmt(o.res[i].lines), fmt(o.res[i].combo), o.res[i].lines);
       el.append(nm, sv, sd);
       box.appendChild(el);
     }
-    $('dSeries').textContent = yaz('seriYazi') + duel.names[0] + ' ' + duel.wins[0] + ' – ' + duel.wins[1] + ' ' + duel.names[1];
-    showDuelPanel('result');
+    $('dSeries').textContent = yaz('seriYazi') + o.names[0] + ' ' + o.wins[0] + ' – ' + o.wins[1] + ' ' + o.names[1];
+    $('dSend').hidden = !o.gonder;
+    $('dAgain').className = o.gonder ? 'btn btn-ghost btn-gap' : 'btn btn-primary';
+    showDuelPanel('dResult');
     Sound.play('clear5');
-    announce(win < 0 ? yaz('berabereDuyuru') : yaz('kazandiDuyuru', duel.names[win]));
+    announce(win < 0 ? yaz('berabereDuyuru') : yaz('kazandiDuyuru', o.names[win]));
+  }
+  // Arkadaşın turu bitti: sonuç, seri ve sonuç bağlantısı (SONUCU GÖNDER)
+  function showDuelResult() {
+    const s0 = duel.results[0].score, s1 = duel.results[1].score, win = s0 === s1 ? -1 : s0 > s1 ? 0 : 1;
+    if (win >= 0) duel.wins[win]++;
+    duel.phase = 'result';
+    updateHud(); // düello çubuğu gizlenir
+    duel.link = duelloBaglanti({ tohum: duel.seed, secs: duel.secs, seri: duel.wins, p: duel.results, adlar: duelLinkAdlari() });
+    duelSonucCiz({ names: duel.names, res: duel.results, wins: duel.wins, secs: duel.secs, ben: duel.ben, gonder: true });
+  }
+  // Sonuç bağlantısıyla açıldı (genelde düelloyu açan): sonuç gösterilir; adı arkadaşın adıyla aynıysa onun gözünden
+  function duelloSonucAc(d) {
+    if (duel) return;
+    const benAd = benimAdim(), ben = benAd && d.adlar[1] === benAd && d.adlar[0] !== benAd ? 1 : 0;
+    const names = d.adlar.map((a, i) => a || yaz(i === ben ? 'sen' : 'arkadasin'));
+    if (names[0] === names[1]) names[1 - ben] += ' 2';
+    duelGorunum = { d, ben };
+    ovStart.hidden = true;
+    ovOver.hidden = true;
+    duelSonucCiz({ names, res: d.p, wins: d.seri, secs: d.secs, ben, gonder: false });
   }
 
+  // RÖVANŞ: dokunan önce oynar, aynı süre, yeni tohum; seri sürer
   function duelRematch() {
-    if (!duel) return;
-    duel.order = [duel.order[1], duel.order[0]]; // rövanşta öbürü başlar
-    duel.turn = 0;
-    duel.results = [];
-    duel.seed = newSeed();
-    prepareTurn();
-    showDuelReady(false);
+    if (duel && duel.phase === 'result') {
+      const b = duel.ben;
+      duelKur({ rol: 'ilk', adlar: [duel.adlar[b], duel.adlar[1 - b]], seri: [duel.wins[b], duel.wins[1 - b]], secs: duel.secs, tohum: newSeed() });
+    } else if (!duel && duelGorunum) {
+      const { d, ben } = duelGorunum;
+      duelKur({ rol: 'ilk', adlar: [d.adlar[ben] || benimAdim(), d.adlar[1 - ben]], seri: [d.seri[ben], d.seri[1 - ben]], secs: d.secs, tohum: newSeed() });
+    }
   }
 
   function exitDuel() {
-    if (!duel) return;
+    if (!duel) {
+      duelGorunum = null;
+      closeDuelPanel();
+      showStart(false);
+      return;
+    }
     clearDuelTimers();
     if (drag) endDrag(null, true);
     duel = null;
@@ -5868,7 +6105,22 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     showNotice();
   }
 
-  // Tahta ile raf arasındaki çubuk: ilk turda sıradaki oyuncu, ikinci turda hedef puan
+  async function duelGonder(sonuc) {
+    if (!duel || !duel.link) return;
+    const r = duel.results, b = duel.ben;
+    let metin, baslik;
+    if (sonuc) {
+      const bs = r[b].score, os = r[1 - b].score;
+      metin = yaz('duelloSonucMetin', bs > os ? 1 : bs < os ? -1 : 0, fmt(bs), fmt(os));
+      baslik = yaz('duelloSonucBaslik');
+    } else {
+      metin = yaz('duelloPaylasMetin', fmt(r[0].score));
+      baslik = yaz('duelloPaylasBaslik');
+    }
+    if (await baglantiPaylas(duel.link, metin, baslik) && duel) duel.paylasildi = true;
+  }
+
+  // Tahta ile raf arasındaki çubuk: düelloyu açana sıradaki (arkadaşı), bağlantıyla gelene hedef puan
   function updateDuelBar() {
     const gunCubuk = !duel && kip === 'gunluk' && !!gunluk && gameState === 'play' && noticeEl.hidden && jokerIpucu.hidden;
     const on = gunCubuk || (!!duel && noticeEl.hidden && (duel.phase === 'count' || duel.phase === 'play' || duel.phase === 'over'));
@@ -5884,14 +6136,14 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
         duelBar.classList.remove('ahead');
       }
     } else {
-      const second = duel.turn === 1, target = second ? duel.results[0].score : 0, ahead = second && score > target;
-      const key = duel.turn + '|' + ahead + '|' + target;
+      const second = duel.rol === 'ikinci', target = second ? duel.results[0].score : 0, ahead = second && score > target;
+      const key = duel.rol + '|' + ahead + '|' + target;
       if (key !== duelBarKey) {
         duelBarKey = key;
         duelBar.textContent = '';
         const t1 = document.createElement('span'), t2 = document.createElement('b');
         t1.textContent = yaz(second ? (ahead ? 'gectin' : 'hedef') : 'siradaki');
-        t2.textContent = second ? duelName(0) + ' ' + fmt(target) : duelName(1);
+        t2.textContent = second ? duel.names[0] + ' ' + fmt(target) : duel.names[1];
         duelBar.append(t1, t2);
         duelBar.classList.toggle('ahead', ahead);
       }
@@ -5915,13 +6167,21 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   $('btnDuelOver').addEventListener('click', () => openDuelSetup('over'));
   $('dGo').addEventListener('click', startDuel);
   $('dCancel').addEventListener('click', cancelDuelSetup);
+  $('dSon').addEventListener('click', () => { if (sonBaglantiTaze()) baglantiPaylas(duelPrefs.son.url, yaz('duelloPaylasMetin', fmt(duelPrefs.son.puan)), yaz('duelloPaylasBaslik')); });
   $('dSecs').addEventListener('click', e => { const b = e.target.closest('button[data-secs]'); if (b) setDuelSecs(+b.dataset.secs); });
+  $('dInvGo').addEventListener('click', duelloDavetKabul);
+  $('dInvNo').addEventListener('click', duelloDavetVazgec);
   $('dStart').addEventListener('click', beginTurn);
   $('dQuit').addEventListener('click', () => { closeDuelPanel(); askConfirm('duel'); });
+  $('dShGo').addEventListener('click', () => duelGonder(false));
+  $('dShExit').addEventListener('click', exitDuel);
+  $('dSend').addEventListener('click', () => duelGonder(true));
   $('dAgain').addEventListener('click', duelRematch);
   $('dExit').addEventListener('click', exitDuel);
-  $('dName1').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('dName2').focus(); } });
-  $('dName2').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); } });
+  $('dName1').addEventListener('input', () => duelHata('dErr', ''));
+  $('dInvName').addEventListener('input', () => duelHata('dInvErr', ''));
+  $('dName1').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); } });
+  $('dInvName').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); duelloDavetKabul(); } });
 
   /* ================= Haftalık skor tablosu =================
      Puanlar şirketin sunucusunda (skor.herouygulama.com.tr) tutulur; tablo her pazartesi 00:00'da (Türkiye saati)
@@ -7009,23 +7269,29 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     } catch (e) { return false; }
   }
   let paylasiliyor = false;
-  async function meydanPaylas() {
-    const url = meydanBaglanti();
-    if (!url || paylasiliyor) return;
+  // Bağlantı paylaşımı (meydan okuma ve düello): uygulamada telefonun paylaşım menüsü, tarayıcıda (destekliyorsa) paylaşım
+  // menüsü; yoksa bağlantı panoya kopyalanır. Paylaşıldıysa ya da kopyalandıysa true
+  async function baglantiPaylas(url, metin, baslik) {
+    if (!url || paylasiliyor) return false;
     paylasiliyor = true;
-    const metin = yaz('meydanPaylasMetin', fmt(score));
     try {
       const SH = eklenti('Share');
       if (SH && typeof SH.share === 'function') {
-        try { await SH.share({ title: 'Hero Block', text: metin, url, dialogTitle: yaz('meydanPaylasBaslik') }); return; }
-        catch (e) { if (/cancel|iptal|abort/i.test(String((e && (e.message || e.code)) || ''))) return; }
+        try { await SH.share({ title: 'Hero Block', text: metin, url, dialogTitle: baslik }); return true; }
+        catch (e) { if (/cancel|iptal|abort/i.test(String((e && (e.message || e.code)) || ''))) return false; }
       }
       if (typeof navigator.share === 'function') {
-        try { await navigator.share({ title: 'Hero Block', text: metin, url }); return; }
-        catch (e) { if (e && e.name === 'AbortError') return; }
+        try { await navigator.share({ title: 'Hero Block', text: metin, url }); return true; }
+        catch (e) { if (e && e.name === 'AbortError') return false; }
       }
-      toast(yaz((await panoyaKopyala(metin + ' ' + url)) ? 'baglantiKopyalandi' : 'kopyalanamadi'));
+      const tamam = await panoyaKopyala(metin + ' ' + url);
+      toast(yaz(tamam ? 'baglantiKopyalandi' : 'kopyalanamadi'));
+      return tamam;
     } finally { paylasiliyor = false; }
+  }
+  function meydanPaylas() {
+    const url = meydanBaglanti();
+    if (url) baglantiPaylas(url, yaz('meydanPaylasMetin', fmt(score)), yaz('meydanPaylasBaslik'));
   }
   goMeydan.addEventListener('click', meydanPaylas);
   goCik.addEventListener('click', () => kipCik());
@@ -7437,8 +7703,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       fakeStuckAudio: () => { const real = Sound.ac; Sound.ac = { state: 'running', currentTime: 12.5, resume() { return Promise.resolve(); }, close() { return Promise.resolve(); }, real }; Sound.ran = true; },
       watch: () => Sound.watch(),
       checkUpdate: () => checkUpdate(true),
-      // Düello: durum, süreyi kısaltma, tek kişilik oyunu kaydetme
-      duel: () => (duel ? { phase: duel.phase, turn: duel.turn, names: duel.names.slice(), order: duel.order.slice(), results: duel.results.slice(), wins: duel.wins.slice(), left: duel.left, seed: duel.seed } : null),
+      // Düello: durum, süreyi kısaltma, bağlantı çözme, tek kişilik oyunu kaydetme
+      duel: () => (duel ? { rol: duel.rol, ben: duel.ben, phase: duel.phase, turn: duel.turn, names: duel.names.slice(), adlar: duel.adlar.slice(), order: duel.order.slice(),
+        results: duel.results.map(r => Object.assign({}, r)), wins: duel.wins.slice(), left: duel.left, seed: duel.seed, secs: duel.secs, link: duel.link, paylasildi: duel.paylasildi } : null),
+      duelloCoz: url => duelloCoz(url),
+      duelloBaglanti: d => duelloBaglanti(d),
+      duelloSon: () => (duelPrefs.son ? Object.assign({}, duelPrefs.son) : null),
       duelTime: ms => { if (duel && duel.phase === 'play') duel.endsAt = performance.now() + ms; },
       save: () => save(),
       mode: () => (LIGHT ? 'light' : 'dark'),
@@ -7585,11 +7855,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     blokSecimCiz();
     blokOnizlemeleri();
     gunlukDugmeCiz();
-    // Meydan okuma bağlantısıyla açıldıysa önce meydan okuma sorulur (takma ad sorusu sonraki açılışa kalır).
+    // Düello ya da meydan okuma bağlantısıyla açıldıysa önce o gelir (takma ad sorusu sonraki açılışa kalır).
     // İlk girişte takma ad sorulur (geçilebilir); sonra başlangıç ekranı ve haftalık tablo.
     // Takma adı olup Kullanım Koşulları'nı henüz onaylamamış oyuncudan bir kez onay istenir (onaylamazsa puanı tabloya gitmez)
-    const md = meydanAdrestenAl();
-    if (md) meydanSor(md);
+    const dl = duelloAdrestenAl(), md = meydanAdrestenAl();
+    if (dl) duelloBaglantiAc(dl);
+    else if (md) meydanSor(md);
     else if (SKOR_API && !oyuncu.ad && !oyuncu.atla && !banli()) adSor(() => showStart(false));
     else if (SKOR_API && oyuncu.ad && !kosulTamam() && !banli()) adSor(() => showStart(false), () => yaz('kosulEklendi'));
     else showStart(false);

@@ -13,8 +13,11 @@ parçayı da verir. Tahtayı tamamen boşaltmak (TAM TEMİZLİK!) 1.000 bonus pu
 Adil zorluk: tahta en çok %85 doluyken gelen üç parçadan en az biri her zaman boşluklara sığar (gerekirse son parça küçük bir
 parçayla değişir: en az bir hamlelik kurtuluş şansı); tahta daha doluysa oyun normal biter.
 Parçalar çeşitli gelir: aynı parça art arda pek gelmez, oyun ilerledikçe (puan ya da hamle) zorlaşır.
-İKİ KİŞİLİK düello: sırayla aynı sürede (1, 2, 3 ya da 5 dakika) oynanır, en yüksek puanı yapan kazanır;
-iki oyuncu da aynı parçalarla başlar. Düello tek kişilik oyunu ve rekoru etkilemez.
+ARKADAŞINLA DÜELLO (bağlantıyla, uzaktan): önce düelloyu açan oynar (1, 2, 3 ya da 5 dakika), sonra BAĞLANTIYI GÖNDER ile
+bağlantıyı paylaşır (?duel=KOD&n1=AD). Bağlantıyı açan arkadaş aynı tohumla, yani aynı parçalarla ve aynı sürede oynar; üstte
+HEDEF görünür, yüksek puan kazanır. Arkadaş SONUCU GÖNDER ile sonuç bağlantısını yollar; RÖVANŞ'ta seri sürer. Bağlantıda
+yalnızca tohum, süre, adlar, puan, çizgi, kombo ve seri vardır (bütünlük işaretli; sunucuya bir şey gitmez). Arkadaşın
+uygulaması olmasa da bağlantı sitede açılır. Düelloda joker yok; düello tek kişilik oyunu ve rekoru etkilemez.
 HAFTANIN EN İYİLERİ: ilk açılışta bir takma ad sorulur (geçilebilir); haftanın en yüksek puanlı 10 oyuncusu
 ana ekranda görünür. Tablo her pazartesi 00:00'da (Türkiye saati) sıfırlanır; puanlar skor.herouygulama.com.tr'de tutulur.
 Ses kesilirse "SES DURDU" düğmesi çıkar, dokununca ses geri gelir. Yeni sürüm yayımlanınca açık oyunda
