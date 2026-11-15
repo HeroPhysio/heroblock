@@ -76,6 +76,13 @@ keyAlias=upload
 keyPassword=ŞİFRE
 ```
 
+## Uygulama görünümü ve geri tuşu
+
+- **Başlık çubuğu yok, kenardan kenara:** oyun durum ve gezinme çubuklarının arkasına uzanır (koyu zemin, açık simgeler). `MainActivity` önce Capacitor'un temasını (`AppTheme.NoActionBar`) kurar, kenardan kenara görünümü **sonra** açar; sıra ters olursa Android 12 ve sonrasında üstte "Hero Block" yazan bir başlık çubuğu çıkar. Pencere zemini oyunun koyu rengi (`@color/hbArkaPlan`, `#050817`).
+- **Web sitesi gibi değil:** sayfa kaymaz, esnemez; oyunun altındaki şirket bilgisi şeridi uygulamada yok (bilgiler ve gizlilik, koşullar, destek bağlantıları ana menüde). Haftalık skor tablosu ana menüde **HAFTANIN EN İYİLERİ** düğmesiyle açılır; ana menü tek ekrana sığar.
+- **ANA MENÜ düğmesi (⌂):** üst bilgide solda, yanında yeniden başlat. Düello ana menüde ve oyun sonunda; günlük bulmacadan ve meydan okumadan çıkış da bu düğmeyle (oynanmışsa önce sorar).
+- **Android geri tuşu:** açık pencereyi kapatır; oyundaysan ana menüye döner (oyun kayıtlı, **DEVAM ET** ile sürer); düelloda, günlük bulmacada ya da meydan okumada önce sorar; oyun bittiyse yeni oyunla ana menüye; ana menüdeyken uygulamayı arka plana alır.
+
 ## Paylaşım (Arkadaşına meydan oku, Arkadaşınla düello)
 
 **KAYBETTİN** ekranındaki **ARKADAŞINA MEYDAN OKU** düğmesi ile düellodaki **BAĞLANTIYI GÖNDER** ve **SONUCU GÖNDER** düğmeleri, uygulamada `@capacitor/share` (8.0.3) eklentisiyle telefonun paylaşım menüsünü açar (eklenti yoksa bağlantı panoya kopyalanır). Paylaşılan bağlantı oyunun sitesidir: meydan okumada `https://heroblock.herouygulama.com.tr/?challenge=KOD&target=SKOR&name=AD`, düelloda `https://heroblock.herouygulama.com.tr/?duel=KOD&n1=AD&n2=AD` (düelloda önce açan oynar ve bağlantıyı gönderir; arkadaş aynı parçalarla, aynı sürede oynar, sonucu bağlantıyla geri yollar). Bağlantı şimdilik tarayıcıda, sitede açılır; arkadaşın uygulaması olmasa da oynayabilir; telefonda uygulama yüklüyse doğrudan uygulamada açılması için Android App Links (sitede `/.well-known/assetlinks.json`, Play Console › Uygulama bütünlüğü › Uygulama imzalama anahtarı sertifikasının SHA-256 parmak izi) ve iOS Universal Links ayrıca kurulmalıdır.
