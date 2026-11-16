@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="bk-build" content="c7d577ea78">
+<meta name="bk-build" content="a9db965c02">
 <meta name="theme-color" content="#050817">
 <meta name="author" content="Baran Yavuz, Hero Uygulama Yazılım Teknolojileri Limited Şirketi">
 <meta name="color-scheme" content="dark">
@@ -986,7 +986,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
 
   /* ================= Tam temizlik, günlük bulmaca, meydan okuma, blok temaları ================= */
-  /* Büyük kutlama yazısı (TAM TEMİZLİK! +1.000, BAŞARDIN!, HEDEF GEÇİLDİ!): tahtanın ortasında iki satır */
+  /* Büyük kutlama yazısı (TAM TEMİZLİK! +10.000, BAŞARDIN!, HEDEF GEÇİLDİ!): tahtanın ortasında iki satır */
   .float-buyuk { display: flex; flex-direction: column; align-items: center; gap: .14em; font-size: calc(var(--cs) * 1.02); animation-name: buyukPop; animation-timing-function: linear; z-index: 2; }
   .float-buyuk b { font-weight: 400; letter-spacing: .03em; }
   .float-buyuk span { font-size: .6em; letter-spacing: .05em; }
@@ -1540,6 +1540,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   /* ================= Sabitler ================= */
   const N = 8;
+  // Puan ölçeği: oyun içindeki her puan (yerleştirme, patlatma, tam temizlik) ve puana bağlı eşikler bu katsayıyla büyür.
+  // Skor sunucusuna ve paylaşılan bağlantılara giden puan bu katsayıya bölünür (eski ölçek), gelen puan bununla çarpılır.
+  const PUAN_KAT = 10;
   const REDUCED = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   // Google Play / App Store uygulaması (Capacitor): titreşim yerel dokunsal geri bildirimle, geri tuşu pencereleri kapatır,
   // dış bağlantılar telefonun tarayıcısında açılır. Web sürümünde bunların hiçbiri devreye girmez.
@@ -1568,9 +1571,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
 
   /* ================= Temalar =================
-     Her 10.000 puanda bir sonraki temaya geçilir (17 tema, sonra başa döner). Tema; arka planı, tahta çerçevesini,
+     Her 100.000 puanda bir sonraki temaya geçilir (17 tema, sonra başa döner). Tema; arka planı, tahta çerçevesini,
      boş kareleri, yıldızları, raf panelini ve blok renklerini değiştirir. */
-  const THEME_STEP = 10000;
+  const THEME_STEP = 10000 * PUAN_KAT;
   const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; };
   const rgbHex = (r, g, b) => '#' + [r, g, b].map(v => Math.round(Math.min(255, Math.max(0, v))).toString(16).padStart(2, '0')).join('');
   const mixHex = (a, b, t) => { const x = hexRgb(a), y = hexRgb(b); return rgbHex(x[0] + (y[0] - x[0]) * t, x[1] + (y[1] - x[1]) * t, x[2] + (y[2] - x[2]) * t); };
@@ -1711,14 +1714,15 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const themeFor = sc => Math.floor(sc / THEME_STEP) % THEMES.length;
 
   /* ================= Blok temaları (kilidi açılan görünümler) =================
-     Blokların çizim biçimini ve beş rengini değiştirir; arka plan temaları (her 10.000 puanda) aynen sürer.
+     Blokların çizim biçimini ve beş rengini değiştirir; arka plan temaları (her 100.000 puanda) aynen sürer.
        NEON       : oyunun kendi parlak renkleri (her arka plan teması kendi blok renkleriyle). Varsayılan, hep açık.
        KRİSTAL    : buz mavisi, yontulmuş cam görünümü ve yansımalar. İlk TAM TEMİZLİK'te açılır.
        AHŞAP      : meşe ve ceviz tonlarında, damarlı ahşap. 3 günlük bulmaca tamamlayınca açılır.
        HEROPHYSIO : medikal turkuaz, lacivert ve buz mavisi; blok yüzünde HeroPhysio logosu (beyaz zemin olmadan, bloğun rengine
-                    göre koyu ya da açık tonda; hiçbir blok beyaz değil). REKOR 10.000 puana ulaşınca açılır.
+                    göre koyu ya da açık tonda; hiçbir blok beyaz değil). REKOR 100.000 puana (HP_REKOR) ulaşınca açılır.
      Seçim ve açılan temalar cihazda saklanır (sunucuya gitmez). */
   const BLOK_SIRA = ['neon', 'kristal', 'ahsap', 'hp'];
+  const HP_REKOR = 10000 * PUAN_KAT;   // HEROPHYSIO blok temasının açıldığı rekor
   const blokRenk = (hex, stil, ek) => Object.assign(deriveColor(hex), { stil }, ek || {});
   const BLOK_PALET = {
     neon: null,
@@ -1853,9 +1857,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* depolama kapalı */ } },
     del(k) { try { localStorage.removeItem(k); } catch (e) { /* depolama kapalı */ } }
   };
-  // Yeni puanlamayla rekor ve kayıt sıfırdan başlar (eski anahtarlar okunmaz)
-  const K_BEST = 'blokKahramani.rekor.v2';
-  const K_SAVE = 'blokKahramani.kayit.v2';
+  // Rekor ve kayıtlı oyun puan ölçeğiyle (PUAN_KAT) birlikte yeni anahtarlarda. Önceki sürümün rekoru (v2; eski adresten taşınan
+  // dahil) PUAN_KAT ile çarpılıp hesaba katılır, eski kayıtlı oyun bir kez yeni ölçeğe çevrilir; v2 anahtarlarına artık yazılmaz.
+  const K_BEST = 'blokKahramani.rekor.v3';
+  const K_SAVE = 'blokKahramani.kayit.v3';
+  const K_BEST_ESKI = 'blokKahramani.rekor.v2';
+  const K_SAVE_ESKI = 'blokKahramani.kayit.v2';
   const K_SOUND = 'blokKahramani.ses';
   const K_MODE = 'blokKahramani.mod'; // aydınlık / karanlık mod seçimi (varsayılan karanlık)
   const K_GUNLUK = 'blokKahramani.gunluk';   // günlük bulmaca: tamamlanan günler (YYYY-AA-GG, cihazın yerel günü)
@@ -2073,7 +2080,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     meydanBasladiDuyuru: (a, h) => 'Meydan okuma: ' + a + ' ' + h + ' puan yaptı. Aynı parçalarla geçmeye çalış.',
     kazandin: 'KAZANDIN!',
     meydanSonucKazandi: f => 'Hedefi ' + f + ' puan farkla geçtin!',
-    meydanSonucBerabere: 'Hedefle berabere kaldın; 1 puan daha lazımdı.',
+    meydanSonucBerabere: 'Hedefle berabere kaldın; bir kare daha yetecekti.',
     meydanSonucKaybetti: f => 'Hedefe ' + f + ' puan kaldı. Aynı parçalarla yeniden dene!',
     meydanRozetAd: a => 'MEYDAN OKUMA · ' + a,
     meydanPaylasMetin: s => 'Hero Block’ta ' + s + ' puan yaptım! Aynı parçalarla beni geçebilir misin?',
@@ -2084,7 +2091,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     blokAdlari: { neon: 'NEON', kristal: 'KRİSTAL', ahsap: 'AHŞAP', hp: 'HEROPHYSIO' },
     kilitKristal: 'İlk TAM TEMİZLİK’te açılır.',
     kilitAhsap: n => '3 günlük bulmaca tamamlayınca açılır (' + n + '/3).',
-    kilitHp: 'REKOR 10.000 puana ulaşınca açılır.',
+    kilitHp: n => 'REKOR ' + n + ' puana ulaşınca açılır.',
     kilitliEk: 'kilitli',
     seciliEk: 'seçili',
     yeniBlokTema: a => 'YENİ BLOK TEMASI AÇILDI: ' + a + ' · Ana menüden seçebilirsin',
@@ -2362,7 +2369,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     meydanBasladiDuyuru: (a, h) => 'Challenge: ' + a + ' scored ' + h + '. Try to beat it with the same pieces.',
     kazandin: 'YOU WIN!',
     meydanSonucKazandi: f => 'You beat the target by ' + f + ' points!',
-    meydanSonucBerabere: 'You tied the target; one more point would have won it.',
+    meydanSonucBerabere: 'You tied the target; one more square would have won it.',
     meydanSonucKaybetti: f => f + ' points short of the target. Try again with the same pieces!',
     meydanRozetAd: a => 'CHALLENGE · ' + a,
     meydanPaylasMetin: s => 'I scored ' + s + ' in Hero Block! Can you beat me with the same pieces?',
@@ -2373,7 +2380,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     blokAdlari: { neon: 'NEON', kristal: 'CRYSTAL', ahsap: 'WOOD', hp: 'HEROPHYSIO' },
     kilitKristal: 'Unlocks with your first ALL CLEAR.',
     kilitAhsap: n => 'Unlocks after 3 daily puzzles (' + n + '/3).',
-    kilitHp: 'Unlocks when your best score reaches 10,000.',
+    kilitHp: n => 'Unlocks when your best score reaches ' + n + '.',
     kilitliEk: 'locked',
     seciliEk: 'selected',
     yeniBlokTema: a => 'NEW BLOCK SKIN UNLOCKED: ' + a + ' · Pick it in the main menu',
@@ -2800,6 +2807,24 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   let tray = [null, null, null];
   let score = 0, displayScore = 0;
   let best = Math.max(0, Number(store.get(K_BEST, 0)) || 0);
+  // Önceki sürümün rekoru (eski ölçek) yeni ölçeğe çevrilip büyük olan alınır
+  {
+    const eskiRekor = Math.max(0, Math.floor(Number(store.get(K_BEST_ESKI, 0)) || 0)) * PUAN_KAT;
+    if (eskiRekor > best) { best = eskiRekor; store.set(K_BEST, best); }
+  }
+  // Önceki sürümün kayıtlı oyunu (eski ölçek) bir kez yeni ölçeğe çevrilir; yeni ölçekte kayıt varsa eskisi yalnızca silinir
+  {
+    const e = store.get(K_SAVE_ESKI, null);
+    if (e != null) {
+      if (e && typeof e === 'object' && store.get(K_SAVE, null) == null) {
+        const y = Object.assign({}, e);
+        y.score = Math.max(0, Math.floor(Number(e.score) || 0)) * PUAN_KAT;
+        if (Number.isFinite(e.bestAtStart)) y.bestAtStart = Math.max(0, Math.floor(e.bestAtStart)) * PUAN_KAT;
+        store.set(K_SAVE, y);
+      }
+      store.del(K_SAVE_ESKI);
+    }
+  }
   let bestAtStart = best;
   let combo = 0, comboMoves = 0, maxCombo = 0, linesTotal = 0, moves = 0;
   // Skor doğrulaması için: aktif oyun süresi (ms; hamleler arası en çok 60 sn sayılır), patlatma hamlesi, tam temizlik.
@@ -3487,7 +3512,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     while (floatsEl.childElementCount > 10) floatsEl.removeChild(floatsEl.firstElementChild);
   }
 
-  // Büyük kutlama yazısı tahtanın ortasında, iki satır (TAM TEMİZLİK! / +1.000, BAŞARDIN!, HEDEF GEÇİLDİ!)
+  // Büyük kutlama yazısı tahtanın ortasında, iki satır (TAM TEMİZLİK! / +10.000, BAŞARDIN!, HEDEF GEÇİLDİ!)
   function buyukYazi(ust, alt, tur, dur) {
     dur = dur || 1900;
     const el = document.createElement('div');
@@ -3550,7 +3575,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
        Yardım parçası (patlatan şekil) seçilirken büyük şekiller öne çıkar: hep küçük boşluk dolduranlar gelmez
        (tahta yarıdan fazla doluysa öne çıkarılmaz).
      MODE.combo : patlatma olmadan kaç hamle sonra kombonun bozulduğu */
-  const MODE = { combo: 5, ramp: 800000, curve: 0.6, rampMoves: 600, curveMoves: 0.9, guarantee: [1, 0.4], assist1: [0.8, 0.35], assist2: [0.35, 0.1], keep: [1, 0.35], bigLimit: [1, 0.3], multi: [0.8, 0.6], perfect: [0.9, 0.6], repeat: 0.45, repeatPrev: 0.8, smallLimit: 0.8 };
+  const MODE = { combo: 5, ramp: 800000 * PUAN_KAT, curve: 0.6, rampMoves: 600, curveMoves: 0.9, guarantee: [1, 0.4], assist1: [0.8, 0.35], assist2: [0.35, 0.1], keep: [1, 0.35], bigLimit: [1, 0.3], multi: [0.8, 0.6], perfect: [0.9, 0.6], repeat: 0.45, repeatPrev: 0.8, smallLimit: 0.8 };
 
   function difficulty(score, mode, moves) {
     const bySc = mode.ramp > 0 ? Math.pow(Math.min(1, Math.max(0, score / mode.ramp)), mode.curve) : 0;
@@ -3774,13 +3799,14 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     return picks;
   }
 
-  // Puanlama: yerleştirilen her kare 1 puan (commitPlace); patlayan her kare 10 puan,
+  // Puanlama (PUAN_KAT = 10): yerleştirilen her kare 10 puan (commitPlace); patlayan her kare 100 puan,
   // aynı hamlede 2 çizgi 2 kat, 3 çizgi 3 kat...; hepsi kombo ile çarpılır. Kombo art arda her patlatmada 1 artar.
+  function yerlesimPuani(kare) { return kare * PUAN_KAT; }
   function clearPoints(cells, lines, combo) {
-    return 10 * cells * lines * combo;
+    return 10 * PUAN_KAT * cells * lines * combo;
   }
-  // Tahtayı tamamen boşaltınca (TAM TEMİZLİK!) sabit ek ödül: kombodan bağımsız +1000
-  const PERFECT_BONUS = 1000;
+  // Tahtayı tamamen boşaltınca (TAM TEMİZLİK!) sabit ek ödül: kombodan bağımsız +10.000
+  const PERFECT_BONUS = 1000 * PUAN_KAT;
   function perfectBonus() { return PERFECT_BONUS; }
 
   /* Adil zorluk (merhamet): yeni üçlüde en az bir parça tahtadaki boşluklara sığar. Tahta en çok %85 doluyken üç parçanın
@@ -3893,14 +3919,14 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   function setBest(v) {
     best = v;
     store.set(K_BEST, best);
-    if (best >= 10000) kilitAc('hp');
+    if (best >= HP_REKOR) kilitAc('hp');
   }
 
   function addScore(n) {
     if (n <= 0) return;
     score += n;
     if (!duel && kip === 'klasik' && score > best) setBest(score); // düello, günlük bulmaca ve meydan okuma puanı rekoru etkilemez
-    bump(hudScore, n >= 50 ? 1.16 : 1.08);
+    bump(hudScore, n >= 50 * PUAN_KAT ? 1.16 : 1.08);
     wake();
     if (kip === 'meydan' && meydan && !meydan.gecti && !duel && score > meydan.hedef) meydanGecti();
   }
@@ -3915,7 +3941,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     moves++;
     if (oyunSure !== null) oyunSure += Math.min(60000, Math.max(0, now - sonHamleT));
     sonHamleT = now;
-    addScore(p.cells.length); // yerleştirilen her kare +1
+    addScore(yerlesimPuani(p.cells.length)); // yerleştirilen her kare +10
     const ln = fullLines();
     if (ln.rows.length || ln.cols.length) {
       doClear(ln.rows, ln.cols, p, r0, c0, now);
@@ -5700,7 +5726,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (DUEL_SECS.indexOf(v.secs) >= 0) d.secs = v.secs;
       const s = v.son;
       if (s && typeof s === 'object' && typeof s.url === 'string' && s.url.length < 600 && s.url.indexOf('https://') === 0 && +s.t > 0) {
-        d.son = { url: s.url, puan: Math.max(0, Math.floor(+s.puan || 0)), t: +s.t };
+        d.son = { url: s.url, puan: Math.max(0, Math.floor(+s.puan || 0)) * (v.k === PUAN_KAT ? 1 : PUAN_KAT), t: +s.t };   // işaretsizse önceki sürümden (eski ölçek)
       }
     }
     return d;
@@ -5744,7 +5770,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     $('dSecs').querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', String(+b.dataset.secs === v)));
   }
   function duelHata(id, msg) { const e = $(id); e.textContent = msg || ''; e.hidden = !msg; }
-  function duelPrefsKaydet() { store.set(K_DUEL, { n1: duelPrefs.n1, secs: duelPrefs.secs, son: duelPrefs.son }); }
+  function duelPrefsKaydet() { store.set(K_DUEL, { n1: duelPrefs.n1, secs: duelPrefs.secs, son: duelPrefs.son, k: PUAN_KAT }); }
 
   // Düelloda görünen ad: boş olabilir; doluysa takma ad kurallarına uymalı ve uygunsuz olmamalı (bağlantıyla başkasına gider)
   function duelloAdDenetle(v) {
@@ -5957,7 +5983,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   function duelloBaglanti(d) {
     let kod = DUELLO_SURUM + sayiKod(d.tohum >>> 0, 6) + sayiKod(Math.max(0, DUEL_SECS.indexOf(d.secs)), 1)
       + sayiKod(duelloSinir(d.seri[0], 2), 2) + sayiKod(duelloSinir(d.seri[1], 2), 2);
-    for (const r of d.p) kod += sayiKod(duelloSinir(r.score, 6), 6) + sayiKod(duelloSinir(r.lines, 3), 3) + sayiKod(duelloSinir(r.combo, 2), 2);
+    // Skorlar bağlantıda eski ölçekte (PUAN_KAT'a bölünür): eski sürümlerin bağlantılarıyla uyumlu
+    for (const r of d.p) kod += sayiKod(duelloSinir(r.score / PUAN_KAT, 6), 6) + sayiKod(duelloSinir(r.lines, 3), 3) + sayiKod(duelloSinir(r.combo, 2), 2);
     const a1 = d.adlar[0] || '', a2 = d.adlar[1] || '';
     const q = new URLSearchParams();
     q.set('duel', kod + duelloImza(kod + '|' + a1 + '|' + a2));
@@ -5981,6 +6008,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const p = [];
     for (let i = 12; i < kod.length; i += 11) p.push({ score: al(i, 6), lines: al(i + 6, 3), combo: al(i + 9, 2) });
     if (p.some(r => r.score < 0 || r.lines < 0 || r.combo < 0)) return null;
+    p.forEach(r => { r.score *= PUAN_KAT; });
     return { tohum, secs: DUEL_SECS[ti], seri: [al(8, 2), al(10, 2)], p, adlar: [meydanAdi(a1h), meydanAdi(a2h)] };
   }
   // Açılış: adreste düello varsa okunur, adres temizlenir (sayfa yenilenince yeniden sorulmaz)
@@ -6258,7 +6286,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
   function engelleriKaldir() { engelListe = []; store.del(K_ENGEL); }
 
-  const Skor = { tablo: store.get(K_TABLO, null), durum: 'yok', yukleniyor: false, sonIstek: 0, gonderiyor: false, tekrar: false, sonGonderim: 0, zaman: 0, sonuc: null };
+  // Tablo önbelleği yeni ölçekte (k: PUAN_KAT); önceki sürümden kalan önbellek kullanılmaz (açılışta yeniden yüklenir)
+  const Skor = { tablo: (t => (t && typeof t === 'object' && t.k === PUAN_KAT ? t : null))(store.get(K_TABLO, null)), durum: 'yok', yukleniyor: false, sonIstek: 0, gonderiyor: false, tekrar: false, sonGonderim: 0, zaman: 0, sonuc: null };
   const lbEls = [$('lbStart'), $('lbFull')];
 
   // Engel (ban): uygunsuz ad denemeleri ya da yönetici kararıyla. Sunucu bildirir, bitiş tarihi cihazda tutulur;
@@ -6318,7 +6347,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       store.set(K_OYUNCU, oyuncu);
       setTimeout(() => toast(yaz('adAnonim', upTR(oyuncu.ad)), 6500), 400);
     }
-    Skor.tablo = { hafta: d.hafta, bitis: d.bitis, kalan: d.kalan, alindi: Date.now(), ilk10: Array.isArray(d.ilk10) ? d.ilk10 : [], ben: d.ben || null, toplam: d.toplam | 0 };
+    // Sunucudaki puanlar eski ölçekte: oyunda PUAN_KAT ile çarpılarak gösterilir
+    const olcek = k => (k && typeof k === 'object' ? Object.assign({}, k, { puan: Math.max(0, Math.floor(Number(k.puan) || 0)) * PUAN_KAT }) : null);
+    Skor.tablo = { hafta: d.hafta, bitis: d.bitis, kalan: d.kalan, alindi: Date.now(), ilk10: Array.isArray(d.ilk10) ? d.ilk10.map(olcek).filter(Boolean) : [],
+      ben: olcek(d.ben), toplam: d.toplam | 0, k: PUAN_KAT };
     Skor.durum = 'tamam';
     store.set(K_TABLO, Skor.tablo);
   }
@@ -6335,10 +6367,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       .then(() => { Skor.yukleniyor = false; tabloCiz(); oyunSonuCiz(); });
   }
 
-  // Bekleyen puan: bu hafta gönderilemeyen (internet yok ya da takma ad yok) en yüksek puan
+  // Bekleyen puan: bu hafta gönderilemeyen (internet yok ya da takma ad yok) en yüksek puan. Önceki sürümden kalan
+  // (ölçek işareti olmayan, eski ölçekteki) bekleyen puan açılışta yeni ölçeğe çevrilir (bekleyenEkle'nin altında)
   function bekleyenAl() {
-    const b = store.get(K_BEKLEYEN, null);
-    if (!b || !(b.puan > 0)) return null;
+    let b = store.get(K_BEKLEYEN, null);
+    if (!b || typeof b !== 'object' || !(b.puan > 0)) return null;
+    // Önceki sürümden kalan bekleyen puan (ölçek işareti yok): yeni ölçeğe çevrilir
+    if (b.k !== PUAN_KAT) { b = Object.assign({}, b, { puan: Math.floor(b.puan) * PUAN_KAT, k: PUAN_KAT }); store.set(K_BEKLEYEN, b); }
     // Bilinen haftadan önce kazanılmışsa (hafta sıfırlandıysa) artık geçersiz
     const t = Skor.tablo;
     if (t && Number.isFinite(t.kalan)) {
@@ -6357,8 +6392,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
   function bekleyenEkle(puan, hamle) {
     const b = bekleyenAl();
-    if (!b || puan > b.puan) store.set(K_BEKLEYEN, Object.assign({ puan, hamle: Math.max(1, hamle | 0), t: Date.now() }, oyunBilgisi(puan, hamle)));
+    if (!b || puan > b.puan) store.set(K_BEKLEYEN, Object.assign({ puan, hamle: Math.max(1, hamle | 0), t: Date.now(), k: PUAN_KAT }, oyunBilgisi(puan, hamle)));
   }
+  bekleyenAl();   // açılışta: önceki sürümden kalan bekleyen puan yeni ölçeğe çevrilir
 
   function skorGonder(puan, hamle, neden) {
     if (!SKOR_API || SKOR_GONDERILMEZ || duel || kip !== 'klasik' || !(puan > 0)) return;
@@ -6389,7 +6425,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (Number.isInteger(b.sure) && b.sure >= 0) ek.sure = b.sure;
     if (Number.isInteger(b.oyun) && b.oyun >= 0) ek.oyun = b.oyun;
     if (b.st && typeof b.st === 'object' && ['pt', 'cz', 'kb', 'tt'].every(k => Number.isInteger(b.st[k]) && b.st[k] >= 0)) ek.st = { pt: b.st.pt, cz: b.st.cz, kb: b.st.kb, tt: b.st.tt };
-    skorIstek('gonder', Object.assign({ pid: oyuncu.id, ad: oyuncu.ad, puan: b.puan, hamle: b.hamle, v: 2 }, ek))
+    skorIstek('gonder', Object.assign({ pid: oyuncu.id, ad: oyuncu.ad, puan: Math.floor(b.puan / PUAN_KAT), hamle: b.hamle, v: 2 }, ek))
       .then(d => {
         if (d.ok) {
           tabloAl(d);
@@ -6438,7 +6474,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   function istatGonder(k) {
     if (!SKOR_API || SKOR_GONDERILMEZ || istatGitti || !(moves > 0)) return;
     istatGitti = true;
-    const g = { s: sayacKodu(), k, puan: Math.max(0, score | 0), hamle: moves };
+    const g = { s: sayacKodu(), k, puan: Math.max(0, Math.floor(score / PUAN_KAT)), hamle: moves };
     if (oyunSure !== null) g.sure = Math.round(oyunSure);
     try {
       fetch(SKOR_API + '?a=oyun', { method: 'POST', body: JSON.stringify(g), headers: { 'Content-Type': 'text/plain;charset=UTF-8' }, keepalive: true, cache: 'no-store' }).catch(() => {});
@@ -6948,7 +6984,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
      tamamlanan günler seriyi (🔥) oluşturur (bugün henüz çözülmediyse seri dünden sayılır). */
   const pad2 = n => String(n).padStart(2, '0');
   const gunAnahtar = d => d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
-  const GUNLUK = { uclu: 80, hedefUclu: 5, hedefPay: 0.9, hedefEnAz: 600, hedefEnCok: 2500 };
+  const GUNLUK = { uclu: 80, hedefUclu: 5, hedefPay: 0.9, hedefEnAz: 600 * PUAN_KAT, hedefEnCok: 2500 * PUAN_KAT };
   const gunlukOnbellek = {};
   // Örnek oyuncu: kalan şekillerden en iyi yerleştirmeyi seçer (en çok çizgi, tahtayı boşaltmak, az delik, çok boş kare)
   function gunlukEnIyi(bd, sekiller) {
@@ -6984,7 +7020,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       el.splice(sec.i, 1);
       d.bd = sec.nb;
       d.hamle++;
-      d.puan += sec.n;
+      d.puan += yerlesimPuani(sec.n);
       if (sec.cizgi) {
         d.kmb++; d.kmbH = MODE.combo;
         d.puan += clearPoints(once + sec.n - (N * N - sec.bos), sec.cizgi, d.kmb);
@@ -7059,9 +7095,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (sonuc) durum = sonuc;
       ilerleme.push(durum.puan);
     }
-    // Hedef: örnek oyuncunun ilk 5 üçlüdeki (15 hamle) puanının %90'ı, yüzlüğe yuvarlanır (600-2.500)
-    const ham = ilerleme[GUNLUK.hedefUclu - 1] * GUNLUK.hedefPay;
-    const hedef = clamp(Math.floor(ham / 100) * 100, GUNLUK.hedefEnAz, GUNLUK.hedefEnCok);
+    // Hedef: örnek oyuncunun ilk 5 üçlüdeki (15 hamle) puanının %90'ı, binliğe yuvarlanır (6.000-25.000)
+    const ham = ilerleme[GUNLUK.hedefUclu - 1] * GUNLUK.hedefPay, yuvarla = 100 * PUAN_KAT;
+    const hedef = clamp(Math.floor(ham / yuvarla) * yuvarla, GUNLUK.hedefEnAz, GUNLUK.hedefEnCok);
     return (gunlukOnbellek[gun] = { gun, tohum, tahta, hedef, kare, uclular, ornek: { puan: ilerleme, temiz: durum.temiz, tikandi } });
   }
   // Günün k. üçlüsü (dizinin sonundan sonra: doğrulanmamış aday)
@@ -7277,7 +7313,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (typeof ucluKayit !== 'string' || !ucluKayit || !(score > 0) || duel || kip === 'gunluk') return '';
     const q = new URLSearchParams();
     q.set('challenge', KOD_SURUM + sayiKod(oyunTohum >>> 0, 6) + ucluKayit);
-    q.set('target', String(Math.floor(score)));
+    q.set('target', String(Math.max(1, Math.floor(score / PUAN_KAT))));   // bağlantıda eski ölçek
     if (oyuncu.ad && !banli()) q.set('name', upTR(oyuncu.ad));
     return PAYLAS_ADRES + '?' + q.toString();
   }
@@ -7388,7 +7424,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const uclular = [];
     for (let i = 7; i < kod.length; i += 4) { const u = ucluCoz(kod.slice(i, i + 4)); if (!u) return null; uclular.push(u); }
     const hs = q.get('target') || '';
-    const hedef = /^\d{1,9}$/.test(hs) ? Number(hs) : 0;
+    const hedef = /^\d{1,9}$/.test(hs) ? Number(hs) * PUAN_KAT : 0;   // bağlantıdaki hedef eski ölçekte
     if (!(hedef >= 1)) return null;
     return { tohum, uclular, hedef, ad: meydanAdi(q.get('name')) };
   }
@@ -7483,7 +7519,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   /* ================= Blok teması seçici (ana menü) ================= */
   const blokAdi = id => (yaz('blokAdlari') || {})[id] || id.toUpperCase();
-  const blokKosul = id => (id === 'kristal' ? yaz('kilitKristal') : id === 'ahsap' ? yaz('kilitAhsap', Math.min(3, gunlukGunler.size)) : id === 'hp' ? yaz('kilitHp') : '');
+  const blokKosul = id => (id === 'kristal' ? yaz('kilitKristal') : id === 'ahsap' ? yaz('kilitAhsap', Math.min(3, gunlukGunler.size)) : id === 'hp' ? yaz('kilitHp', fmt(HP_REKOR)) : '');
   function blokSecimCiz() {
     $('btAd').textContent = blokAdi(blokTema);
     document.querySelectorAll('.bt').forEach(b => {
@@ -7538,7 +7574,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
   // Önceden kazanılmış koşullar (eski rekor, çözülmüş günlük bulmacalar): açılışta sessizce açılır
   function blokKilitKontrol(sessiz) {
-    if (best >= 10000) kilitAc('hp', sessiz);
+    if (best >= HP_REKOR) kilitAc('hp', sessiz);
     if (gunlukGunler.size >= 3) kilitAc('ahsap', sessiz);
   }
   document.querySelector('.bt-secim').addEventListener('click', e => {
@@ -7690,6 +7726,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   // Test kancası: yalnızca adres #test ile açıldığında etkin
   if (/(^|&)test\b/.test(location.hash.slice(1))) {
     window.__test = {
+      puanKat: PUAN_KAT,
       info: () => ({
         mode: L.mode, cs: L.cs, bx: L.bx, by: L.by, bs: L.bs, fp: L.fp, tray: L.tray, slotW: L.slotW, hud: L.hud,
         state: gameState, score, combo, comboMoves, best, moves, linesTotal, maxCombo, theme: themeIdx, themeName: THEMES[Math.max(0, themeIdx)].name, dpr: L.dpr, fxDpr: L.fxDpr,

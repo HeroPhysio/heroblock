@@ -5,11 +5,15 @@ Kurucu: Baran Yavuz · İletişim: [iletisim@herouygulama.com.tr](mailto:iletisi
 
 8x8 tahtada oynanan blok bulmaca oyunu. Parçaları sürükle, dolan satır ve sütunları patlat, komboyu sürdür.
 
-Puanlama: yerleştirilen her kare 1 puan, patlayan her kare 10 puan;
+Puanlama: yerleştirilen her kare 10 puan, patlayan her kare 100 puan;
 aynı hamlede 2 çizgi 2 kat, 3 çizgi 3 kat puan getirir ve hepsi kombo ile çarpılır.
 Art arda her patlatma komboyu 1 artırır; 5 hamle boyunca hiç patlatma yapılmazsa kombo sıfırlanır.
 Tahtayı birkaç çizgiyi ya da tüm tahtayı birden patlatacak şekilde hazırlarsan oyun çoğu zaman o işi bitirecek
-parçayı da verir. Tahtayı tamamen boşaltmak (TAM TEMİZLİK!) 1.000 bonus puan getirir.
+parçayı da verir. Tahtayı tamamen boşaltmak (TAM TEMİZLİK!) 10.000 bonus puan getirir.
+Puanlar Kasım 2026'da 10 katına çıktı (oyunun kodunda `PUAN_KAT`). Skor sunucusu ve paylaşılan bağlantılar eski ölçekte kalır:
+sunucuya giden puan (skor tablosu, anonim istatistik) ile meydan okuma ve düello bağlantılarındaki puan 10'a bölünür, gelen puan
+10 ile çarpılır. Böylece sunucunun puan denetimi aynen çalışır, eski bağlantılar ve eski sürümler uyumlu kalır; yönetim paneli
+puanları eski ölçekte (10'a bölünmüş) gösterir. Cihazdaki rekor ve kayıtlı oyun ilk açılışta 10 ile çarpılır.
 Adil zorluk: tahta en çok %85 doluyken gelen üç parçadan en az biri her zaman boşluklara sığar (gerekirse son parça küçük bir
 parçayla değişir: en az bir hamlelik kurtuluş şansı); tahta daha doluysa oyun normal biter.
 Parçalar çeşitli gelir: aynı parça art arda pek gelmez, oyun ilerledikçe (puan ya da hamle) zorlaşır.
@@ -22,7 +26,7 @@ HAFTANIN EN İYİLERİ: ilk açılışta bir takma ad sorulur (geçilebilir); ha
 ana ekranda görünür. Tablo her pazartesi 00:00'da (Türkiye saati) sıfırlanır; puanlar skor.herouygulama.com.tr'de tutulur.
 Ses kesilirse "SES DURDU" düğmesi çıkar, dokununca ses geri gelir. Yeni sürüm yayımlanınca açık oyunda
 "YENİ SÜRÜM VAR" düğmesi çıkar; oyun kayıtlı olduğu için güncelleme kaldığın yerden sürer.
-Her 10.000 puanda tema değişir: 17 tema sırayla döner. Puan arttıkça oyun zorlaşır.
+Her 100.000 puanda tema değişir: 17 tema sırayla döner. Puan arttıkça oyun zorlaşır.
 DİL: oyun Türkçe açılır; ana menüdeki (ve ilk açılıştaki takma ad penceresindeki) TÜRKÇE / ENGLISH seçiciyle
 bütün oyun İngilizceye geçer, seçim cihazda hatırlanır.
 JOKERLER: rafın altındaki DÖNDÜR (parçayı saat yönünde 90° çevirir), YENİLE (yeni üç parça) ve KARE SİL (dokunulan tek kareyi
@@ -39,7 +43,7 @@ GÜNLÜK BULMACA: her gün herkese aynı 12-15 bloklu tahta ve aynı parça sır
 hedef puanına ulaş; çözülen günler takvimde işaretlenir, art arda çözülen günler seriyi (🔥) oluşturur. Joker ve ikinci şans yok.
 ARKADAŞINA MEYDAN OKU: KAYBETTİN ekranındaki düğme oyunun bağlantısını paylaşır (?challenge=KOD&target=SKOR&name=AD). Bağlantıyı
 açan arkadaş aynı parçaları aynı sırayla alır, üstte HEDEF görünür; hedefi geçince kutlama olur.
-BLOK TEMALARI: NEON (varsayılan), KRİSTAL (ilk TAM TEMİZLİK), AHŞAP (3 günlük bulmaca), HEROPHYSIO (rekor 10.000; bloklarda zeminsiz HeroPhysio logosu).
+BLOK TEMALARI: NEON (varsayılan), KRİSTAL (ilk TAM TEMİZLİK), AHŞAP (3 günlük bulmaca), HEROPHYSIO (rekor 100.000; bloklarda zeminsiz HeroPhysio logosu).
 Günlük bulmaca ve meydan okuma puanı rekoru ve haftalık tabloyu etkilemez.
 
 **Oyna:** https://heroblock.herouygulama.com.tr/
