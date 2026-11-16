@@ -13,8 +13,9 @@ parçayı da verir. Tahtayı tamamen boşaltmak (TAM TEMİZLİK!) 5.000 bonus pu
 Puanlar Kasım 2026'dan beri ilk puanlamanın 5 katı (oyunun kodunda `PUAN_KAT = 5`). Skor sunucusu ve paylaşılan bağlantılar
 ilk ölçekte kalır: sunucuya giden puan (skor tablosu, anonim istatistik) ile meydan okuma ve düello bağlantılarındaki puan
 PUAN_KAT'a bölünür, gelen puan PUAN_KAT ile çarpılır. Böylece sunucunun puan denetimi aynen çalışır, eski bağlantılar ve eski
-sürümler uyumlu kalır; yönetim paneli puanları ilk ölçekte (PUAN_KAT'a bölünmüş) gösterir. Cihazdaki rekor ve kayıtlı oyun
-ilk açılışta yeni ölçeğe çevrilir (16 Kasım'da birkaç saat yayında kalan 10 kat puanlamanınkiler de).
+sürümler uyumlu kalır. Yönetim paneli (skor sunucusu sürüm 5, sunucudaki `PUAN_KAT`) puanları oyunda görünen değerle gösterir;
+panelden düzeltilen puan da oyundaki değerle yazılır. Cihazdaki rekor ve kayıtlı oyun ilk açılışta yeni ölçeğe çevrilir
+(16 Kasım'da birkaç saat yayında kalan 10 kat puanlamanınkiler de).
 Adil zorluk: tahta en çok %85 doluyken gelen üç parçadan en az biri her zaman boşluklara sığar (gerekirse son parça küçük bir
 parçayla değişir: en az bir hamlelik kurtuluş şansı); tahta daha doluysa oyun normal biter.
 Parçalar çeşitli gelir: aynı parça art arda pek gelmez, oyun ilerledikçe (puan ya da hamle) zorlaşır.
