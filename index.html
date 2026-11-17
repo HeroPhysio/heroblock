@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="bk-build" content="f305864052">
+<meta name="bk-build" content="3e16f588da">
 <meta name="theme-color" content="#050817">
 <meta name="author" content="Baran Yavuz, Hero Uygulama Yazılım Teknolojileri Limited Şirketi">
 <meta name="color-scheme" content="dark">
@@ -914,6 +914,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   .pr-ust { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; min-width: 0; }
   .pr-rutbe { min-width: 0; font: 400 13.5px/1.1 var(--display); letter-spacing: .06em; color: var(--gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 0 10px rgba(255, 190, 40, .3); }
   .pr-svy { flex: none; font: 700 11px/1 var(--ui); letter-spacing: .1em; color: var(--muted); white-space: nowrap; }
+  /* Dar ekranda rütbe adı kesilmesin: "SEVİYE n" kalan yere sığmazsa alt satıra kayar ve görünmez (seviye rozette yazıyor) */
+  .profil .pr-ust, .gr-sv .pr-ust { align-items: center; }
+  .pr-svy-kap { flex: 1 1 0; min-width: 0; height: 12px; overflow: hidden; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+  .pr-svy-kap::before { content: ''; flex: 0 0 0; height: 12px; }
+  .pr-svy-kap > .pr-svy { line-height: 12px; }
+  @media (max-width: 340px) { .profil .pr-rutbe, .gr-sv .pr-rutbe { font-size: 12.5px; letter-spacing: .03em; } }
   .pr-cubuk { display: block; height: 6px; border-radius: 99px; background: rgba(255, 255, 255, .1); overflow: hidden; }
   .pr-cubuk i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, #ffb300, #ffe27a); box-shadow: 0 0 8px rgba(255, 200, 60, .55); transition: width .5s cubic-bezier(.2, .8, .2, 1); }
   .pr-gorev { flex: none; display: inline-flex; align-items: center; gap: 5px; padding: 6px 9px 5px; border-radius: 10px; background: rgba(43, 140, 255, .14); border: 1px solid rgba(92, 160, 255, .38); font: 700 13px/1 var(--ui); letter-spacing: .04em; color: #cfe3ff; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -1519,7 +1525,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     <button id="btnReklamsiz" class="btn btn-ghost btn-gap btn-ico btn-reklamsiz" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3v5.6c0 4.4-3 8.1-7.5 9.6-4.5-1.5-7.5-5.2-7.5-9.6V6z"/><path d="M8.2 14.2l1.6-4.6h.5l1.6 4.6M8.7 12.8h2.5" stroke-width="1.9"/><path d="M13.2 9.6h.9a2.3 2.3 0 0 1 0 4.6h-.9z" stroke-width="1.9"/></svg><span data-t="reklamlariKaldir">REKLAMLARI KALDIR</span><b id="rsFiyat" class="rs-fiyat"></b></button>
     <button id="btnProfil" class="profil" type="button">
       <span class="pr-rozet" aria-hidden="true"><b id="prSv">1</b></span>
-      <span class="pr-orta" aria-hidden="true"><span class="pr-ust"><span id="prRutbe" class="pr-rutbe">ÇAYLAK</span><span id="prSvYazi" class="pr-svy">SEVİYE 1</span></span><span class="pr-cubuk"><i id="prCubuk"></i></span></span>
+      <span class="pr-orta" aria-hidden="true"><span class="pr-ust"><span id="prRutbe" class="pr-rutbe">ÇAYLAK</span><span class="pr-svy-kap"><span id="prSvYazi" class="pr-svy">SEVİYE 1</span></span></span><span class="pr-cubuk"><i id="prCubuk"></i></span></span>
       <span id="prGorev" class="pr-gorev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.5" width="14" height="16.5" rx="2.5"/><path d="M9 4.5v-.9c0-.6.4-1 1-1h4c.6 0 1 .4 1 1v.9"/><path d="m8.8 13 2.3 2.3 4.2-4.6"/></svg><span id="prGorevSayi">0/3</span></span>
     </button>
     <div id="muzikRow" class="music-row">
@@ -1686,7 +1692,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     <div class="gr-sv">
       <span class="pr-rozet gr-rozet" aria-hidden="true"><b id="grSv">1</b></span>
       <div class="gr-sv-metin">
-        <div class="pr-ust"><span id="grRutbe" class="pr-rutbe">ÇAYLAK</span><span id="grSvYazi" class="pr-svy">SEVİYE 1</span></div>
+        <div class="pr-ust"><span id="grRutbe" class="pr-rutbe">ÇAYLAK</span><span class="pr-svy-kap"><span id="grSvYazi" class="pr-svy">SEVİYE 1</span></span></div>
         <div id="grCubukKap" class="pr-cubuk" role="progressbar" aria-labelledby="grRutbe" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="grCubuk"></i></div>
         <div id="grXp" class="gr-xp"></div>
         <div id="grSonraki" class="gr-sonraki"></div>
