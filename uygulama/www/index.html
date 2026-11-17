@@ -315,6 +315,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   .float-combo { font-size: calc(var(--cs) * .72); color: #63eeff; text-shadow: 0 .06em 0 #0b3a80, 0 0 .07em rgba(4, 8, 26, .95), 0 0 .3em rgba(43, 227, 255, .65), 0 0 .8em rgba(43, 140, 255, .3); }
   .float-theme { font-size: calc(var(--cs) * .5); letter-spacing: .05em; color: #ffffff; text-shadow: 0 0 .07em rgba(4, 8, 26, .95), 0 0 .35em var(--accent, rgba(255, 197, 49, .65)), 0 0 .9em var(--accent, rgba(255, 197, 49, .3)); }
   .float-count { font-size: calc(var(--cs) * 2.4); color: #ffffff; text-shadow: 0 .05em 0 #0d2c6e, 0 0 .06em rgba(4, 8, 26, .95), 0 0 .3em var(--accent, rgba(80, 190, 255, .65)), 0 0 .8em rgba(43, 140, 255, .3); }
+  .float-seviye { font-size: calc(var(--cs) * .82); letter-spacing: .03em; color: #fff3c4; text-shadow: 0 .06em 0 #8a4200, 0 0 .07em rgba(4, 8, 26, .95), 0 0 .35em rgba(255, 197, 49, .85), 0 0 .9em rgba(255, 170, 30, .45); }
   .float-pts { font-size: calc(var(--cs) * .62); color: #ffffff; text-shadow: 0 .06em 0 #0d2c6e, 0 0 .07em rgba(4, 8, 26, .95), 0 0 .3em rgba(80, 190, 255, .65); }
 
   .icon-btn {
@@ -516,7 +517,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   html.uygulama #lbStart { display: none !important; }
   #btnTablo svg { color: var(--gold); }
   /* Kısa ekranda ana menü tek ekrana sığsın: alt başlık yok, düğmeler ve satırlar biraz daha sık */
-  @media (max-height: 900px) {
+  @media (max-height: 940px) {
     html.uygulama #stSub { display: none; }
     html.uygulama #stCard { padding: 18px 18px 16px; }
     html.uygulama #stCard .title { margin-bottom: 12px; }
@@ -538,7 +539,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     html.uygulama #stCard .card-foot { margin-top: 8px; }
   }
   /* Dar ve kısa ekranda blok teması seçimi tek satırda kalsın (iki satıra inmesin) */
-  @media (max-height: 900px) and (max-width: 380px) {
+  @media (max-height: 940px) and (max-width: 380px) {
     html.uygulama #stCard .bt { width: 37px; height: 37px; border-radius: 11px; }
     html.uygulama #stCard .bt canvas { width: 30px; height: 30px; }
     html.uygulama #stCard .bt-secim { gap: 6px; }
@@ -886,6 +887,80 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   /* Deneme banner alanı (#test&banner): uygulamadaki banner reklamın yerini gösterir */
   #reklamAlani { position: fixed; z-index: 25; left: 0; right: 0; bottom: env(safe-area-inset-bottom, 0px); height: var(--reklam-alt, 50px); display: grid; place-items: center; border-top: 1px dashed rgba(92, 160, 255, .6); background: repeating-linear-gradient(135deg, rgba(43, 140, 255, .16) 0 10px, rgba(43, 140, 255, .07) 10px 20px), #060b1f; color: #8ea6d8; font: 700 12px/1 var(--ui); letter-spacing: .2em; pointer-events: none; }
   #btnReklamGizlilik { display: block; margin: 8px auto 0; font-size: 12px; }
+  /* ================= Seviye / rütbe ve günlük görevler ================= */
+  .profil { appearance: none; -webkit-appearance: none; display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 12px; padding: 7px 8px 7px 7px; border-radius: 14px; border: 1px solid rgba(255, 197, 49, .3); background: linear-gradient(180deg, rgba(42, 30, 6, .6), rgba(12, 22, 62, .76)); color: var(--text); font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform .12s, border-color .2s; }
+  .profil:hover { border-color: rgba(255, 197, 49, .6); }
+  .profil:active { transform: scale(.985); }
+  .profil:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .pr-rozet { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: radial-gradient(circle at 50% 32%, #ffe9a6, #ffbd1f 58%, #c97f00); box-shadow: 0 0 0 2px rgba(255, 220, 120, .3), 0 0 14px rgba(255, 190, 40, .35); }
+  .pr-rozet b { font: 400 15px/1 var(--display); color: #2a1600; font-variant-numeric: tabular-nums; }
+  .pr-orta, .go-xp-orta { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .pr-ust { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; min-width: 0; }
+  .pr-rutbe { min-width: 0; font: 400 13.5px/1.1 var(--display); letter-spacing: .06em; color: var(--gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 0 10px rgba(255, 190, 40, .3); }
+  .pr-svy { flex: none; font: 700 11px/1 var(--ui); letter-spacing: .1em; color: var(--muted); white-space: nowrap; }
+  .pr-cubuk { display: block; height: 6px; border-radius: 99px; background: rgba(255, 255, 255, .1); overflow: hidden; }
+  .pr-cubuk i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, #ffb300, #ffe27a); box-shadow: 0 0 8px rgba(255, 200, 60, .55); transition: width .5s cubic-bezier(.2, .8, .2, 1); }
+  .pr-gorev { flex: none; display: inline-flex; align-items: center; gap: 5px; padding: 6px 9px 5px; border-radius: 10px; background: rgba(43, 140, 255, .14); border: 1px solid rgba(92, 160, 255, .38); font: 700 13px/1 var(--ui); letter-spacing: .04em; color: #cfe3ff; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .pr-gorev svg { width: 15px; height: 15px; flex: none; }
+  .pr-gorev[data-durum="odul"] { color: #2a1600; background: linear-gradient(180deg, #ffe27a, #ffb300); border-color: transparent; animation: grNabiz 1s ease-in-out infinite alternate; }
+  .pr-gorev[data-durum="alindi"] { color: #9ff5c8; background: rgba(52, 216, 138, .14); border-color: rgba(52, 216, 138, .45); }
+  @keyframes grNabiz { from { box-shadow: 0 0 0 0 rgba(255, 197, 49, 0); } to { box-shadow: 0 0 14px 2px rgba(255, 197, 49, .6); } }
+  .gr-card { width: min(380px, 100%); padding: 22px 18px 16px; }
+  .gr-sv { display: flex; align-items: center; gap: 12px; margin: 4px 30px 16px 0; padding: 10px 12px; border-radius: 14px; text-align: left; background: rgba(12, 22, 62, .72); border: 1px solid rgba(255, 197, 49, .28); }
+  .gr-rozet { width: 46px; height: 46px; }
+  .gr-rozet b { font-size: 20px; }
+  .gr-sv-metin { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+  .gr-xp { font: 700 12.5px/1.2 var(--ui); color: var(--text); font-variant-numeric: tabular-nums; }
+  .gr-sonraki { font: 600 12px/1.25 var(--ui); color: var(--muted); }
+  #grBaslik { margin-bottom: 4px; }
+  .gr-alt { margin: 0 0 12px; font-size: 14px; line-height: 1.35; }
+  .gr-kalan { display: inline-block; white-space: nowrap; color: #9fe9ff; font-variant-numeric: tabular-nums; }
+  .gr-liste { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-direction: column; gap: 8px; text-align: left; }
+  .gr-gorev { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; column-gap: 10px; row-gap: 6px; padding: 10px 12px; border-radius: 13px; background: rgba(12, 22, 62, .72); border: 1px solid rgba(92, 160, 255, .22); }
+  .gr-isaret { grid-row: 1 / 3; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid rgba(92, 160, 255, .5); color: #03230f; }
+  .gr-isaret svg { width: 15px; height: 15px; }
+  .gr-yazi { min-width: 0; font: 600 15px/1.2 var(--ui); color: var(--text); }
+  .gr-sayac { font: 700 13px/1 var(--ui); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .gr-bar { grid-column: 2 / 4; display: block; height: 5px; border-radius: 99px; background: rgba(255, 255, 255, .08); overflow: hidden; }
+  .gr-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2b8cff, #6ee7ff); }
+  .gr-gorev[data-bitti="1"] { border-color: rgba(52, 216, 138, .45); background: rgba(10, 48, 36, .55); }
+  .gr-gorev[data-bitti="1"] .gr-isaret { border-color: transparent; background: linear-gradient(180deg, #8dffc4, #2fd47f); }
+  .gr-gorev[data-bitti="1"] .gr-bar i { background: linear-gradient(90deg, #2fd47f, #8dffc4); }
+  .gr-gorev[data-bitti="1"] .gr-sayac { color: #8dffc4; }
+  .gr-odul { padding: 12px; border-radius: 14px; border: 1px dashed rgba(255, 197, 49, .42); background: rgba(42, 30, 6, .35); }
+  .gr-secim { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 10px; }
+  .gr-jk { appearance: none; -webkit-appearance: none; position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; padding: 8px 4px 7px; border-radius: 12px; border: 1.5px solid rgba(92, 160, 255, .3); background: rgba(12, 22, 62, .8); color: #cfe3ff; font: 700 11.5px/1.1 var(--ui); letter-spacing: .05em; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .gr-jk svg { width: 22px; height: 22px; }
+  .gr-jk span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .gr-jk[aria-checked="true"] { border-color: var(--gold); color: #fff; box-shadow: 0 0 0 1px var(--gold), 0 0 14px rgba(255, 197, 49, .35); }
+  .gr-jk:disabled { opacity: .5; cursor: default; }
+  .gr-jk:disabled[aria-checked="true"] { opacity: 1; }
+  .gr-jk:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .gr-jk b { position: absolute; top: -7px; right: -5px; min-width: 20px; padding: 3px 5px 2px; border-radius: 99px; font: 700 11px/1 var(--ui); color: #2a1600; background: var(--gold); }
+  .gr-jk b:empty { display: none; }
+  .gr-al[hidden] { display: none; }
+  .gr-al:disabled { opacity: .45; filter: saturate(.3); cursor: default; }
+  .gr-odul-durum { margin: 8px 0 0; font: 600 13px/1.35 var(--ui); color: var(--muted); }
+  .gr-odul-durum:empty { display: none; }
+  .gr-not { margin: 10px 0 0; font: 600 11.5px/1.4 var(--ui); color: var(--muted); }
+  .go-xp { display: flex; align-items: center; gap: 10px; margin: -8px 0 16px; padding: 7px 10px 7px 7px; border-radius: 14px; text-align: left; background: rgba(42, 30, 6, .45); border: 1px solid rgba(255, 197, 49, .28); }
+  .go-xp[hidden] { display: none; }
+  .go-xp-kazanc { flex: none; font: 700 12.5px/1 var(--ui); color: #ffe27a; font-variant-numeric: tabular-nums; }
+  .go-xp.atladi { border-color: var(--gold); box-shadow: 0 0 16px rgba(255, 197, 49, .3); }
+  @media (max-height: 940px) {
+    html.uygulama #stCard .profil { margin-top: 8px; padding-top: 6px; padding-bottom: 6px; }
+  }
+  @media (max-height: 760px) {
+    html.uygulama #stCard .btn { padding-top: 8px; padding-bottom: 7px; }
+    html.uygulama #stCard .btn.btn-reklamsiz { padding-top: 7px; padding-bottom: 6px; }
+    html.uygulama #stCard .hp-aciklama { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+    html.uygulama #stCard .music-row { padding-top: 5px; padding-bottom: 5px; }
+  }
+  @media (max-height: 800px) {
+    html.uygulama #stCard .profil { margin-top: 7px; padding-top: 5px; padding-bottom: 5px; }
+    html.uygulama #stCard .profil .pr-rozet { width: 30px; height: 30px; }
+    html.uygulama #stCard .profil .pr-rozet b { font-size: 14px; }
+  }
   /* ================= Reklamsız oyun (uygulama içi satın alma) ================= */
   .btn-reklamsiz { padding-top: 12px; padding-bottom: 11px; color: #d4ffe6; background: linear-gradient(180deg, rgba(8, 58, 42, .92), rgba(20, 24, 62, .92)); box-shadow: inset 0 0 0 1px rgba(64, 232, 150, .5), 0 0 18px rgba(64, 232, 150, .14); font-size: clamp(13px, 4.2vw, 17px); letter-spacing: clamp(.03em, .3vw, .1em); white-space: nowrap; }
   .btn-reklamsiz[hidden] { display: none; }
@@ -1102,6 +1177,19 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     #goCard .go-week { margin-bottom: 10px; }
     #goCard .btn:not(.btn-devam) { padding-top: 12px; padding-bottom: 11px; }
     #goCard .btn-gap { margin-top: 8px; }
+    #goCard .go-xp { margin: -4px 0 12px; }
+  }
+  @media (max-height: 800px) {
+    html.uygulama #goCard { padding-top: 18px; padding-bottom: 16px; }
+    html.uygulama #goCard .badge { margin-bottom: 6px; }
+    html.uygulama #goCard .sub { margin-bottom: 10px; }
+    html.uygulama #goCard .big-score { margin: 2px 0 10px; font-size: clamp(40px, 12vw, 54px); }
+    html.uygulama #goCard .stats { margin-bottom: 12px; }
+    html.uygulama #goCard .stat { padding: 7px 4px; }
+    html.uygulama #goCard .go-xp { margin: -4px 0 12px; }
+    html.uygulama #goCard .go-week { margin-bottom: 10px; }
+    html.uygulama #goCard .btn:not(.btn-devam) { padding-top: 12px; padding-bottom: 11px; }
+    html.uygulama #goCard .btn-gap { margin-top: 8px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .float-buyuk { animation: floatFade 1.9s linear both; }
@@ -1234,6 +1322,20 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   html.light .hud-best.gecti #hudBest { color: #0b9a52; text-shadow: none; }
   html.light .btn-gunluk { color: #6a4300; background: linear-gradient(180deg, #fff6dc, #ffeab0); box-shadow: inset 0 0 0 1px rgba(214, 150, 0, .55), 0 4px 14px rgba(200, 140, 0, .15); }
   html.light .btn-gunluk svg, html.light .btn-meydan svg { color: #d48a00; }
+  html.light .profil, html.light .gr-sv, html.light .go-xp { background: linear-gradient(180deg, #fff8e1, #fdefc2); border-color: rgba(214, 150, 0, .42); color: #14213d; }
+  html.light .pr-rutbe { color: #a86b00; text-shadow: none; }
+  html.light .pr-cubuk { background: rgba(20, 33, 61, .1); }
+  html.light .pr-gorev { color: #0b4a9e; background: #e3efff; border-color: rgba(43, 120, 220, .35); }
+  html.light .pr-gorev[data-durum="alindi"] { color: #0f7a45; background: #e6fff1; border-color: rgba(20, 160, 90, .45); }
+  html.light .gr-gorev, html.light .gr-jk { background: #f3f7fd; border-color: rgba(43, 120, 220, .22); color: #14213d; }
+  html.light .gr-gorev[data-bitti="1"] { background: #e6fff1; border-color: rgba(20, 160, 90, .45); }
+  html.light .gr-gorev[data-bitti="1"] .gr-sayac { color: #0f7a45; }
+  html.light .gr-yazi, html.light .gr-xp { color: #14213d; }
+  html.light .gr-kalan { color: #0b6fb8; }
+  html.light .gr-odul { background: #fffaf0; }
+  html.light .gr-jk[aria-checked="true"] { color: #14213d; }
+  html.light .go-xp-kazanc { color: #a86b00; }
+  html.light .float-seviye { color: #a86b00; text-shadow: 0 .05em 0 #ffe9a6, 0 0 .3em rgba(255, 255, 255, .95), 0 0 .7em rgba(255, 190, 40, .5); }
   html.light .btn-reklamsiz { color: #0c5132; background: linear-gradient(180deg, #e6fff1, #c9f5dd); box-shadow: inset 0 0 0 1px rgba(20, 160, 90, .5), 0 4px 14px rgba(20, 160, 90, .14); }
   html.light .btn-reklamsiz svg { color: #13a35c; }
   html.light .stn-ikon { color: #13a35c; border-color: rgba(20, 160, 90, .55); background: radial-gradient(circle at 50% 40%, rgba(40, 200, 120, .2), rgba(43, 140, 255, .04) 70%); }
@@ -1371,6 +1473,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       <div class="stat"><span data-t="cizgi">ÇİZGİ</span><b id="goLines">0</b></div>
       <div class="stat"><span data-t="enIyiKombo">EN İYİ KOMBO</span><b id="goCombo">×0</b></div>
     </div>
+    <div id="goXp" class="go-xp" hidden><span class="pr-rozet" aria-hidden="true"><b id="goSv">1</b></span><span class="go-xp-orta" aria-hidden="true"><span class="pr-ust"><span id="goRutbe" class="pr-rutbe">ÇAYLAK</span><span id="goXpKazanc" class="go-xp-kazanc">+0 XP</span></span><span class="pr-cubuk"><i id="goCubuk"></i></span></span></div>
     <button id="goWeek" class="go-week" type="button" hidden></button>
     <button id="goDevam" class="btn btn-devam" type="button" data-ta="ikinciSansAria" aria-label="Reklam izle — tahtayı temizle ve devam et" hidden><span class="bd-ust"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4v16l13-8z" fill="currentColor"/></svg><span data-t="ikinciSans">REKLAM İZLE</span></span><span class="bd-alt" data-t="ikinciSansAlt">TAHTAYI TEMİZLE VE DEVAM ET</span></button>
     <button id="btnAgain" class="btn btn-primary" type="button" data-t="tekrarOyna">TEKRAR OYNA</button>
@@ -1398,9 +1501,14 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     <button id="btnDuelStart" class="btn btn-ghost btn-gap btn-ico btn-duello" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg><span data-t="duelloOyna">ARKADAŞINLA DÜELLO</span></button>
     <button id="btnTablo" class="btn btn-ghost btn-gap btn-ico" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5.2a4 4 0 0 1-8 0V4z"/><path d="M8 6.2H5.2a3 3 0 0 0 3 3.6M16 6.2h2.8a3 3 0 0 1-3 3.6"/><path d="M12 13.2V17M8.6 20h6.8M10 17h4"/></svg><span data-t="tabloBtn">HAFTANIN EN İYİLERİ</span></button>
     <button id="btnReklamsiz" class="btn btn-ghost btn-gap btn-ico btn-reklamsiz" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3v5.6c0 4.4-3 8.1-7.5 9.6-4.5-1.5-7.5-5.2-7.5-9.6V6z"/><path d="M8.2 14.2l1.6-4.6h.5l1.6 4.6M8.7 12.8h2.5" stroke-width="1.9"/><path d="M13.2 9.6h.9a2.3 2.3 0 0 1 0 4.6h-.9z" stroke-width="1.9"/></svg><span data-t="reklamlariKaldir">REKLAMLARI KALDIR</span><b id="rsFiyat" class="rs-fiyat"></b></button>
+    <button id="btnProfil" class="profil" type="button">
+      <span class="pr-rozet" aria-hidden="true"><b id="prSv">1</b></span>
+      <span class="pr-orta" aria-hidden="true"><span class="pr-ust"><span id="prRutbe" class="pr-rutbe">ÇAYLAK</span><span id="prSvYazi" class="pr-svy">SEVİYE 1</span></span><span class="pr-cubuk"><i id="prCubuk"></i></span></span>
+      <span id="prGorev" class="pr-gorev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.5" width="14" height="16.5" rx="2.5"/><path d="M9 4.5v-.9c0-.6.4-1 1-1h4c.6 0 1 .4 1 1v.9"/><path d="m8.8 13 2.3 2.3 4.2-4.6"/></svg><span id="prGorevSayi">0/3</span></span>
+    </button>
     <div id="muzikRow" class="music-row">
       <button id="muzikBtn" class="music-btn" type="button" aria-pressed="true" aria-label="Menü müziğini kapat" title="Menü müziği" data-tt="menuMuzigi"></button>
-      <label for="muzikSes" class="music-lbl" data-t="menuMuzigiBaslik">MENÜ MÜZİĞİ</label>
+      <label for="muzikSes" class="music-lbl" data-t="sesBaslik">SES</label>
       <input id="muzikSes" class="music-vol" type="range" min="0" max="100" step="5" value="70">
       <output id="muzikDeger" class="music-val" for="muzikSes">%70</output>
     </div>
@@ -1556,6 +1664,29 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   </div>
 </div>
 
+<div id="ovGorev" class="overlay" role="dialog" aria-modal="true" aria-labelledby="grBaslik" hidden>
+  <div id="grCard" class="card gr-card" tabindex="-1">
+    <button id="grKapat" class="stn-kapat" type="button" data-ta="satinKapatAria" aria-label="Kapat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11m0-11-11 11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+    <div class="gr-sv">
+      <span class="pr-rozet gr-rozet" aria-hidden="true"><b id="grSv">1</b></span>
+      <div class="gr-sv-metin">
+        <div class="pr-ust"><span id="grRutbe" class="pr-rutbe">ÇAYLAK</span><span id="grSvYazi" class="pr-svy">SEVİYE 1</span></div>
+        <div id="grCubukKap" class="pr-cubuk" role="progressbar" aria-labelledby="grRutbe" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="grCubuk"></i></div>
+        <div id="grXp" class="gr-xp"></div>
+        <div id="grSonraki" class="gr-sonraki"></div>
+      </div>
+    </div>
+    <h2 id="grBaslik" class="title small" data-t="grBaslik">GÜNLÜK GÖREVLER</h2>
+    <p class="sub gr-alt"><span data-t="grAlt">Üç görevi bitir, istediğin jokere +1 hak kazan.</span> <span id="grKalan" class="gr-kalan"></span></p>
+    <ul id="grListe" class="gr-liste"></ul>
+    <div class="gr-odul">
+      <div id="grSecim" class="gr-secim" role="radiogroup" data-ta="grSecimAria" aria-label="Ödül jokeri"></div>
+      <button id="grAl" class="btn btn-primary gr-al" type="button" data-t="grOdulAl">ÖDÜLÜ AL</button>
+      <p id="grOdulDurum" class="gr-odul-durum" role="status" aria-live="polite"></p>
+    </div>
+    <p class="gr-not" data-t="grNot">Ödül hakkı, jokerin oyun başına 1 ücretsiz hakkı bitince kullanılır; süresi dolmaz.</p>
+  </div>
+</div>
 <div id="ovSatin" class="overlay" role="dialog" aria-modal="true" aria-labelledby="stnBaslik" aria-describedby="stnAciklama" hidden>
   <div id="stnCard" class="card stn-card" tabindex="-1">
     <button id="stnKapat" class="stn-kapat" type="button" data-ta="satinKapatAria" aria-label="Kapat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11m0-11-11 11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
@@ -2093,6 +2224,39 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     satinGeriYuklendi: 'Satın alımın geri yüklendi. Reklamlar kaldırıldı.',
     satinBulunamadi: 'Bu hesapta reklamsız oyun satın alımı bulunamadı.',
     satinMagazaYok: 'Mağazaya ulaşılamadı. İnternet bağlantını kontrol edip yeniden dene.',
+    // Seviye (XP), rütbe ve günlük görevler
+    rCaylak: 'ÇAYLAK',
+    rStratejist: 'STRATEJİST',
+    rBlokUstasi: 'BLOK USTASI',
+    rBuyukUsta: 'BÜYÜK USTA',
+    rEfsane: 'EFSANE',
+    seviyeKisa: n => 'SEVİYE ' + n,
+    svAtladi: n => 'SEVİYE ' + n + '!',
+    yeniRutbe: r => 'YENİ RÜTBE: ' + r,
+    svAtladiDuyuru: (n, r) => 'Seviye atladın: seviye ' + n + ', ' + r + '.',
+    xpYazi: (a, b) => a + ' / ' + b + ' XP',
+    xpKazanc: n => '+' + n + ' XP',
+    xpOzetAria: (n, sv, r, atladi) => 'Bu oyunda ' + n + ' XP kazandın. ' + (atladi ? 'Seviye atladın! ' : '') + 'Seviye ' + sv + ', ' + r + '.',
+    sonrakiRutbe: (r, n) => 'Sonraki rütbe: ' + r + ' · seviye ' + n,
+    enUstRutbe: 'En yüksek rütbedesin; seviyeler sürüyor!',
+    profilAria: (sv, r, yuzde, bitti, odul) => 'Seviye ' + sv + ', ' + r + ', sonraki seviyeye yüzde ' + yuzde + '. Günlük görevler: ' + bitti + '/3' + (odul ? ', ' + odul : '') + '. Görevleri aç',
+    grOdulKisa: 'ÖDÜL',
+    grOdulHazirKisa: 'ödül hazır',
+    grOdulAlindiKisa: 'ödül alındı',
+    grKalan: s => 'Yenilenmesine ' + s,
+    grCizgi: n => n + ' çizgi patlat',
+    grParca: n => n + ' parça yerleştir',
+    grKombo: n => 'KOMBO ×' + n + ' yap',
+    grCoklu: n => 'Tek hamlede ' + n + ' çizgi patlat',
+    grSkor: n => 'Tek oyunda ' + fmt(n) + ' puan yap',
+    grJoker: n => (n === 1 ? 'Bir joker kullan' : n + ' joker kullan'),
+    grBittiAria: 'tamamlandı',
+    grTamam: s => 'GÖREV TAMAM: ' + s,
+    grHepsiBitti: 'Günlük görevler tamam! Ödülünü ana menüden al.',
+    grOdulHazir: 'Görevler tamam! Jokerini seç, ödülünü al.',
+    grOdulBekle: n => 'Ödül için ' + n + ' görev kaldı.',
+    grOdulAlindi: j => 'Bugünün ödülü alındı: +1 ' + j + '. Yarın yeni görevler!',
+    jkOdulKazandin: j => '+1 ' + j + ' hakkı kazandın!',
     // Jokerler ve ikinci şans
     jkAria: (a, n, d) => (d === 'reklam' ? a + ': hakkın bitti. Reklam izle, 1 hak kazan' : a + ': ' + n + ' hak'),
     jkIpDondur: 'DÖNDÜRMEK İÇİN PARÇAYA DOKUN',
@@ -2190,7 +2354,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     tekrarOyna: 'PLAY AGAIN',
     duelloOyna: 'DUEL A FRIEND',
     menuMuzigi: 'Menu music',
-    menuMuzigiBaslik: 'MENU MUSIC',
+    sesBaslik: 'VOLUME',
     haftaninEnIyileriAria: 'This week’s best',
     dil: 'Language',
     tabloRozet: 'WEEKLY LEADERBOARD',
@@ -2390,6 +2554,43 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     satinGeriYuklendi: 'Your purchase was restored. Ads are removed.',
     satinBulunamadi: 'No ad-free purchase was found on this account.',
     satinMagazaYok: 'Could not reach the store. Check your internet connection and try again.',
+    rCaylak: 'ROOKIE',
+    rStratejist: 'STRATEGIST',
+    rBlokUstasi: 'BLOCK MASTER',
+    rBuyukUsta: 'GRANDMASTER',
+    rEfsane: 'LEGEND',
+    seviyeKisa: n => 'LEVEL ' + n,
+    svAtladi: n => 'LEVEL ' + n + '!',
+    yeniRutbe: r => 'NEW RANK: ' + r,
+    svAtladiDuyuru: (n, r) => 'Level up: level ' + n + ', ' + r + '.',
+    xpYazi: (a, b) => a + ' / ' + b + ' XP',
+    xpKazanc: n => '+' + n + ' XP',
+    xpOzetAria: (n, sv, r, atladi) => 'You earned ' + n + ' XP this game. ' + (atladi ? 'Level up! ' : '') + 'Level ' + sv + ', ' + r + '.',
+    sonrakiRutbe: (r, n) => 'Next rank: ' + r + ' · level ' + n,
+    enUstRutbe: "You're at the top rank; levels keep going!",
+    profilAria: (sv, r, yuzde, bitti, odul) => 'Level ' + sv + ', ' + r + ', ' + yuzde + '% to the next level. Daily tasks: ' + bitti + '/3' + (odul ? ', ' + odul : '') + '. Open tasks',
+    grOdulKisa: 'REWARD',
+    grOdulHazirKisa: 'reward ready',
+    grOdulAlindiKisa: 'reward claimed',
+    grBaslik: 'DAILY TASKS',
+    grAlt: 'Finish all three to earn +1 use on a power-up of your choice.',
+    grKalan: s => 'New tasks in ' + s,
+    grCizgi: n => 'Clear ' + n + ' lines',
+    grParca: n => 'Place ' + n + ' pieces',
+    grKombo: n => 'Reach a ×' + n + ' COMBO',
+    grCoklu: n => 'Clear ' + n + ' lines in one move',
+    grSkor: n => 'Score ' + fmt(n) + ' in one game',
+    grJoker: n => (n === 1 ? 'Use a power-up' : 'Use ' + n + ' power-ups'),
+    grBittiAria: 'done',
+    grTamam: s => 'TASK DONE: ' + s,
+    grHepsiBitti: 'Daily tasks done! Claim your reward in the main menu.',
+    grOdulAl: 'CLAIM REWARD',
+    grOdulHazir: 'All done! Pick a power-up and claim your reward.',
+    grOdulBekle: n => n + (n === 1 ? ' task' : ' tasks') + ' left for the reward.',
+    grOdulAlindi: j => "Today's reward claimed: +1 " + j + '. New tasks tomorrow!',
+    grSecimAria: 'Reward power-up',
+    grNot: 'Reward uses kick in once the free use per game is spent, and never expire.',
+    jkOdulKazandin: j => '+1 ' + j + ' earned!',
     jkAria: (a, n, d) => (d === 'reklam' ? a + ': none left. Watch an ad to get 1 more' : a + ': ' + n + ' left'),
     jkIpDondur: 'TAP A PIECE TO ROTATE',
     jkIpSil: 'TAP A BLOCK TO ERASE',
@@ -2537,6 +2738,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       gunlukDugmeCiz();
       duyuruCiz();
       Satin.ciz();
+      profilCiz();
+      if (!ovGorev.hidden) gorevCiz();
+      if (!ovOver.hidden) xpOzetCiz();
       if (!$('reklamAlani').hidden) $('reklamAlani').textContent = yaz('rkAlan');
       // Sayı biçimi ve yazı genişlikleri değişti: üst bilgi, alt bilgi ve REKOR düğmesi yeniden sığdırılır
       scoreText = ''; bestText = '';
@@ -2608,6 +2812,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const goDevam = $('goDevam');
   const ovReklam = $('ovReklam');
   const ovSatin = $('ovSatin');
+  const ovGorev = $('ovGorev');
   const ovGunluk = $('ovGunluk'), ovMeydan = $('ovMeydan');
   const goMeydan = $('goMeydan'), goCik = $('goCik');
   const REKOR_ETIKET = hudBestLabel.innerHTML;  // REKOR kutusunun özgün etiketi (taç + REKOR)
@@ -3628,11 +3833,14 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const half = Math.min(w, max) / 2;
     el.style.left = clamp(x, L.bx + half, L.bx + L.bs - half) + 'px';
     while (floatsEl.childElementCount > 10) floatsEl.removeChild(floatsEl.firstElementChild);
+    return el;
   }
 
   // Büyük kutlama yazısı tahtanın ortasında, iki satır (TAM TEMİZLİK! / +5.000, BAŞARDIN!, HEDEF GEÇİLDİ!)
+  let yaziMesgul = 0;
   function buyukYazi(ust, alt, tur, dur) {
     dur = dur || 1900;
+    yaziMesgul = Math.max(yaziMesgul, performance.now() + dur * 0.9);
     const el = document.createElement('div');
     el.className = 'float float-buyuk float-' + tur;
     const b = document.createElement('b'), s = document.createElement('span');
@@ -3664,7 +3872,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
 
   function updateHint() { hint.hidden = !(moves === 0 && gameState === 'play' && !drag && !duel && kip !== 'gunluk'); }
-  function setModal() { document.body.classList.toggle('modal', !ovOver.hidden || !ovConfirm.hidden || !ovStart.hidden || !ovDuel.hidden || !ovNick.hidden || !ovBoard.hidden || !ovRapor.hidden || !ovReklam.hidden || !ovGunluk.hidden || !ovMeydan.hidden || !ovSatin.hidden); }
+  function setModal() { document.body.classList.toggle('modal', !ovOver.hidden || !ovConfirm.hidden || !ovStart.hidden || !ovDuel.hidden || !ovNick.hidden || !ovBoard.hidden || !ovRapor.hidden || !ovReklam.hidden || !ovGunluk.hidden || !ovMeydan.hidden || !ovSatin.hidden || !ovGorev.hidden); }
 
   // Uzun sayılar kutusuna sığsın diye yazı boyunu küçültür
   function fitText(el, text, maxPx, width) {
@@ -4043,6 +4251,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   function addScore(n) {
     if (n <= 0) return;
     score += n;
+    xpEkle(n);                  // XP: bütün oyunlarda kazanılan toplam puan
+    gorevOlay('skor', score);   // görev: tek oyunda puan
     if (!duel && kip === 'klasik' && score > best) setBest(score); // düello, günlük bulmaca ve meydan okuma puanı rekoru etkilemez
     bump(hudScore, n >= 50 * PUAN_KAT ? 1.16 : 1.08);
     wake();
@@ -4057,6 +4267,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (ghosts.length) ghosts = ghosts.filter(g => idx.indexOf(g.r * N + g.c) < 0);
     for (const i of idx) { board[i] = p.color; pops.push({ i, t0: now, s: 1, fl: 0 }); }
     moves++;
+    gorevOlay('parca', 1);
     if (oyunSure !== null) oyunSure += Math.min(60000, Math.max(0, now - sonHamleT));
     sonHamleT = now;
     addScore(yerlesimPuani(p.cells.length)); // yerleştirilen her kare +5
@@ -4143,9 +4354,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (combo > maxCombo) maxCombo = combo;
     linesTotal += lines;
     patlatma++;
+    gorevOlay('cizgi', lines);
+    gorevOlay('coklu', lines);
+    gorevOlay('kombo', combo);
     let perfect = true; // patlamadan sonra tahta tamamen boş mu?
     for (let i = 0; i < N * N; i++) if (board[i] >= 0 && !set.has(i)) { perfect = false; break; }
-    Sound.clear(perfect ? Math.max(lines, 4) : lines, combo); // ses önce, efekt hazırlığı sonra
+    Sound.clear(lines, combo); // ses önce, efekt hazırlığı sonra (komboya göre tırmanan nota, çok çizgide akor)
+    if (perfect) Sound.allClear(0.09); // tam temizlik: patlamanın hemen ardından zafer arpeji
     const big = perfect || lines >= 3;
     const bonus = perfect ? perfectBonus() : 0;
     if (perfect) temizlik++;
@@ -4205,7 +4420,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     overT0 = performance.now() + 650;
     clearTimeout(overTimer);
     clearTimeout(overSoundTimer);
-    overSoundTimer = setTimeout(() => Sound.over(), 650);
+    overSoundTimer = setTimeout(() => Sound.gameOver(), 650);
     overTimer = setTimeout(kip === 'gunluk' ? gunlukBasarisiz : showOver, 650 + N * 75 + 450);
     updateHud();
     updateHint();
@@ -4232,6 +4447,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     ikinciCiz();
     if (!ikinci) AdManager.oyunBitti(); // geçiş reklamı sayacı: oyun başına bir kez (ikinci şanstan sonraki bitiş sayılmaz)
     oyunSonuCiz();
+    xpOzetCiz();
     setModal();
     countUp(goScore, score, 900);
     setTimeout(() => focusDialog('btnAgain', 'goCard'), 60);
@@ -4250,6 +4466,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   function newGame() {
     clearTimeout(overTimer);
+    seviyeYazisiSil();   // önceki oyundan bekleyen seviye yazısı yeni oyunda çıkmasın
     clearTimeout(overSoundTimer);
     const bulmaca = kip === 'gunluk' && gunluk && !duel ? gunlukBulmaca(gunluk.gun) : null;
     if (bulmaca) board.set(bulmaca.tahta); else board.fill(-1);
@@ -4320,7 +4537,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       const t = s.tray.map(x => (Array.isArray(x) && SHAPE_BY_ID[x[0]] ? makePiece(SHAPE_BY_ID[x[0]], clamp(x[1] | 0, 0, PALETTE.length - 1)) : null));
       const j = jokerOku(s.jk);
       // Kayıtlı oyun zaten bitmiş: hiçbir parça sığmıyor ve işe yarar joker de yok
-      if (t.some(Boolean) && !t.some(p => p && fitsOn(bd, p)) && !jokerKurtarir(bd, t, j)) return false;
+      if (t.some(Boolean) && !t.some(p => p && fitsOn(bd, p)) && !jokerKurtarir(bd, t, jkEkle(j))) return false;
       board.set(bd);
       pops = []; ghosts = []; beams = []; particles = [];
       score = Math.max(0, Math.floor(Number(s.score) || 0)); displayScore = score;
@@ -4380,6 +4597,281 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   let tikandi = false;   // hiçbir parça sığmıyor ama elde işe yarar joker var (oyun bitmeden joker kullanma fırsatı)
   let ikinci = false;    // bu oyunda reklamla ikinci şans kullanıldı mı
   const OYNAT_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4v16l13-8z" fill="currentColor"/></svg>';
+
+  /* ================= Seviye (XP) ve rütbe · günlük görevler =================
+     XP: oyuncunun bütün oyunlarda (tek kişilik, günlük bulmaca, meydan okuma, düello) kazandığı toplam puan; cihazda saklanır.
+     Seviye 1'den başlar; seviye n'den n+1'e geçmek için (2.000 + 400 × (n − 1)) × PUAN_KAT XP gerekir (şimdiki ölçekte
+     10.000 + 2.000 × (n − 1)). Rütbeler: ÇAYLAK (1-4), STRATEJİST (5-11), BLOK USTASI (12-21), BÜYÜK USTA (22-34), EFSANE (35
+     ve üstü; seviyeler sürer). İlk açılışta XP oyuncunun rekoru kadar başlar (önceki oyunları boşa gitmesin).
+     Ana menüde ayarların üstünde seviye, rütbe, ilerleme çubuğu ve görev sayacı; oyun sonunda o oyunda kazanılan XP; oyun
+     sırasında seviye atlayınca kısa bir yazı.
+     Günlük görevler: her gün (cihazın yerel günü) 3 görev: bir hacim görevi (çizgi patlat ya da parça yerleştir), bir ustalık
+     görevi (kombo ya da tek hamlede çok çizgi) ve bir hedef (tek oyunda puan ya da joker kullan). Tür ve sayılar günün
+     tohumundan gelir (gün içinde değişmez). İlerleme bütün kiplerden sayılır. Üçü bitince ÖDÜLÜ AL: oyuncunun seçtiği jokere
+     +1 hak. Ödül hakkı, jokerin oyun başına 1 ücretsiz hakkı bitince kullanılır; süresi dolmaz (cihazda, en çok 99). */
+  const K_SEVIYE = 'blokKahramani.seviye';    // { xp }
+  const K_GOREV = 'blokKahramani.gorev';      // { gun, liste: [{ t, n, i }], odul }
+  const K_JK_ODUL = 'blokKahramani.jokerOdul'; // { dondur, yenile, sil }: görev ödülü joker hakları
+  const XP_TABAN = 2000 * PUAN_KAT, XP_ARTIS = 400 * PUAN_KAT;
+  const RUTBELER = [['rCaylak', 1], ['rStratejist', 5], ['rBlokUstasi', 12], ['rBuyukUsta', 22], ['rEfsane', 35]];
+  const xpGerek = sv => XP_TABAN + XP_ARTIS * (sv - 1);
+  // XP'den seviye: { sv, ici (seviyenin içindeki XP), gerek (sonraki seviyeye gereken), oran, rutbe, sonraki: [rütbe, seviye] }
+  function seviyeBilgi(xp) {
+    let sv = 1, ici = Math.max(0, Math.floor(Number(xp) || 0));
+    while (sv < 9999 && ici >= xpGerek(sv)) { ici -= xpGerek(sv); sv++; }
+    let r = 0;
+    while (r + 1 < RUTBELER.length && sv >= RUTBELER[r + 1][1]) r++;
+    return { sv, ici, gerek: xpGerek(sv), oran: ici / xpGerek(sv), rutbe: RUTBELER[r][0], sonraki: RUTBELER[r + 1] || null };
+  }
+  const ilerleme = (() => {
+    const s = store.get(K_SEVIYE, null);
+    if (s && Number.isFinite(s.xp)) return { xp: Math.max(0, Math.floor(s.xp)) };
+    const x = { xp: Math.max(0, Math.floor(Number(best) || 0)) };   // ilk açılış: rekor kadar XP
+    store.set(K_SEVIYE, { xp: x.xp });
+    return x;
+  })();
+  function xpEkle(n) {
+    if (!(n > 0)) return;
+    const once = seviyeBilgi(ilerleme.xp);
+    ilerleme.xp += Math.floor(n);
+    store.set(K_SEVIYE, { xp: ilerleme.xp });
+    const sonra = seviyeBilgi(ilerleme.xp);
+    if (sonra.sv > once.sv) seviyeAtladi(once, sonra);
+    profilCiz();
+  }
+  // Oyun sırasında seviye atlandı: tahtanın ortasında kısa yazı; rütbe değiştiyse o da. Hamlenin patlama yazıları
+  // söndükten sonra çıkar; ortada TAM TEMİZLİK ya da YER KALMADI gibi bir yazı varsa onun bitmesini bekler (üst üste
+  // binmesin). Bu arada oyun bittiyse çıkmaz: kazanılan seviyeyi oyun sonu kartı gösterir.
+  let svYazilar = [], svZaman = 0;
+  function seviyeYazisiSil() {
+    clearTimeout(svZaman);
+    svYazilar.forEach(e => { if (e && e.parentNode) e.parentNode.removeChild(e); });
+    svYazilar = [];
+  }
+  function seviyeAtladi(once, sonra) {
+    announce(yaz('svAtladiDuyuru', fmt(sonra.sv), yaz(sonra.rutbe)));
+    if (gameState !== 'play' || !L || !L.bs) return;
+    const goster = () => {
+      if (gameState !== 'play' || !L || !L.bs) return;
+      const kalan = yaziMesgul - performance.now();
+      if (kalan > 30) { svZaman = setTimeout(goster, kalan); return; }
+      const x = L.bx + L.bs / 2, y = L.by + L.bs * 0.42, rutbe = sonra.rutbe !== once.rutbe;
+      svYazilar = [spawnFloat(yaz('svAtladi', fmt(sonra.sv)), x, y, 'seviye', 0, 1500)];
+      if (rutbe) svYazilar.push(spawnFloat(yaz('yeniRutbe', yaz(sonra.rutbe)), x, y + L.cs * 0.95, 'theme', 350, 1900));
+      yaziMesgul = performance.now() + (rutbe ? 2000 : 1300);
+    };
+    clearTimeout(svZaman);
+    svZaman = setTimeout(goster, 820);
+  }
+
+  // ---- Günlük görevler
+  const GOREV_TUR = {
+    cizgi: { ad: 'grCizgi', n: [10, 15, 20], w: [0.4, 0.4, 0.2] },
+    parca: { ad: 'grParca', n: [30, 45, 60], w: [0.4, 0.4, 0.2] },
+    kombo: { ad: 'grKombo', n: [2, 3, 4], w: [0.55, 0.33, 0.12], enCok: true },
+    coklu: { ad: 'grCoklu', n: [2, 3], w: [0.7, 0.3], enCok: true },
+    skor: { ad: 'grSkor', n: [1500, 2500, 4000].map(x => x * PUAN_KAT), w: [0.45, 0.35, 0.2], enCok: true },
+    joker: { ad: 'grJoker', n: [1, 2], w: [0.6, 0.4] }
+  };
+  const GOREV_GRUP = [[['cizgi', 0.7], ['parca', 0.3]], [['kombo', 0.6], ['coklu', 0.4]], [['skor', 0.75], ['joker', 0.25]]];
+  let gorevTestGun = '';   // denemede günü değiştirmek için
+  function gorevBugun() {
+    if (gorevTestGun) return gorevTestGun;
+    const d = new Date(), p = n => String(n).padStart(2, '0');
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+  // Günün görevleri: tür ve hedef günün tohumundan (aynı gün hep aynı)
+  function gorevUret(gun) {
+    const r = seededRng(fnv1a('gorev:' + gun));
+    const sec = liste => { let x = r(); for (const [v, w] of liste) { x -= w; if (x < 0) return v; } return liste[liste.length - 1][0]; };
+    return GOREV_GRUP.map(g => {
+      const t = sec(g), T = GOREV_TUR[t];
+      return { t, n: sec(T.n.map((v, i) => [v, T.w[i]])), i: 0 };
+    });
+  }
+  function gorevOku() {
+    const gun = gorevBugun(), s = store.get(K_GOREV, null), liste = gorevUret(gun);
+    if (!(s && s.gun === gun && Array.isArray(s.liste))) return { gun, liste, odul: '' };
+    liste.forEach((g, k) => { const e = s.liste[k]; if (e && e.t === g.t && e.n === g.n) g.i = clamp(Math.floor(Number(e.i) || 0), 0, g.n); });
+    return { gun, liste, odul: JOKER_ADLAR.indexOf(s.odul) >= 0 ? s.odul : '' };
+  }
+  let gorev = gorevOku();
+  const gorevKaydet = () => store.set(K_GOREV, { gun: gorev.gun, liste: gorev.liste.map(g => ({ t: g.t, n: g.n, i: g.i })), odul: gorev.odul });
+  const gorevDurum = () => ({ bitti: gorev.liste.filter(g => g.i >= g.n).length, odul: gorev.odul });
+  const gorevYazi = g => yaz(GOREV_TUR[g.t].ad, g.n);
+  // Gün döndüyse yeni görevler (oyun açıkken gece yarısı, ya da ertesi gün uygulamaya dönünce)
+  function gorevGunKontrol() {
+    if (gorev.gun === gorevBugun()) return;
+    gorev = gorevOku();
+    profilCiz();
+    if (!ovGorev.hidden) gorevCiz();
+  }
+  // Oyun olayı: cizgi / parca / joker sayılır; kombo / coklu / skor o ana kadarki en yüksek değerdir
+  function gorevOlay(tur, deger) {
+    gorevGunKontrol();
+    let degisti = false;
+    for (const g of gorev.liste) {
+      if (g.t !== tur || g.i >= g.n) continue;
+      const d = Math.floor(Number(deger) || 0), yeni = GOREV_TUR[tur].enCok ? Math.max(g.i, Math.min(g.n, d)) : Math.min(g.n, g.i + d);
+      if (yeni === g.i) continue;
+      g.i = yeni;
+      degisti = true;
+      if (g.i >= g.n) {
+        const hepsi = gorev.liste.every(x => x.i >= x.n);
+        toast(hepsi ? yaz('grHepsiBitti') : yaz('grTamam', gorevYazi(g)), hepsi ? 3600 : 2400);
+        announce(hepsi ? yaz('grHepsiBitti') : yaz('grTamam', gorevYazi(g)));
+      }
+    }
+    if (!degisti) return;
+    gorevKaydet();
+    profilCiz();
+    if (!ovGorev.hidden) gorevCiz();
+  }
+
+  // ---- Joker ödül hakları: oyunun ücretsiz hakkı bitince kullanılır
+  const jkOdul = (() => {
+    const o = store.get(K_JK_ODUL, null), j = { dondur: 0, yenile: 0, sil: 0 };
+    if (o && typeof o === 'object') for (const ad of JOKER_ADLAR) if (Number.isFinite(o[ad])) j[ad] = clamp(Math.floor(o[ad]), 0, 99);
+    return j;
+  })();
+  const jkOdulKaydet = () => store.set(K_JK_ODUL, jkOdul);
+  const jkToplam = ad => jk[ad] + jkOdul[ad];
+  const jkEkle = j => ({ dondur: j.dondur + jkOdul.dondur, yenile: j.yenile + jkOdul.yenile, sil: j.sil + jkOdul.sil });
+  // Bir hak harcanır: önce oyunun ücretsiz hakkı, o bittiyse görev ödülü hakkı
+  function jokerHarca(ad) {
+    if (jk[ad] > 0) { jk[ad]--; return true; }
+    if (jkOdul[ad] > 0) { jkOdul[ad]--; jkOdulKaydet(); return true; }
+    return false;
+  }
+
+  // ---- Ana menü satırı ve GÜNLÜK GÖREVLER penceresi
+  const TIK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5.5 12.5 4.2 4.2 8.8-9.4"/></svg>';
+  function profilCiz() {
+    if (gorev.gun !== gorevBugun()) { gorev = gorevOku(); if (!ovGorev.hidden) gorevCiz(); }
+    const b = seviyeBilgi(ilerleme.xp), d = gorevDurum(), pg = $('prGorev');
+    $('prSv').textContent = b.sv;
+    $('prRutbe').textContent = yaz(b.rutbe);
+    $('prSvYazi').textContent = yaz('seviyeKisa', fmt(b.sv));
+    $('prCubuk').style.width = (b.oran * 100).toFixed(1) + '%';
+    pg.dataset.durum = d.odul ? 'alindi' : d.bitti === 3 ? 'odul' : '';
+    $('prGorevSayi').textContent = d.odul ? '3/3 ✓' : d.bitti === 3 ? yaz('grOdulKisa') : d.bitti + '/3';
+    $('btnProfil').setAttribute('aria-label', yaz('profilAria', fmt(b.sv), yaz(b.rutbe), Math.floor(b.oran * 100), d.bitti,
+      d.odul ? yaz('grOdulAlindiKisa') : d.bitti === 3 ? yaz('grOdulHazirKisa') : ''));
+  }
+  let grSecili = '', grSayacT = 0;
+  const odulOnerilen = () => JOKER_ADLAR.reduce((a, b) => (jkOdul[b] < jkOdul[a] ? b : a));
+  const grCip = {};
+  JOKER_ADLAR.forEach(ad => {
+    const c = document.createElement('button'), ikon = jkBtn[ad].querySelector('svg');
+    c.type = 'button';
+    c.className = 'gr-jk';
+    c.setAttribute('role', 'radio');
+    c.dataset.jk = ad;
+    c.innerHTML = (ikon ? ikon.outerHTML : '') + '<span></span><b></b>';
+    c.addEventListener('click', () => { if (c.disabled) return; grSecili = ad; gorevCiz(); });
+    $('grSecim').appendChild(c);
+    grCip[ad] = c;
+  });
+  function kalanCiz() {
+    const d = new Date(), y = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1), s = Math.max(0, Math.floor((y - d) / 1000));
+    const p = n => String(n).padStart(2, '0');
+    $('grKalan').textContent = yaz('grKalan', p(Math.floor(s / 3600)) + ':' + p(Math.floor(s / 60) % 60) + ':' + p(s % 60));
+  }
+  function gorevCiz() {
+    const b = seviyeBilgi(ilerleme.xp), xpy = yaz('xpYazi', fmt(b.ici), fmt(b.gerek)), kap = $('grCubukKap');
+    $('grSv').textContent = b.sv;
+    $('grRutbe').textContent = yaz(b.rutbe);
+    $('grSvYazi').textContent = yaz('seviyeKisa', fmt(b.sv));
+    $('grCubuk').style.width = (b.oran * 100).toFixed(1) + '%';
+    kap.setAttribute('aria-valuenow', String(Math.floor(b.oran * 100)));
+    kap.setAttribute('aria-valuetext', xpy);
+    $('grXp').textContent = xpy;
+    $('grSonraki').textContent = b.sonraki ? yaz('sonrakiRutbe', yaz(b.sonraki[0]), fmt(b.sonraki[1])) : yaz('enUstRutbe');
+    const ul = $('grListe');
+    ul.textContent = '';
+    gorev.liste.forEach(g => {
+      const li = document.createElement('li'), bitti = g.i >= g.n;
+      li.className = 'gr-gorev';
+      if (bitti) li.dataset.bitti = '1';
+      li.dataset.tur = g.t;
+      li.innerHTML = '<span class="gr-isaret" aria-hidden="true">' + (bitti ? TIK_SVG : '') + '</span><span class="gr-yazi"></span><span class="gr-sayac" aria-hidden="true"></span><span class="gr-bar" aria-hidden="true"><i></i></span>';
+      li.querySelector('.gr-yazi').textContent = gorevYazi(g);
+      li.querySelector('.gr-sayac').textContent = fmt(g.i) + '/' + fmt(g.n);
+      li.querySelector('.gr-bar i').style.width = ((g.i / g.n) * 100).toFixed(1) + '%';
+      li.setAttribute('aria-label', gorevYazi(g) + ': ' + (bitti ? yaz('grBittiAria') : fmt(g.i) + '/' + fmt(g.n)));
+      ul.appendChild(li);
+    });
+    const d = gorevDurum(), hazir = d.bitti === 3 && !d.odul, secili = d.odul || grSecili || odulOnerilen();
+    JOKER_ADLAR.forEach(ad => {
+      const c = grCip[ad];
+      c.querySelector('span').textContent = yaz(JK_ETIKET[ad]);
+      c.querySelector('b').textContent = jkOdul[ad] > 0 ? '+' + jkOdul[ad] : '';
+      c.setAttribute('aria-checked', String(secili === ad));
+      c.disabled = !hazir;
+    });
+    const al = $('grAl');
+    al.hidden = !!d.odul;
+    al.disabled = !hazir;
+    $('grOdulDurum').textContent = d.odul ? yaz('grOdulAlindi', yaz(JK_ETIKET[d.odul])) : hazir ? yaz('grOdulHazir') : yaz('grOdulBekle', 3 - d.bitti);
+    kalanCiz();
+  }
+  function gorevAc() {
+    gorevGunKontrol();
+    grSecili = gorev.odul || odulOnerilen();
+    gorevCiz();
+    ovGorev.hidden = false;
+    setModal();
+    const d = gorevDurum();
+    focusDialog(d.bitti === 3 && !d.odul ? 'grAl' : 'grKapat', 'grCard');
+    clearInterval(grSayacT);
+    grSayacT = setInterval(() => { if (ovGorev.hidden) { clearInterval(grSayacT); return; } gorevGunKontrol(); kalanCiz(); }, 1000);
+  }
+  function gorevKapat() {
+    if (ovGorev.hidden) return;
+    ovGorev.hidden = true;
+    clearInterval(grSayacT);
+    setModal();
+    if (!ovStart.hidden) focusDialog('btnProfil', 'stCard');
+  }
+  // ÖDÜLÜ AL: seçilen jokere +1 hak (bugün bir kez)
+  function odulAl() {
+    gorevGunKontrol();
+    const d = gorevDurum();
+    if (d.bitti < 3 || d.odul) return;
+    const ad = JOKER_ADLAR.indexOf(grSecili) >= 0 ? grSecili : odulOnerilen();
+    jkOdul[ad] = Math.min(99, jkOdul[ad] + 1);
+    jkOdulKaydet();
+    gorev.odul = ad;
+    gorevKaydet();
+    jokerCiz();
+    Sound.joker();
+    buzz(16);
+    toast(yaz('jkOdulKazandin', yaz(JK_ETIKET[ad])), 3000);
+    announce(yaz('jkOdulKazandin', yaz(JK_ETIKET[ad])));
+    gorevCiz();
+    profilCiz();
+    focusDialog('grKapat', 'grCard');
+  }
+  // Oyun sonu: o oyunda kazanılan XP (oyunun puanı), seviye ve ilerleme; seviye atlandıysa parlar
+  function xpOzetCiz() {
+    const el = $('goXp');
+    if (duel) { el.hidden = true; return; }
+    const b = seviyeBilgi(ilerleme.xp), once = seviyeBilgi(Math.max(0, ilerleme.xp - score)), atladi = b.sv > once.sv;
+    $('goSv').textContent = b.sv;
+    $('goRutbe').textContent = yaz(b.rutbe);
+    $('goXpKazanc').textContent = yaz('xpKazanc', fmt(score));
+    $('goCubuk').style.width = (b.oran * 100).toFixed(1) + '%';
+    el.classList.toggle('atladi', atladi);
+    el.setAttribute('role', 'note');
+    el.setAttribute('aria-label', yaz('xpOzetAria', fmt(score), fmt(b.sv), yaz(b.rutbe), atladi));
+    el.hidden = false;
+  }
+  $('btnProfil').addEventListener('click', gorevAc);
+  $('grKapat').addEventListener('click', gorevKapat);
+  $('grAl').addEventListener('click', odulAl);
+  ovGorev.addEventListener('pointerdown', e => { if (e.target === ovGorev) gorevKapat(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) gorevGunKontrol(); });
+  profilCiz();
 
   // Saat yönünde 90° dönüş: (satır, sütun) → (sütun, yükseklik - 1 - satır). Döndürülmüş hali listede olmayan ya da kendisiyle
   // aynı olan şekil (kareler) döndürülemez
@@ -4450,7 +4942,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     jokerBar.classList.toggle('ikaz', tikandi && !jokerMod);
     const reklam = AdManager.odulluVar();
     for (const ad of JOKER_ADLAR) {
-      const b = jkBtn[ad], n = jk[ad], d = n > 0 ? 'var' : reklam ? 'reklam' : 'bos';
+      const b = jkBtn[ad], n = jkToplam(ad), d = n > 0 ? 'var' : reklam ? 'reklam' : 'bos';
       const rozet = b.querySelector('.jk-n'), icerik = d === 'reklam' ? OYNAT_SVG + '+1' : String(n);
       b.dataset.durum = d;
       if (rozet.dataset.v !== icerik) { rozet.dataset.v = icerik; rozet.innerHTML = icerik; }
@@ -4526,7 +5018,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   function jokerTikla(ad) {
     if (duel || kip === 'gunluk' || gameState !== 'play' || drag || AdManager.acik() || !(ad in jk)) return;
     if (jokerMod === ad) { jokerModBitir(); Sound.pick(); return; } // seçili jokere yeniden dokunmak vazgeçmektir
-    if (jk[ad] <= 0) { jokerReklam(ad); return; }
+    if (jkToplam(ad) <= 0) { jokerReklam(ad); return; }
     jokerModBitir();
     if (ad === 'yenile') { jokerYenile(); return; }
     if (ad === 'dondur') {
@@ -4552,7 +5044,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       jokerCiz();
       const r = jkBtn[ad].getBoundingClientRect();
       spawnFloat('+1', r.left + r.width / 2, r.top - L.cs * 0.25, 'combo', 0, 900);
-      Sound.clear(2, 1);
+      Sound.joker();
       buzz(16);
       announce(yaz('jkKazandin', yaz(JK_ETIKET[ad])));
     }, neden => { if (neden !== 'mesgul') toast(yaz(neden === 'yarim' ? 'rkYarim' : 'rkYok')); });
@@ -4583,35 +5075,35 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   function jokerDondur(i) {
     const p = tray[i], yeni = p && SHAPE_BY_ID[DONUS[p.shape.id]];
-    if (!yeni || jk.dondur <= 0 || gameState !== 'play') return;
-    jk.dondur--;
+    if (!yeni || jkToplam('dondur') <= 0 || gameState !== 'play') return;
+    jokerHarca('dondur');
     const q = makePiece(yeni, p.color);
     q.don = { t0: performance.now(), dur: 280 };
     tray[i] = q;
     animateTray(330);
-    Sound.pick();
+    Sound.joker();
     buzz(12);
     jokerSonra('jkDondurDuyuru');
   }
   function jokerYenile() {
-    if (jk.yenile <= 0 || gameState !== 'play') return;
-    jk.yenile--;
+    if (jkToplam('yenile') <= 0 || gameState !== 'play') return;
+    jokerHarca('yenile');
     tray = generateTray(); // yeni üçlü (girişi canlanır)
-    Sound.clear(1, 4);
+    Sound.joker();
     buzz(14);
     jokerSonra('jkYenileDuyuru');
   }
   function jokerSil(r, c) {
     const i = r * N + c, v = board[i];
-    if (v < 0 || jk.sil <= 0 || gameState !== 'play') return;
-    jk.sil--;
+    if (v < 0 || jkToplam('sil') <= 0 || gameState !== 'play') return;
+    jokerHarca('sil');
     ghosts.push({ r, c, color: v, t0: performance.now(), dur: 380, burst: false, s: 1, a: 1, fl: 0, n: 10 });
     board[i] = -1;
     if (pops.length) pops = pops.filter(q => q.i !== i);
     cellsDirty = true;
     fxDirty = true;
     animate(440);
-    Sound.clear(1, 1);
+    Sound.joker();
     shake(3);
     buzz(16);
     jokerSonra('jkSilDuyuru');
@@ -4619,6 +5111,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   // Joker kullanıldı: kayıt, düğmeler, duyuru. Sıkışmışken bir parça artık sığıyorsa oyun sürer; sığmıyor ve işe yarar joker
   // kalmadıysa oyun biter
   function jokerSonra(duyuru) {
+    gorevOlay('joker', 1);
     jokerModBitir();
     refreshFits();
     save();
@@ -4630,10 +5123,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   // Hiçbir parça sığmıyor: düelloda tur, işe yarar joker yoksa oyun biter; varsa oyuncuya joker kullanma fırsatı verilir
   function oyunTikandi() {
-    if (duel || kip === 'gunluk' || gameState !== 'play' || !jokerKurtarir(board, tray, jk)) { triggerGameOver(); return; }
+    if (duel || kip === 'gunluk' || gameState !== 'play' || !jokerKurtarir(board, tray, jkEkle(jk))) { triggerGameOver(); return; }
     if (!tikandi) {
       tikandi = true;
       spawnFloat(yaz('yerKalmadiFloat'), L.bx + L.bs / 2, L.by + L.bs * 0.42, 'praise', 0, 1400);
+      yaziMesgul = Math.max(yaziMesgul, performance.now() + 1300);
       Sound.bad();
       buzz([18, 40, 22]);
       announce(yaz('jkTikandiDuyuru'));
@@ -4699,7 +5193,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (!REDUCED && typeof flashEl.animate === 'function') {
       try { flashEl.animate([{ opacity: 0 }, { opacity: 1, offset: 0.16 }, { opacity: 0 }], { duration: 820, easing: 'ease-out' }); } catch (e) { /* desteklenmiyor */ }
     }
-    setTimeout(() => { Sound.clear(4, 1); shake(12); buzz([24, 40, 30, 40, 22]); }, 110);
+    setTimeout(() => { Sound.allClear(); shake(12); buzz([24, 40, 30, 40, 22]); }, 110);
     spawnFloat(yaz('devamFloat'), ox, oy, 'praise', 200, 1400);
     refreshFits();
     updateHud();
@@ -4740,183 +5234,184 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) { /* titreşim yok */ }
   }
 
-  /* ================= Ses (WebAudio ile sentez, dosya yok) =================
-     iPhone notları: Safari, Web Audio seslerini telefon sessiz moddayken kısar. Ses oturumu "playback"e
-     alınınca (iOS 16.4+) sessiz modda da çalar; eski sürümlerde sessiz bir <audio> döngüsü aynı işi görür.
-     Ses bağlamı ancak bir dokunuş sırasında açılabildiği için her dokunuşta (touchend/click) yeniden denenir.
-     Telefon hoparlörü kalın sesleri pek vermediği için sesler 500 Hz üstünde ve sıkıştırıcıyla dolgun.
-     Uzun oyunda sesler gecikmesin diye: her ses açılışta bir kez hazır ses kaydına çizilir; çalarken tek bir
-     düğüm kurulur ve ses bitince ses ağından çıkarılır (ses ağı zamanla şişmez). Bağlam bir kez çalıştıktan
-     sonra durursa sesler sıraya alınmaz, böylece sonradan topluca gelen gecikmiş sesler olmaz.
-     Uzun oyunda iPhone sesi kesebilir (bildirim, arama, ses yolu değişimi): bekçi bunu fark eder (bağlam durmuş
-     ya da zamanı ilerlemiyor), iki kez kendiliğinden açmayı dener, olmazsa "SES DURDU" düğmesi çıkar; ona
-     dokununca ses bağlamı baştan kurulur. Sürükleme sırasında sesi açmaya çalışılmaz (iPhone'da takılma yapar). */
-  /* === YERLEŞTİRME SESLERİ (tema başına; açılışta bir kez çevrimdışı çizilir) ===
-     Her tema kendi "koyma" sesini çalar: neon'da tok bir cam kırılması, okyanusta su damlası, ormanda tahta...
-     Hepsi kısa ve kurudur: yankı ve uzun çınlama yok, 3 kHz üstü neredeyse hiç yok (kulak tırmalamaz). Patlatma
-     seslerinden kısıktır; telefon hoparlöründe algılanan yükseklikleri birbirine eşitlenmiştir.
-     Yapı taşları: modes = hızla sönen saf titreşimler [frekans, genlik, sönme (sn), varsa kayacağı frekans, kayma süresi],
-     noise = süzülmüş kısa gürültü (çıt, kum), wave = yumuşatılmış kare / testere dalga (retro, synth).
-     Rastgelelik sabit tohumla: ses her açılışta aynı çizilir. */
-  function placeKit(ac, dest) {
-    const P = {};
-    P.rng = s => () => ((s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296);
-    P.modes = (t, list, to) => list.forEach(([f, a, tau, f2, sw]) => {
-      const o = ac.createOscillator(), g = ac.createGain();
-      o.frequency.setValueAtTime(f, t);
-      if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + (sw || tau));
-      g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(a, t + 0.0015);
-      g.gain.setTargetAtTime(0, t + 0.0015, tau);
-      o.connect(g); g.connect(to || dest);
-      o.start(t); o.stop(t + 0.0015 + tau * 8);
-    });
-    // o: { a: genlik, f: süzgeç frekansı, q, tau: sönme, at: açılma süresi, type: süzgeç türü, seed }
-    P.noise = (t, o, to) => {
-      const len = Math.min(0.3, (o.at || 0) + o.tau * 8 + 0.002);
-      const n = Math.ceil(ac.sampleRate * len), b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0), r = P.rng(o.seed || 7);
-      for (let i = 0; i < n; i++) d[i] = r() * 2 - 1;
-      const src = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
-      src.buffer = b; f.type = o.type || 'bandpass'; f.frequency.value = o.f; f.Q.value = o.q || 0.7;
-      g.gain.setValueAtTime(o.at ? 0 : o.a, t);
-      if (o.at) g.gain.linearRampToValueAtTime(o.a, t + o.at);
-      g.gain.setTargetAtTime(0, t + (o.at || 0), o.tau);
-      src.connect(f); f.connect(g); g.connect(to || dest);
-      src.start(t); src.stop(t + len);
-    };
-    // o: { type, f, f2 + st: basamaklı geçiş, glide + sw: kayma, a, tau, lp: süzgeç, lp2 + lpT: süzgeç kapanışı }
-    P.wave = (t, o, to) => {
-      const osc = ac.createOscillator(), f = ac.createBiquadFilter(), g = ac.createGain();
-      osc.type = o.type;
-      osc.frequency.setValueAtTime(o.f, t);
-      if (o.f2) osc.frequency.setValueAtTime(o.f2, t + o.st);
-      if (o.glide) osc.frequency.exponentialRampToValueAtTime(o.glide, t + o.sw);
-      f.type = 'lowpass'; f.Q.value = 0.7; f.frequency.setValueAtTime(o.lp, t);
-      if (o.lp2) f.frequency.exponentialRampToValueAtTime(o.lp2, t + o.lpT);
-      g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(o.a, t + 0.002);
-      g.gain.setTargetAtTime(0, t + 0.002, o.tau);
-      osc.connect(f); f.connect(g); g.connect(to || dest);
-      osc.start(t); osc.stop(t + 0.002 + o.tau * 8);
-    };
-    // Tel çekişi (Karplus-Strong): kısa gürültü bir tel boyunda döner, her turda biraz söner ve yumuşar
-    P.pluck = (t, f, a, tau, parlak, seed, to) => {
-      const sr = ac.sampleRate, n = Math.ceil(sr * Math.min(0.3, tau * 7)), b = ac.createBuffer(1, n, sr), d = b.getChannelData(0);
-      const N = Math.max(2, Math.round(sr / f)), tel = new Float32Array(N), r = P.rng(seed || 5), kayip = Math.exp(-1 / (tau * f));
-      let onceki = 0;
-      for (let i = 0; i < N; i++) { onceki += parlak * (r() * 2 - 1 - onceki); tel[i] = onceki; }
-      for (let i = 0, j = 0; i < n; i++, j = (j + 1) % N) {
-        d[i] = tel[j] * a;
-        tel[j] = 0.5 * (tel[j] + tel[(j + 1) % N]) * kayip;
-      }
-      const son = Math.min(n, Math.round(sr * 0.025)); // son 25 ms yavaşça kısılır: kesilirken tık olmasın
-      for (let i = 0; i < son; i++) d[n - 1 - i] *= i / son;
-      const src = ac.createBufferSource();
-      src.buffer = b; src.connect(to || dest); src.start(t);
-    };
-    return P;
+  /* ================= Ses motoru (SoundEngine: Web Audio ile prosedürel sentez, ses dosyası yok) =================
+     Bütün efektler çalınırken osilatör, süzgeç ve kazanç düğümleriyle anında üretilir; ses bitince düğümler ağdan çıkar
+     (ses ağı zamanla şişmez).
+     Ses ağı:  efektler ──────┐
+               menü müziği ───┴→ ANA KAZANÇ (ana menüdeki SES kaydırıcısı, %0-%100) → yumuşak sıkıştırıcı
+               (DynamicsCompressor) → yumuşak tavan (kırpmak yerine yuvarlar) → hoparlör
+     Aynı anda çok efekt üst üste gelse de cızırtı (kırpma) olmaz. Genel ses kapalıyken (üst bilgideki hoparlör) bağlam askıya
+     alınır, hiçbir efekt çalmaz.
+     Efektler:
+       pick      parça seçme: 450 → 650 Hz, 35 ms, temiz sinüs "tık"
+       place     parça yerleştirme: 150 → 55 Hz, 70 ms düşen tok vuruş (hafif alçak geçiren süzgeç, kısa tahta çıtı)
+       clear     satır / sütun patlatma: komboya göre do majör pentatonik gamda tırmanır (523, 587, 659, 784, 880, 1046 Hz);
+                 sinüs + üçgen + kristal üst ses. Aynı hamlede birden çok çizgi patlarsa akorla dolgunlaşır (beşli, üçlü, oktav);
+                 6'yı aşan komboda ses tizleşmez, parıltısı artar
+       allClear  tam temizlik: hızlı, parlak, 4 notalı yükselen zafer arpeji (do-mi-sol-do)
+       joker     joker kullanımı: kısa sihirli parıltı (tiz, hızla dağılan çınlamalar ve yükselen süzülme)
+       gameOver  oyun bitti: 330 → 277 → 220 Hz yumuşakça inen kısa kapanış
+       bad       sığmayan parça: alçak, yumuşak "pof"
+     Mobil kilit: tarayıcılar sesi ancak dokunuşla açar. İlk dokunuşta (pointerdown / touchstart) bağlam kurulur ve
+     uyandırılır; iPhone'un istediği parmak kalkışında (touchend / click) yeniden denenir.
+     iPhone notları: Safari, Web Audio seslerini telefon sessiz moddayken kısar. Ses oturumu "playback"e alınınca (iOS 16.4+)
+     sessiz modda da çalar; eski sürümlerde sessiz bir <audio> döngüsü aynı işi görür.
+     Uzun oyunda iPhone sesi kesebilir (bildirim, arama, ses yolu değişimi): bekçi bunu fark eder (bağlam durmuş ya da zamanı
+     ilerlemiyor), iki kez kendiliğinden açmayı dener, olmazsa "SES DURDU" düğmesi çıkar; ona dokununca ses bağlamı baştan
+     kurulur. Sürükleme sırasında sesi açmaya çalışılmaz (iPhone'da takılma yapar). Bağlam bir kez çalıştıktan sonra durursa
+     sesler sıraya alınmaz (sonradan topluca gelen gecikmiş ses olmaz). */
+  const SES_PENTA = [523.25, 587.33, 659.25, 783.99, 880, 1046.5];   // do majör pentatonik: C5 D5 E5 G5 A5 C6
+  // Kombo adımının notası: 1 → 523 Hz, 2 → 587 Hz ... 6 ve üstü → 1046 Hz
+  const sesKok = kombo => SES_PENTA[Math.min(Math.max(Math.floor(kombo) || 1, 1), SES_PENTA.length) - 1];
+
+  // Tek ses: osilatör (isteğe bağlı frekans kayması) + zarf (hızlı giriş, üstel sönüş) + isteğe bağlı alçak geçiren süzgeç.
+  // o: { t, f, f2, kay, a (tepe), giris, sure, dalga, det (cent), suzgec (Hz) }. Ses bitince düğümler ağdan ayrılır
+  function sesTon(ac, out, o) {
+    const t = o.t, osc = ac.createOscillator(), g = ac.createGain();
+    osc.type = o.dalga || 'sine';
+    osc.frequency.setValueAtTime(o.f, t);
+    if (o.f2) osc.frequency.exponentialRampToValueAtTime(o.f2, t + o.kay);
+    if (o.det) osc.detune.setValueAtTime(o.det, t);
+    const giris = o.giris || 0.004, son = t + giris + o.sure;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(Math.max(o.a, 0.0002), t + giris);
+    g.gain.exponentialRampToValueAtTime(0.0001, son);
+    osc.connect(g);
+    let uc = g;
+    if (o.suzgec) {
+      uc = ac.createBiquadFilter();
+      uc.type = 'lowpass';
+      uc.frequency.value = o.suzgec;
+      uc.Q.value = 0.6;
+      g.connect(uc);
+    }
+    uc.connect(out);
+    osc.start(t);
+    osc.stop(son + 0.02);
+    osc.onended = () => { try { osc.disconnect(); g.disconnect(); if (uc !== g) uc.disconnect(); } catch (e) { /* zaten ayrık */ } };
+  }
+  // Kısa süzülmüş gürültü (tahta çıtı, patlama tısı). Gürültü kaydı bağlam başına bir kez çizilir (sabit tohum)
+  const sesGurultuler = new WeakMap();
+  function sesCit(ac, out, t, a, f, q, sure) {
+    let b = sesGurultuler.get(ac);
+    if (!b) {
+      const n = Math.round(ac.sampleRate * 0.3), d = (b = ac.createBuffer(1, n, ac.sampleRate)).getChannelData(0);
+      let s = 0x2545f491;
+      for (let i = 0; i < n; i++) { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; d[i] = s / 2147483648 - 1; }
+      sesGurultuler.set(ac, b);
+    }
+    const src = ac.createBufferSource(), bp = ac.createBiquadFilter(), g = ac.createGain();
+    src.buffer = b;
+    bp.type = 'bandpass';
+    bp.frequency.value = f;
+    bp.Q.value = q;
+    g.gain.setValueAtTime(a, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + sure);
+    src.connect(bp);
+    bp.connect(g);
+    g.connect(out);
+    src.start(t);
+    src.stop(t + sure + 0.02);
+    src.onended = () => { try { src.disconnect(); bp.disconnect(); g.disconnect(); } catch (e) { /* zaten ayrık */ } };
   }
 
-  // [ad, seviye, süre (sn), tarif]: sıra THEMES ile aynı. Seviyeler ölçülerek eşitlendi (place_lab)
-  const PLACE_KIT = [
-    ['kalın cam', 0.157, 0.3, P => {                     // NEON KAHRAMAN: kalın bir cam bloğun tok vuruşu ve kısa, yumuşak cam tınısı
-      P.noise(0, { a: 0.35, f: 1800, q: 0.8, tau: 0.0009, seed: 3 });
-      P.modes(0, [[300, 0.5, 0.02], [720, 0.55, 0.014]]);
-      P.modes(0.002, [[1150, 0.3, 0.034], [1735, 0.18, 0.024], [2480, 0.05, 0.014]]);
-    }],
-    ['su damlası', 0.11, 0.3, P => {                     // OKYANUS: "blup" (yükselen kabarcık), arkasından küçük bir damla
-      P.noise(0, { a: 0.2, f: 1400, q: 0.8, tau: 0.001, seed: 5 });
-      P.modes(0, [[190, 0.35, 0.018]]);
-      P.modes(0.004, [[480, 1, 0.026, 1200, 0.04], [960, 0.06, 0.015, 2400, 0.04]]);
-      P.modes(0.07, [[700, 0.2, 0.013, 1400, 0.022]]);
-    }],
-    ['sıcak marimba', 0.183, 0.3, P => {                  // GÜN BATIMI: yumuşak tokmakla kısa, sıcak bir marimba vuruşu
-      P.noise(0, { a: 0.1, f: 1300, q: 0.6, tau: 0.001, seed: 9 });
-      P.modes(0, [[440, 1, 0.032], [1760, 0.18, 0.012]]);
-    }],
-    ['tahta tok', 0.317, 0.3, P => {                      // ORMAN: tahtaya konan tahta taş
-      P.noise(0, { a: 0.3, f: 2400, q: 0.6, tau: 0.0008, seed: 7 });
-      P.modes(0, [[210, 0.22, 0.024], [640, 0.4, 0.017], [1460, 0.18, 0.007], [2350, 0.05, 0.004]]);
-    }],
-    ['jöle pop', 0.22, 0.3, P => {                       // ŞEKER: yumuşak, oyuncaklı "pop"
-      P.noise(0, { a: 0.2, f: 1400, q: 0.7, tau: 0.0008, seed: 9 });
-      P.modes(0, [[280, 1, 0.016, 760, 0.02], [560, 0.15, 0.01, 1520, 0.02]]);
-    }],
-    ['taş ve kor', 0.221, 0.3, P => {                     // LAV: sıcak taş vuruşu ve birkaç kor çıtırtısı
-      P.noise(0, { a: 0.45, f: 1000, q: 0.6, tau: 0.002, seed: 13 });
-      P.modes(0, [[230, 0.35, 0.02], [470, 0.55, 0.015], [910, 0.4, 0.009], [1530, 0.15, 0.005]]);
-      const r = P.rng(17);
-      let t = 0.012;
-      for (let i = 0; i < 4; i++) {
-        t += 0.01 + r() * 0.025;
-        P.noise(t, { a: 0.4 * Math.pow(0.8, i) * (0.6 + r() * 0.4), f: 1400 + r() * 1200, q: 0.9, tau: 0.0008, seed: 40 + i });
-      }
-    }],
-    ['buz çıtırtısı', 0.147, 0.3, P => {                  // BUZUL: buz küpü vuruşu ve iki küçük çatlama
-      P.noise(0, { a: 0.5, f: 2400, q: 0.9, tau: 0.0008, seed: 21 });
-      P.modes(0, [[540, 0.6, 0.013], [1150, 0.45, 0.009]]);
-      P.modes(0, [[1900, 0.3, 0.016], [2700, 0.15, 0.011]]);
-      P.noise(0.018, { a: 0.2, f: 2100, q: 1.2, tau: 0.0006, seed: 22 });
-      P.noise(0.031, { a: 0.12, f: 2400, q: 1.2, tau: 0.0006, seed: 23 });
-    }],
-    ['uzay bipi', 0.099, 0.3, P => {                      // GALAKSİ: yükselen "biu" ve hemen ardından küçük bir "ip" (yankısız)
-      P.modes(0, [[520, 1, 0.028, 880, 0.03], [1040, 0.15, 0.014, 1760, 0.03]]);
-      P.modes(0.06, [[780, 0.4, 0.02, 1170, 0.025]]);
-    }],
-    ['altın sikke', 0.106, 0.3, P => {                    // ALTIN SARAY: iki altın sikkenin kısa şıngırtısı
-      P.noise(0, { a: 0.3, f: 2500, q: 1, tau: 0.0007, seed: 31 });
-      P.modes(0, [[420, 0.5, 0.015], [900, 0.3, 0.01]]);
-      P.modes(0, [[1300, 0.5, 0.026], [2100, 0.28, 0.018]]);
-      P.noise(0.026, { a: 0.15, f: 2500, q: 1, tau: 0.0007, seed: 32 });
-      P.modes(0.026, [[1380, 0.3, 0.022], [2240, 0.15, 0.015]]);
-    }],
-    ['dijital bip', 0.157, 0.3, P => {                    // SİBER: iki basamaklı dijital "bi-bip"
-      P.noise(0, { a: 0.15, f: 2500, q: 0.5, tau: 0.0005, seed: 41 });
-      P.wave(0, { type: 'square', f: 660, f2: 990, st: 0.025, a: 0.5, tau: 0.026, lp: 1800 });
-    }],
-    ['kalimba', 0.101, 0.3, P => {                        // SAKURA: kısa, tatlı bir kalimba teli
-      P.noise(0, { a: 0.12, f: 2000, q: 0.8, tau: 0.0008, seed: 51 });
-      P.modes(0, [[300, 0.15, 0.012], [660, 1, 0.032], [1320, 0.06, 0.016]]);
-    }],
-    ['darbuka', 0.117, 0.3, P => {                       // ÇÖL: darbukanın kenarına vurulan kısa "tek" (gergin deri, alttan hafif "düm")
-      P.noise(0, { a: 0.45, f: 2000, q: 0.8, tau: 0.0012, seed: 61 });
-      P.modes(0, [[180, 0.2, 0.02]]);
-      P.modes(0, [[520, 1, 0.026, 500, 0.03], [827, 0.5, 0.016], [1113, 0.32, 0.011], [1352, 0.18, 0.008]]);
-    }],
-    ['ışıltı', 0.135, 0.3, P => {                         // KUZEY IŞIKLARI: iki notalı yumuşak "ding-ding"
-      P.noise(0, { a: 0.05, f: 2000, q: 0.5, tau: 0.02, at: 0.008, seed: 71 });
-      P.modes(0, [[523.25, 0.7, 0.03], [1046.5, 0.08, 0.015]]);
-      P.modes(0.03, [[784, 0.5, 0.028], [1568, 0.05, 0.012]]);
-    }],
-    ['kabarcıklar', 0.118, 0.3, P => {                    // MERCAN: su altında yükselen üç kabarcık
-      P.modes(0, [[160, 0.5, 0.016]]);
-      P.modes(0.002, [[600, 0.8, 0.016, 1200, 0.026]]);
-      P.modes(0.028, [[800, 0.55, 0.013, 1600, 0.022]]);
-      P.modes(0.05, [[1000, 0.35, 0.011, 1900, 0.018]]);
-    }],
-    ['pırıltı', 0.193, 0.3, P => {                        // GÖKKUŞAĞI: küçük bir pop ve yükselen üç kısa nota
-      P.noise(0, { a: 0.18, f: 1400, q: 0.7, tau: 0.0008, seed: 81 });
-      P.modes(0, [[330, 0.8, 0.014, 800, 0.018]]);
-      P.modes(0.018, [[1046.5, 0.25, 0.016]]);
-      P.modes(0.032, [[1318.5, 0.2, 0.015]]);
-      P.modes(0.046, [[1568, 0.15, 0.014]]);
-    }],
-    ['fincan', 0.16, 0.3, P => {                         // KAHVE: tabağa konan porselen fincan
-      P.noise(0, { a: 0.35, f: 2200, q: 0.8, tau: 0.0008, seed: 91 });
-      P.modes(0, [[300, 0.5, 0.016], [760, 0.35, 0.011]]);
-      P.modes(0, [[1100, 0.45, 0.022], [2400, 0.18, 0.013]]);
-    }],
-    ['bambu', 0.145, 0.3, P => {                          // TROPİK: içi boş bambu / hindistancevizi "klok"
-      P.noise(0, { a: 0.25, f: 1800, q: 0.7, tau: 0.001, seed: 101 });
-      P.modes(0, [[260, 0.2, 0.018]]);
-      P.modes(0, [[520, 1, 0.026], [1560, 0.25, 0.011]]);
-    }]
-  ];
-  /* === YERLEŞTİRME SESLERİ BİTİŞ === */
+  // Efekt tarifleri: (bağlam, çıkış, başlama zamanı, ...). Hem oyunda (canlı) hem testte (çevrimdışı bağlam) aynı tarif çalışır
+  const SES = {
+    // Parça seçme: 450 → 650 Hz, 35 ms, çok hafif temiz sinüs "tık" (k: perde çarpanı; düello geri sayımında tizleşir)
+    pick(ac, out, t, k) {
+      k = k || 1;
+      sesTon(ac, out, { t, f: 450 * k, f2: 650 * k, kay: 0.035, a: 0.15, giris: 0.003, sure: 0.04 });
+    },
+    // Parça yerleştirme: 150 → 55 Hz, 70 ms düşen tok vuruş (üçgen dalga: telefon hoparlöründe de duyulan üst sesleri var),
+    // hafif alçak geçiren süzgeç; üstünde kısacık bir tahta çıtı. Büyük parça biraz daha dolgun oturur
+    place(ac, out, t, kare) {
+      const a = 0.2 + 0.012 * Math.min(Math.max(kare || 4, 1), 9);
+      sesTon(ac, out, { t, f: 150, f2: 55, kay: 0.07, a, dalga: 'triangle', giris: 0.002, sure: 0.085, suzgec: 1100 });
+      sesTon(ac, out, { t, f: 150, f2: 55, kay: 0.07, a: a * 0.5, giris: 0.002, sure: 0.075 });
+      sesCit(ac, out, t, 0.06, 1900, 1.1, 0.014);
+    },
+    // Satır / sütun patlatma: kombo adımına göre pentatonik nota (yükselen başarı melodisi); çok çizgide akor
+    clear(ac, out, t, cizgi, kombo) {
+      cizgi = Math.max(1, Math.floor(cizgi) || 1);
+      kombo = Math.max(1, Math.floor(kombo) || 1);
+      const kok = sesKok(kombo), fazla = Math.max(0, kombo - SES_PENTA.length);
+      const akor = cizgi >= 4 ? [1, 1.25, 1.5, 2] : cizgi === 3 ? [1, 1.25, 1.5] : cizgi === 2 ? [1, 1.5] : [1];
+      const olcek = (1 + 0.1 * (akor.length - 1)) / Math.sqrt(akor.length);   // çok çizgi: daha dolgun ve biraz daha güçlü
+      akor.forEach((k, j) => {
+        const tt = t + j * 0.016, f = kok * k, a = 0.24 * olcek;
+        sesTon(ac, out, { t: tt, f, a, giris: 0.004, sure: 0.6 });                              // sinüs: gövde
+        sesTon(ac, out, { t: tt, f, a: a * 0.42, dalga: 'triangle', giris: 0.004, sure: 0.28 }); // üçgen: parlaklık
+        sesTon(ac, out, { t: tt, f: f * 2, a: a * 0.2, giris: 0.002, sure: 0.16 });             // kristal üst ses
+      });
+      sesCit(ac, out, t, 0.035 + 0.012 * Math.min(cizgi, 4), 5200, 0.9, 0.045);                  // patlamanın kısa tısı
+      if (fazla) sesTon(ac, out, { t: t + 0.04, f: kok * 3, a: Math.min(0.07, 0.025 * fazla), giris: 0.002, sure: 0.24 });
+    },
+    // Tam temizlik: hızlı, parlak 4 notalı yükselen zafer arpeji (do-mi-sol-do); son nota uzun, üstünde parıltı
+    allClear(ac, out, t) {
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, j) => {
+        const tt = t + j * 0.075, son = j === 3;
+        sesTon(ac, out, { t: tt, f, a: 0.19, giris: 0.003, sure: son ? 0.85 : 0.3 });
+        sesTon(ac, out, { t: tt, f, a: 0.085, dalga: 'triangle', giris: 0.003, sure: son ? 0.45 : 0.18 });
+        sesTon(ac, out, { t: tt, f: f * 2, a: 0.05, giris: 0.002, sure: son ? 0.38 : 0.12 });
+      });
+      sesTon(ac, out, { t: t + 0.24, f: 1567.98, a: 0.05, giris: 0.003, sure: 0.65 });
+      sesTon(ac, out, { t: t + 0.28, f: 2093, a: 0.03, giris: 0.003, sure: 0.5 });
+    },
+    // Joker: kısa sihirli parıltı: tiz, hafifçe akortsuz çınlamalar hızla dağılır; altında yükselen yumuşak bir süzülme
+    joker(ac, out, t) {
+      [1567.98, 2093, 2637.02, 3135.96, 2349.32, 1760].forEach((f, j) =>
+        sesTon(ac, out, { t: t + j * 0.032, f, a: 0.085, giris: 0.003, sure: 0.2 + j * 0.025, det: j % 2 ? 9 : -9 }));
+      sesTon(ac, out, { t, f: 880, f2: 1760, kay: 0.26, a: 0.1, giris: 0.02, sure: 0.3 });
+      sesCit(ac, out, t, 0.035, 7000, 1.4, 0.2);
+    },
+    // Oyun bitti: 330 → 277 → 220 Hz yumuşakça inen kısa kapanış (yavaş giriş, tiz yok: kulağı tırmalamaz)
+    gameOver(ac, out, t) {
+      [330, 277.18, 220].forEach((f, j) => {
+        const tt = t + j * 0.3, son = j === 2;
+        sesTon(ac, out, { t: tt, f, a: 0.2, giris: 0.025, sure: son ? 0.95 : 0.42 });
+        sesTon(ac, out, { t: tt, f, a: 0.06, dalga: 'triangle', giris: 0.025, sure: son ? 0.6 : 0.28, suzgec: 1600 });
+      });
+    },
+    // Sığmayan parça: alçak, yumuşak "pof"
+    bad(ac, out, t) {
+      sesTon(ac, out, { t, f: 261.63, f2: 196, kay: 0.12, a: 0.2, giris: 0.006, sure: 0.16, suzgec: 1200 });
+      sesTon(ac, out, { t, f: 523.25, f2: 392, kay: 0.12, a: 0.05, dalga: 'triangle', giris: 0.006, sure: 0.1, suzgec: 1600 });
+    }
+  };
 
-  const Sound = {
-    ac: null, out: null, bufs: null, rendering: null, resumeT: -1e9, ran: false, silentEl: null,
-    dead: false, stall: 0, lastT: -1, autoTries: 0,
+  // Ana çıkış: efekt yolu → ANA KAZANÇ (SES kaydırıcısı) → yumuşak sıkıştırıcı → yumuşak tavan → hoparlör.
+  // Müzik de ANA KAZANÇ'a bağlanır. Döner: { sfx, ana, sik, tavan }
+  let sesTavanEgrisi = null;
+  function sesZinciri(ac, hacim) {
+    const sfx = ac.createGain(), ana = ac.createGain(), sik = ac.createDynamicsCompressor(), tavan = ac.createWaveShaper();
+    sfx.gain.value = 1;
+    ana.gain.value = hacim;
+    // Yumuşak sıkıştırıcı: tek efekt ve müzik neredeyse olduğu gibi geçer; üst üste binen sesler yumuşakça bastırılır
+    sik.threshold.value = -6;
+    sik.knee.value = 6;
+    sik.ratio.value = 4;
+    sik.attack.value = 0.003;
+    sik.release.value = 0.25;
+    // Yumuşak tavan: 0,7'ye kadar dümdüz (sesi değiştirmez), üstünde yuvarlayarak 1'in altında kalır: dijital kırpma olmaz
+    if (!sesTavanEgrisi) {
+      const n = 2049, d = 0.7, k = 1 - d;
+      sesTavanEgrisi = new Float32Array(n);
+      for (let i = 0; i < n; i++) {
+        const x = (i / (n - 1)) * 2 - 1, m = Math.abs(x);
+        sesTavanEgrisi[i] = Math.sign(x) * (m <= d ? m : d + k * Math.tanh((m - d) / k));
+      }
+    }
+    tavan.curve = sesTavanEgrisi;
+    sfx.connect(ana);
+    ana.connect(sik);
+    sik.connect(tavan);
+    tavan.connect(ac.destination);
+    return { sfx, ana, sik, tavan };
+  }
+
+  const SoundEngine = {
+    ac: null, yol: null, hacim: 0.7, resumeT: -1e9, ran: false, silentEl: null,
+    dead: false, stall: 0, lastT: -1, autoTries: 0, kayit: [],
     /* Android'de telefonun ses yükselticisi kısa bir sessizlikte uykuya geçiyor (ör. Samsung). Bağlam "çalışıyor"
        görünse de her ses önce onun uyanmasını bekliyor, bu yüzden hamle sesleri geç geliyordu. Duyulmayacak kadar
        kısık bir hışırtı (yaklaşık -66 dBFS) çıkışı uyanık tutar. Yalnızca sayfa ekrandayken ve ses açıkken çalar. */
@@ -4927,12 +5422,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (this.uyanik && this.uyanik.context === ac) return;
       this.uyut();
       try {
-        const n = Math.round(ac.sampleRate * 2), b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0), r = placeKit(ac, null).rng(97);
-        for (let i = 0; i < n; i++) d[i] = (r() * 2 - 1) * this.UYANIK_SEVIYE;
+        const n = Math.round(ac.sampleRate * 2), b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0);
+        let s = 97;
+        for (let i = 0; i < n; i++) { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; d[i] = (s / 2147483648 - 1) * this.UYANIK_SEVIYE; }
         const src = ac.createBufferSource();
         src.buffer = b;
         src.loop = true;
-        src.connect(ac.destination); // sıkıştırıcıdan geçmez: seviyesi sabit kalır
+        src.connect(ac.destination); // ana kazanç ve sıkıştırıcıdan geçmez: seviyesi sabit kalır
         src.start(0);
         this.uyanik = src;
       } catch (e) { this.uyanik = null; }
@@ -4954,29 +5450,23 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       try { this.ac = new AC({ latencyHint: 'interactive' }); } catch (e) {
         try { this.ac = new AC(); } catch (e2) { return false; }
       }
-      this.out = this.chain(this.ac);
+      try { this.yol = sesZinciri(this.ac, this.hacim); } catch (e) { this.yol = null; }
       this.ac.onstatechange = () => {
         if (this.ac.state === 'running') this.ran = true;
         this.uyandir();
         if (typeof muzikGuncelle === 'function') muzikGuncelle();
       };
-      this.prerender();
       return true;
     },
-    // Ana çıkış: sıkıştırıcı, sesleri telefon hoparlöründe dolgun ve eşit yüksek tutar (patlamalarda cızırtı yapmadan)
-    chain(ac) {
-      const soft = ac.createBiquadFilter(), comp = ac.createDynamicsCompressor();
-      soft.type = 'lowpass'; soft.frequency.value = 3400; soft.Q.value = 0.5; // tizi alır: kulak tırmalamaz
-      comp.threshold.value = -20; comp.knee.value = 18; comp.ratio.value = 3; comp.attack.value = 0.005; comp.release.value = 0.25;
-      const out = ac.createGain(), post = ac.createGain();
-      out.gain.value = 1;
-      post.gain.value = 1.2; // telefon hoparlöründe duyulur ama rahatsız etmez
-      out.connect(soft);
-      soft.connect(comp);
-      comp.connect(post);
-      post.connect(ac.destination);
-      return out;
+    // Ana ses düzeyi (0-1): ana menüdeki SES kaydırıcısı ana kazancı doğrudan sürer (çıtırtı olmasın diye 30 ms'de kayar)
+    sesDuzeyi(v) {
+      this.hacim = Math.min(Math.max(Number(v) || 0, 0), 1);
+      const y = this.yol, ac = this.ac;
+      if (!y || !ac) return;
+      try { y.ana.gain.cancelScheduledValues(ac.currentTime); y.ana.gain.setTargetAtTime(this.hacim, ac.currentTime, 0.03); } catch (e) { y.ana.gain.value = this.hacim; }
     },
+    // Menü müziğinin bağlanacağı yer (ana kazanç)
+    muzikGirisi() { return this.yol ? this.yol.ana : null; },
     // Eski iOS: sessiz bir sesin döngüde çalınması, sessiz moddayken de Web Audio'nun duyulmasını sağlar
     silentLoop() {
       if (this.silentEl || navigator.audioSession || !/iP(hone|ad|od)|Macintosh/.test(navigator.userAgent) || !('ontouchend' in document)) return;
@@ -5002,11 +5492,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
         if (p && p.catch) p.catch(() => { this.silentEl = null; });
       } catch (e) { this.silentEl = null; }
     },
-    // Ses bağlamını baştan kurar: eskisi kapatılır, hazır ses kayıtları yeni bağlamda da kullanılır
+    // Ses bağlamını baştan kurar: eskisi kapatılır (müzik yeni bağlamda yeniden başlar)
     rebuild() {
       const old = this.ac;
       this.uyut();
-      this.ac = null; this.out = null; this.ran = false;
+      this.ac = null; this.yol = null; this.ran = false;
       this.dead = false; this.stall = 0; this.lastT = -1; this.autoTries = 0;
       if (old) {
         try { old.onstatechange = null; const p = old.close(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* zaten kapalı */ }
@@ -5047,7 +5537,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     // istendiğinde de çal; bir kez çalıştıktan sonra durmuşsa sıraya alma (geç gelen ses olmasın)
     ok() {
       const ac = this.ac;
-      if (!soundOn || !ac || !this.bufs) return false;
+      if (!soundOn || !ac || !this.yol) return false;
       if (ac.state === 'running') { this.ran = true; return true; }
       if (this.ran) return false; // durmuş (ör. iPhone kesintisi): sesi sıraya alma; bekçi ilgilenir
       return ac.state !== 'closed' && performance.now() - this.resumeT < 500;
@@ -5067,91 +5557,30 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       }
       if (this.stall >= 2 && !this.dead) { this.dead = true; showNotice(); }
     },
-    // Ses tarifleri: düğümleri verilen (çevrimdışı) bağlama kurar; açılışta bir kez çizilir.
-    // Tonlar yumuşak sinüs: yavaşça açılır, zil ya da marimba gibi kendiliğinden söner; hışırtı ve sert dalga yok.
-    // Yerleştirme sesleri ise ton değil kısa vuruş ve her temanın kendi sesi var (PLACE_KIT: neon'da tok cam, okyanusta su damlası...)
-    recipe(ac, name) {
-      const out = ac.destination;
-      if (name.slice(0, 5) === 'place') {
-        const [, lv, , fn] = PLACE_KIT[+name.slice(5)], g = ac.createGain();
-        g.gain.value = lv; g.connect(out);
-        fn(placeKit(ac, g));
-        return;
-      }
-      // harm: bir oktav üstteki hafif üst ses (tona sıcaklık katar), tonla birlikte daha çabuk söner
-      const tone = (f, dur, vol, delay, f2, harm) => {
-        const t = delay || 0;
-        [[1, vol, dur], [2, vol * (harm || 0), dur * 0.55]].forEach(([k, v, d]) => {
-          if (v <= 0) return;
-          const o = ac.createOscillator(), g = ac.createGain();
-          o.type = 'sine';
-          o.frequency.setValueAtTime(f * k, t);
-          if (f2) o.frequency.exponentialRampToValueAtTime(f2 * k, t + Math.min(d, 0.12));
-          g.gain.setValueAtTime(0.0001, t);
-          g.gain.exponentialRampToValueAtTime(v, t + 0.012);
-          g.gain.exponentialRampToValueAtTime(0.0001, t + d);
-          o.connect(g); g.connect(out);
-          o.start(t); o.stop(t + d + 0.05);
-        });
-      };
-      if (name === 'pick') tone(587.33, 0.07, 0.06);                      // çok hafif "tık"
-      else if (name === 'bad') tone(261.63, 0.18, 0.2, 0, 220, 0.3);      // alçak, yumuşak "pof"
-      else if (name === 'over') [659.25, 523.25, 440, 349.23].forEach((f, i) => tone(f, 0.6, 0.17, i * 0.22, 0, 0.2)); // yavaş inen notalar
-      else { // clearN: N notalı yumuşak zil arpeji (do majör pentatonik)
-        const n = +name.slice(5);
-        [523.25, 659.25, 783.99, 880, 1046.5, 1318.5].slice(0, n).forEach((f, i) => tone(f, 0.36, 0.17, i * 0.07, 0, 0.08));
-      }
+    // Efekti çal (anında üretilir). gecikme: saniye (ör. tam temizlik arpeji patlamanın hemen ardından)
+    cal(ad, a, b, gecikme) {
+      this.kayit.push({ ad, a, b, gecikme: gecikme || 0 });
+      if (this.kayit.length > 60) this.kayit.shift();
+      if (!this.ok() || !SES[ad]) return;
+      try { SES[ad](this.ac, this.yol.sfx, this.ac.currentTime + 0.004 + (gecikme || 0), a, b); } catch (e) { /* ses çalınamadı */ }
     },
-    renderOne(OAC, name, dur) {
-      const oc = new OAC(1, Math.ceil(44100 * dur), 44100);
-      this.recipe(oc, name);
-      return new Promise((resolve, reject) => {
-        let done = false;
-        const fin = b => { if (!done) { done = true; resolve(b); } };
-        oc.oncomplete = e => fin(e.renderedBuffer);
-        try { const p = oc.startRendering(); if (p && typeof p.then === 'function') p.then(fin, reject); } catch (e) { reject(e); }
-      });
-    },
-    prerender() {
-      if (this.rendering) return this.rendering;
-      const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-      if (!OAC) return Promise.resolve();
-      // Önce temel sesler ve ilk temanın koyma sesi, sonra diğer temaların koyma sesleri.
-      // Çizilen ses hemen çalınabilir; hepsinin bitmesi beklenmez
-      const list = [['pick', 0.13], ['place0', PLACE_KIT[0][2]], ['bad', 0.24], ['clear3', 0.95], ['clear4', 0.95], ['clear5', 0.95], ['clear6', 0.95], ['over', 1.36]]
-        .concat(PLACE_KIT.slice(1).map((p, i) => ['place' + (i + 1), p[2]]));
-      const bufs = this.bufs || {};
-      this.bufs = bufs;
-      this.rendering = list.reduce((pr, [name, dur]) => pr.then(() => (bufs[name] ? null : this.renderOne(OAC, name, dur).then(b => { bufs[name] = b; }))), Promise.resolve())
-        .catch(() => { this.rendering = null; });
-      return this.rendering;
-    },
-    // Hazır sesi çal: tek düğüm; bitince ağdan çıkar
-    play(name, rate) {
-      if (!this.ok()) return;
-      const b = this.bufs[name];
-      if (!b) return;
-      try {
-        const src = this.ac.createBufferSource();
-        src.buffer = b;
-        if (rate && rate !== 1) src.playbackRate.value = rate;
-        src.connect(this.out);
-        src.onended = () => { try { src.disconnect(); } catch (e) { /* zaten ayrık */ } };
-        src.start(0);
-      } catch (e) { /* ses çalınamadı */ }
-    },
-    pick() { this.play('pick'); },
-    // Temanın koyma sesi (henüz çizilmediyse ilk temanınki). Küçük parça biraz daha tiz, büyük parça biraz daha pes
-    // (±1,5 yarım ses); her seferinde azıcık farklı, tekrar ederken yormaz
-    place(cells) {
-      const k = 'place' + (Math.max(0, themeIdx) % PLACE_KIT.length);
-      this.play(this.bufs && this.bufs[k] ? k : 'place0', Math.pow(2, (1.5 - (Math.min(Math.max(cells || 5, 1), 9) - 1) * 0.375 + (Math.random() - 0.5) * 0.5) / 12));
-    },
-    bad() { this.play('bad'); },
-    // kombo arttıkça ton biraz yükselir (en çok 3 yarım ses): yüksek komboda da tizleşip rahatsız etmez
-    clear(lines, cmb) { this.play('clear' + Math.min(6, 2 + lines), Math.pow(2, Math.min(Math.max(cmb - 1, 0), 3) / 12)); },
-    over() { this.play('over'); }
+    pick(k) { this.cal('pick', k); },
+    place(kare) { this.cal('place', kare); },
+    clear(cizgi, kombo) { this.cal('clear', cizgi, kombo); },
+    allClear(gecikme) { this.cal('allClear', undefined, undefined, gecikme); },
+    joker() { this.cal('joker'); },
+    gameOver() { this.cal('gameOver'); },
+    over() { this.gameOver(); },
+    bad() { this.cal('bad'); },
+    // Eski adlarla çağrılar: düello geri sayımı ('pick', perde), sıra bitti ('clear3'), zafer ('clear5')
+    play(ad, k) {
+      if (ad === 'pick') this.pick(k);
+      else if (ad === 'clear3') this.clear(3, 1);
+      else if (ad === 'clear5') this.allClear();
+      else if (SES[ad]) this.cal(ad);
+    }
   };
+  const Sound = SoundEngine;   // oyunun geri kalanı Sound adıyla çağırır
 
   /* ================= Çizim ================= */
   // Hazır blok resmini kopyalar; tam boyutta piksele hizalanır (daha hızlı ve keskin)
@@ -5648,6 +6077,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     ovStart.dataset.devam = resume || moves > 0 ? '1' : '';
     $('stDuraklat').hidden = !(duraklat && ovStart.dataset.devam);
     ovStart.scrollTop = 0;   // menü her açılışta baştan (rozet ve DEVAM ET görünür)
+    profilCiz();
     baslangicYazilari();
     ovStart.hidden = false;
     setModal();
@@ -5662,9 +6092,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     showNotice();
   }
   $('btnStart').addEventListener('click', startPlay);
-  // iPhone sesi yalnızca gerçek bir dokunuşun içinde açar: ilk açılışta her dokunuşta dene; sonra yalnızca
-  // tıklama ve tuşta (sürükleme sonrası dokunuş bitişi sesi açmaz, boşuna denemek oyunu takıltır)
-  ['touchend', 'pointerup'].forEach(t => document.addEventListener(t, () => Sound.unlock(false), { passive: true, capture: true }));
+  // Mobil kilit (AudioContext unlock): ses bağlamı ilk dokunuşta, parmak değer değmez (pointerdown / touchstart) kurulup
+  // uyandırılır. iPhone ve Android sesi asıl parmak kalkışında açtığı için ses bir kez çalışana dek her dokunuş bitişinde de
+  // denenir; sonra yalnızca tıklama ve tuşta (sürükleme sonrası dokunuş bitişi sesi açmaz, boşuna denemek oyunu takıltır)
+  ['pointerdown', 'touchstart', 'touchend', 'pointerup'].forEach(t => document.addEventListener(t, () => Sound.unlock(false), { passive: true, capture: true }));
   ['click', 'keydown'].forEach(t => document.addEventListener(t, () => Sound.unlock(true), { passive: true, capture: true }));
   setInterval(() => Sound.watch(), 1500);
 
@@ -5814,6 +6245,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     if (!ovSatin.hidden) Satin.kapat();
+    else if (!ovGorev.hidden) gorevKapat();
     else if (!ovConfirm.hidden) closeConfirm();
     else if (!ovMeydan.hidden) $('mdVazgec').click();
     else if (!ovGunluk.hidden) gunlukGeri();
@@ -5827,7 +6259,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   // Ana menü dışında açık bir pencere var mı (Esc ve açılış penceresi bunu bekler)
   function ustPencereAcik() {
     return !ovOver.hidden || !ovConfirm.hidden || !ovDuel.hidden || !ovNick.hidden || !ovBoard.hidden || !ovRapor.hidden || !ovReklam.hidden
-      || !ovGunluk.hidden || !ovMeydan.hidden || !ovSatin.hidden;
+      || !ovGunluk.hidden || !ovMeydan.hidden || !ovSatin.hidden || !ovGorev.hidden;
   }
 
 
@@ -6093,6 +6525,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     updateHint();
     trayDirty = true;
     wake();
+    seviyeYazisiSil();   // tur bitti yazısı tek başına okunsun
     spawnFloat(yaz(reason === 'time' ? 'sureDoldu' : 'yerKalmadiFloat'), L.bx + L.bs / 2, L.by + L.bs * 0.42, 'praise', 0, 1500);
     Sound.over();
     announce(yaz('puanDuyuru', duel.names[duel.turn], fmt(score)));
@@ -8000,8 +8433,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   /* ================= Ana menü müziği =================
      Menü parçası (126 BPM, 16 ölçü) ana menüde kesintisiz döner, oyuna geçince yavaşça susar. Tarayıcılar sesi ilk
-     dokunuştan önce açmaz: menüde OYNA dışında bir yere (ya da müzik düğmesine) dokununca başlar. Aç/kapa ve ses düzeyi
-     cihazda saklanır; oyunun genel sesi kapalıysa müzik de çalmaz. Parça açılışta bir kez çözülüp bellekte tutulur. */
+     dokunuştan önce açmaz: menüde OYNA dışında bir yere (ya da müzik düğmesine) dokununca başlar. Müziğin aç/kapası ve SES
+     kaydırıcısı (oyunun genel ses düzeyi: efektler ve müzik birlikte, ses motorunun ana kazancı) cihazda saklanır; oyunun
+     genel sesi kapalıysa müzik de çalmaz. Parça açılışta bir kez çözülüp bellekte tutulur. */
   const MUZIK_URL = 'muzik/ana-menu.mp3';
   const MUZIK_B64 = '';                  // Claude kopyasında parça buraya gömülür (orada dışarıdan dosya alınamaz)
   const MUZIK_DONGU = 1344000 / 44100;   // 64 vuruş @126 BPM = 30,476 sn
@@ -8013,7 +8447,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const muzikBtn = $('muzikBtn'), muzikSes = $('muzikSes'), muzikDeger = $('muzikDeger');
   const NOTA_ACIK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5.5l11-2V16"/><circle cx="6.5" cy="18" r="2.6" fill="currentColor"/><circle cx="17.5" cy="16" r="2.6" fill="currentColor"/></svg>';
   const NOTA_KAPALI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5.5l11-2V16"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="17.5" cy="16" r="2.6"/><path d="M3.5 3.5l17 17"/></svg>';
-  const muzikKazanc = () => Math.pow(muzikAyar.ses / 100, 1.5);
+  const MUZIK_SEVIYE = 0.84;   // müziğin kendi düzeyi; asıl ses düzeyini ana kazanç (SES kaydırıcısı) verir
+  const muzikKazanc = () => MUZIK_SEVIYE;
   const muzikIstenir = () => soundOn && muzikAyar.acik && muzikAyar.ses > 0 && !ovStart.hidden && !document.hidden && !duel;
 
   function muzikCozumle(ab) {
@@ -8054,7 +8489,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     g.gain.setValueAtTime(0, t);
     g.gain.setTargetAtTime(k, t, 0.25);                 // yumuşak giriş (~0,8 sn)
     src.connect(g);
-    g.connect(ac.destination);                          // oyun seslerinin tiz kesicisinden geçmez
+    g.connect(Sound.muzikGirisi() || ac.destination);   // ana kazanç (SES kaydırıcısı) ve sıkıştırıcıdan geçer
     src.start(t, Muzik.bas);
     Muzik.src = src;
     Muzik.gain = g;
@@ -8082,12 +8517,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     muzikBtn.setAttribute('aria-pressed', String(acik));
     muzikBtn.setAttribute('aria-label', yaz(acik ? 'muzikKapat' : 'muzikAc'));
     muzikSes.value = String(muzikAyar.ses);
-    muzikSes.disabled = !muzikAyar.acik;
     muzikSes.setAttribute('aria-valuetext', yaz('yuzde', muzikAyar.ses));
     muzikDeger.textContent = '%' + muzikAyar.ses;
   }
   function muzikKaydet() {
     store.set(K_MUZIK, muzikAyar);
+    Sound.sesDuzeyi(muzikAyar.ses / 100);
     muzikCiz();
     if (muzikAyar.acik) muzikYukle();
     muzikGuncelle();
@@ -8110,6 +8545,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   document.addEventListener('visibilitychange', muzikGuncelle);
   // Menüde OYNA dışındaki bir dokunuş sesi açar (belge dinleyicisi) ve müziği başlatır
   ovStart.addEventListener('click', () => setTimeout(muzikGuncelle, 0));
+  Sound.sesDuzeyi(muzikAyar.ses / 100);   // SES kaydırıcısı → ses motorunun ana kazancı
   muzikCiz();
 
   /* ================= Boyut değişimi ================= */
@@ -8137,24 +8573,44 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       setScore: n => { score = n; displayScore = n; istatTam = false; if (!duel && kip === 'klasik' && score > best) setBest(score); setScoreText(score); updateHud(); queueTheme(0); },
       audio: () => ({ state: Sound.ac ? Sound.ac.state : 'none', session: navigator.audioSession ? navigator.audioSession.type : 'yok',
         uyanik: !!(Sound.uyanik && Sound.uyanik.context === Sound.ac), uyanikTepe: Sound.uyanik ? Math.max.apply(null, Array.from(Sound.uyanik.buffer.getChannelData(0).subarray(0, 4096), Math.abs)) : 0 }),
-      // Hazır sesi ana çıkıştan (sıkıştırıcı dahil) çevrimdışı geçirip tepe ve ortalama seviyesini döndürür.
-      // Oyundaki gibi ölçülür: sıkıştırıcı önce 1 sn sessizlikte oturur (ilk anda sesi kısık gösterir), ses sonra çalar
-      renderSound: async (name, a, b) => {
-        await Sound.prerender();
-        const key = name === 'clear' ? 'clear' + Math.min(6, 2 + a) : name;
-        const rate = name === 'clear' ? Math.pow(2, Math.min(Math.max(b - 1, 0), 3) / 12) : 1;
-        const ac = new OfflineAudioContext(1, Math.round(44100 * 2.6), 44100), src = ac.createBufferSource();
-        src.buffer = Sound.bufs[key];
-        src.playbackRate.value = rate;
-        src.connect(Sound.chain(ac));
-        src.start(1);
+      // Efekti ana çıkıştan (ana kazanç, sıkıştırıcı ve tavan dahil) çevrimdışı geçirip tepe ve ortalama seviyesini döndürür.
+      // Oyundaki gibi ölçülür: sıkıştırıcı önce 1 sn sessizlikte oturur, ses sonra çalar. hacim: ana kazanç (varsayılan
+      // 0,7); kac: aynı anda kaç kez (üst üste binen sesler)
+      renderSound: async (name, a, b, hacim, kac) => {
+        const ac = new OfflineAudioContext(1, Math.round(44100 * 3), 44100), y = sesZinciri(ac, hacim == null ? 0.7 : hacim);
+        for (let i = 0; i < (kac || 1); i++) SES[name](ac, y.sfx, 1 + i * 0.003, a, b);
         const d = (await ac.startRendering()).getChannelData(0).subarray(44100);
         let peak = 0, sq = 0, n = 0;
         for (let i = 0; i < d.length; i++) { const v = Math.abs(d[i]); if (v > peak) peak = v; if (v > 0.001) { sq += v * v; n++; } }
         return { peak: +peak.toFixed(3), rms: +(n ? Math.sqrt(sq / n) : 0).toFixed(3), ms: Math.round((n / 44100) * 1000) };
       },
-      sounds: () => (Sound.bufs ? Object.keys(Sound.bufs) : []),
-      placeKit: () => PLACE_KIT.map(p => p[0]),
+      // Efektin baskın frekansı: adaylar arasında en güçlüsü (Goertzel); sesin basMs'den (varsayılan 2 ms) başlayan ms
+      // milisaniyelik bölümünde, ana zincirsiz (doğrudan efekt). guc: her adayın göreli gücü
+      sesFrekans: async (name, a, b, adaylar, ms, basMs) => {
+        const ac = new OfflineAudioContext(1, Math.round(44100 * 2), 44100);
+        SES[name](ac, ac.destination, 0.01, a, b);
+        const d = (await ac.startRendering()).getChannelData(0), n = Math.round(44100 * (ms || 120) / 1000);
+        const bas = Math.round(44100 * (0.01 + (basMs == null ? 2 : basMs) / 1000));
+        const guc = f => { const w = 2 * Math.PI * f / 44100, c = 2 * Math.cos(w); let s1 = 0, s2 = 0;
+          for (let i = bas; i < bas + n; i++) { const s0 = d[i] + c * s1 - s2; s2 = s1; s1 = s0; } return s1 * s1 + s2 * s2 - c * s1 * s2; };
+        const g = adaylar.map(guc), en = g.indexOf(Math.max.apply(null, g));
+        return { f: adaylar[en], guc: g.map(x => +x.toFixed(2)) };
+      },
+      sounds: () => Object.keys(SES),
+      // Seviye ve günlük görevler
+      seviye: () => Object.assign({ xp: ilerleme.xp }, seviyeBilgi(ilerleme.xp)),
+      seviyeHesap: x => seviyeBilgi(x),
+      xpAyarla: x => { ilerleme.xp = Math.max(0, Math.floor(x)); store.set(K_SEVIYE, { xp: ilerleme.xp }); profilCiz(); },
+      gorev: () => ({ gun: gorev.gun, liste: gorev.liste.map(g => Object.assign({}, g)), odul: gorev.odul, durum: gorevDurum() }),
+      gorevUret: gun => gorevUret(gun),
+      gorevGun: g => { gorevTestGun = g || ''; gorevGunKontrol(); },
+      gorevIlerlet: (k, i) => { gorev.liste[k].i = clamp(i, 0, gorev.liste[k].n); gorevKaydet(); profilCiz(); if (!ovGorev.hidden) gorevCiz(); },
+      gorevOlay: (t, d) => gorevOlay(t, d),
+      jkOdulAyarla: o => { Object.assign(jkOdul, o); jkOdulKaydet(); jokerCiz(); },
+      sesKok: k => sesKok(k),
+      sesKayit: () => Sound.kayit.slice(),
+      sesYol: () => ({ hacim: Sound.hacim, ana: Sound.yol ? +Sound.yol.ana.gain.value.toFixed(3) : null, sik: !!(Sound.yol && Sound.yol.sik),
+        esik: Sound.yol ? Sound.yol.sik.threshold.value : null, oran: Sound.yol ? Sound.yol.sik.ratio.value : null, durum: Sound.ac ? Sound.ac.state : 'yok' }),
       // Tutulan nokta ve parça merkezinin parmağa göre konumu (px; parça merkezi = parmak + ox, oy)
       grab: () => (drag ? { gu: drag.gu, gv: drag.gv, ox: drag.tx - drag.px, oy: drag.ty - drag.py, lift: drag.type !== 'mouse', gap: LIFT_GAP, ramp: LIFT_RAMP } : null),
       soundApi: Sound,
@@ -8191,7 +8647,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       temaAdlari: () => THEMES.map((_, i) => temaAdi(i)),
       newGame,
       // Jokerler, ikinci şans ve reklam yöneticisi
-      jk: () => ({ jk: Object.assign({}, jk), mod: jokerMod, tikandi, ikinci, bar: !jokerBar.hidden, kapali: jokerBar.classList.contains('kapali'),
+      jk: () => ({ jk: Object.assign({}, jk), odul: Object.assign({}, jkOdul), mod: jokerMod, tikandi, ikinci, bar: !jokerBar.hidden, kapali: jokerBar.classList.contains('kapali'),
         durum: JOKER_ADLAR.map(a => jkBtn[a].dataset.durum), ipucu: jokerIpucu.hidden ? '' : jokerIpucuYazi.textContent }),
       jkAyarla: o => { jk = jokerOku(Object.assign({}, jk, o)); jokerCiz(); },
       tikanma: () => { if (!tray.some(p => p && p.fits)) oyunTikandi(); },
@@ -8326,6 +8782,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
         AppEk.addListener('backButton', () => {
           if (!ovReklam.hidden || AdManager.acik()) return; // reklam penceresi kendiliğinden kapanır
           if (!ovSatin.hidden) Satin.kapat();
+          else if (!ovGorev.hidden) gorevKapat();
           else if (!ovConfirm.hidden) $('btnCancel').click();
           else if (!ovRapor.hidden) raporKapat();
           else if (!ovBoard.hidden) tabloKapat();
@@ -8364,7 +8821,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
         document.fonts.addEventListener('loadingdone', () => { fitCredits(); baslikSigdir(); });
       } catch (e) { /* desteklenmiyor */ }
     }
-    Sound.prerender(); // sesler açılışta bir kez hazırlanır (dokunuş gerekmez)
     // Kayıtlı oyun varsa kaldığı yerden devam, yoksa yeni oyun
     const restored = (data && data.v === 2 && load(data)) || load();
     if (!restored) newGame();

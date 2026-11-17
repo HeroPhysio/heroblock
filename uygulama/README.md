@@ -115,6 +115,12 @@ Gerçek kimlikleri yazınca `npx cap sync` çalıştır. Gerisi kendiliğinden o
 
 Ayrıca sitenin köküne `app-ads.txt` konur (`google.com, pub-…, DIRECT, f08c47fec0942fa0`; `pub-…` uygulama kimliğindeki numaradır).
 
+## Seviye, günlük görevler ve ses
+
+- **Seviye ve rütbe:** her oyunda kazanılan puan XP olarak cihazda birikir. Seviye 1'den başlar; rütbeler **ÇAYLAK** (1-4), **STRATEJİST** (5-11), **BLOK USTASI** (12-21), **BÜYÜK USTA** (22-34), **EFSANE** (35+). Ana menüde ayarların üstünde seviye, rütbe ve ilerleme çubuğu; oyun sonunda o oyunda kazanılan XP.
+- **Günlük görevler:** seviye satırına dokununca her gün yenilenen 3 görev (ör. 15 çizgi patlat, KOMBO ×2 yap, tek oyunda 7.500 puan). Üçü bitince **ÖDÜLÜ AL**: seçilen jokere +1 hak (oyun başına ücretsiz hak bitince kullanılır, süresi dolmaz).
+- **Ses motoru:** bütün efektler Web Audio ile anında üretilir (ses dosyası yok); kombolarda patlatma sesi pentatonik gamda bir nota yükselir. Ana menüdeki **SES** kaydırıcısı (%0-%100) ana kazancı sürer (efektler ve menü müziği); çıkışta yumuşak sıkıştırıcı ve tavan cızırtıyı önler. Ses bağlamı ilk dokunuşta kurulur.
+
 ## Reklamsız oyun (uygulama içi satın alma)
 
 Uygulama, `@capgo/native-purchases` (8.9.16; Google Play Billing 9, iOS StoreKit 2) eklentisiyle **tek seferlik** bir ürün satar: **REKLAMSIZ OYUN**. Satın alan oyuncuda şerit ve oyun arası reklam çıkmaz; ödüllü reklamlar (joker hakkı, ikinci şans) isteğe bağlı kalır. Sitede satın alma yoktur.

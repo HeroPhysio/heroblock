@@ -48,6 +48,16 @@ yüzden farklı fiyatlı ikinci bir ürün (ör. `reklamsiz_150`) açıp panelde
 mağaza her açılışta yeniden sorulur (iade edilen satın alma geri alınır, sonradan onaylanan ödeme onaylanır).
 ANA MENÜ / DURAKLAT: üst bilgide solda ⌂ (oyunu duraklatır, ana menüde DURAKLATILDI ve DEVAM ET) ve ↻ YENİDEN BAŞLAT; düello
 ana menüde. Bilgisayarda Esc oyunu duraklatır, ana menüde Esc oyuna döndürür; uygulamada Android geri tuşu da ana menüye götürür.
+SEVİYE VE RÜTBE: bütün oyunlarda kazanılan toplam puan XP olarak cihazda birikir; seviye 1'den başlar, seviye n'den n+1'e
+(2.000 + 400 × (n − 1)) × PUAN_KAT XP. Rütbeler ÇAYLAK (1-4), STRATEJİST (5-11), BLOK USTASI (12-21), BÜYÜK USTA (22-34), EFSANE
+(35+). Ana menüde ayarların üstünde seviye, rütbe ve ilerleme çubuğu; oyun sonunda kazanılan XP. İlk açılışta XP rekor kadar başlar.
+GÜNLÜK GÖREVLER: her gün (cihazın yerel günü) günün tohumundan 3 görev (çizgi / parça, kombo / tek hamlede çok çizgi, tek oyunda
+puan / joker). Üçü bitince ÖDÜLÜ AL: seçilen jokere +1 hak; ödül hakkı jokerin oyun başına ücretsiz hakkı bitince kullanılır, süresi
+dolmaz (cihazda, en çok 99).
+SES MOTORU (SoundEngine): Web Audio ile tamamen prosedürel, ses dosyası yok. pick 450→650 Hz, place 150→55 Hz (alçak geçiren),
+clear komboya göre do majör pentatonik (523-1046 Hz) yükselen melodi ve çok çizgide akor, allClear 4 notalı zafer arpeji, joker
+parıltısı, gameOver 330→277→220 Hz. Ana zincir: ANA KAZANÇ (ana menüdeki SES kaydırıcısı, %0-%100; menü müziği de ondan geçer) →
+yumuşak sıkıştırıcı → yumuşak tavan (kırpma yok). Ses bağlamı ilk dokunuşta (pointerdown / touchstart) kurulur.
 PARÇA DENGESİ (ağırlıklı havuz): çekirdek parçalar (2x2 kare, 1x2-1x4 çubuklar, küçük ve orta L, T, S/Z) %65, büyük parçalar
 (3x3 kare, 1x5, büyük L, 2x3) %22, 1x1 %8 (art arda iki elde gelmez; tahta %70'ten fazla doluysa kurtarıcıdır), çapraz %5.
 Bir elde en çok 1 çapraz, en çok 2 büyük parça ve tek bir 3x3. Günlük bulmaca ve düello aynı tablo ve kuralları kendi tohumlarıyla kullanır.
