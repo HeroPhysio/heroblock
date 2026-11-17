@@ -13,7 +13,7 @@ parçayı da verir. Tahtayı tamamen boşaltmak (TAM TEMİZLİK!) 5.000 bonus pu
 Puanlar Kasım 2026'dan beri ilk puanlamanın 5 katı (oyunun kodunda `PUAN_KAT = 5`). Skor sunucusu ve paylaşılan bağlantılar
 ilk ölçekte kalır: sunucuya giden puan (skor tablosu, anonim istatistik) ile meydan okuma ve düello bağlantılarındaki puan
 PUAN_KAT'a bölünür, gelen puan PUAN_KAT ile çarpılır. Böylece sunucunun puan denetimi aynen çalışır, eski bağlantılar ve eski
-sürümler uyumlu kalır. Yönetim paneli (skor sunucusu sürüm 5, sunucudaki `PUAN_KAT`) puanları oyunda görünen değerle gösterir;
+sürümler uyumlu kalır. Yönetim paneli (skor sunucusu sürüm 5'ten beri, sunucudaki `PUAN_KAT`) puanları oyunda görünen değerle gösterir;
 panelden düzeltilen puan da oyundaki değerle yazılır. Cihazdaki rekor ve kayıtlı oyun ilk açılışta yeni ölçeğe çevrilir
 (16 Kasım'da birkaç saat yayında kalan 10 kat puanlamanınkiler de).
 Adil zorluk: tahta en çok %85 doluyken gelen üç parçadan en az biri her zaman boşluklara sığar (gerekirse son parça küçük bir
@@ -37,6 +37,17 @@ REKLAMLAR (yalnızca Google Play ve App Store uygulamalarında, Google AdMob): a
 3. TEKRAR OYNA'da bir oyun arası reklam, isteğe bağlı ödüllü reklamla jokere +1 hak ya da oyun başına bir kez ikinci şans
 (tahta tamamen temizlenir; skor, kombo ve eldeki parçalar aynen kalır). Sitede reklam yoktur: hakkı biten joker sönük kalır,
 ikinci şans düğmesi çıkmaz.
+REKLAMSIZ OYUN (uygulama içi satın alma, yalnızca uygulamalarda, @capgo/native-purchases): tek seferlik, tüketilmeyen ürün
+(Google Play / App Store ürün kimliği `reklamsiz`). Satın alan oyuncuda şerit ve oyun arası reklam çıkmaz; ödüllü reklamlar
+isteğe bağlı kalır. Ana menüde REKLAMLARI KALDIR düğmesi (mağazanın fiyatıyla, ör. ₺100,00) ve oyun her açıldığında (ve
+30 dakikadan uzun aradan sonra dönülünce) bir kez küçük bir pencere (ŞİMDİ DEĞİL, SATIN ALIMI GERİ YÜKLE). Fiyat mağazada
+belirlenir (Play Console › Para kazanma › Uygulama içi ürünler); oyun fiyatı mağazadan okur. Ürün kimliği (`reklamsiz` ile
+başlar), pencerenin adı ve açıklaması (Türkçe / İngilizce), satış ve açılış penceresi skor sunucusunun yönetim panelinden
+(sürüm 6, Uzaktan ayar › REKLAMSIZ PAKET) değişir; `reklamsiz` ile başlayan herhangi bir ürünü almış oyuncu reklamsızdır, bu
+yüzden farklı fiyatlı ikinci bir ürün (ör. `reklamsiz_150`) açıp panelden seçmek de olur. Satın alma cihazda da saklanır;
+mağaza her açılışta yeniden sorulur (iade edilen satın alma geri alınır, sonradan onaylanan ödeme onaylanır).
+ANA MENÜ / DURAKLAT: üst bilgide solda ⌂ (oyunu duraklatır, ana menüde DURAKLATILDI ve DEVAM ET) ve ↻ YENİDEN BAŞLAT; düello
+ana menüde. Bilgisayarda Esc oyunu duraklatır, ana menüde Esc oyuna döndürür; uygulamada Android geri tuşu da ana menüye götürür.
 PARÇA DENGESİ (ağırlıklı havuz): çekirdek parçalar (2x2 kare, 1x2-1x4 çubuklar, küçük ve orta L, T, S/Z) %65, büyük parçalar
 (3x3 kare, 1x5, büyük L, 2x3) %22, 1x1 %8 (art arda iki elde gelmez; tahta %70'ten fazla doluysa kurtarıcıdır), çapraz %5.
 Bir elde en çok 1 çapraz, en çok 2 büyük parça ve tek bir 3x3. Günlük bulmaca ve düello aynı tablo ve kuralları kendi tohumlarıyla kullanır.
@@ -54,7 +65,8 @@ Eski adres (herophysio.github.io/blok-kahramani) buraya yönlenir; oyuncuların 
 takma adı ve ayarları ilk açılışta cihazın içinde yeni adrese taşınır.
 
 **Gizlilik:** Sitede hesap, reklam, izleme ve çerez yok; oyun bitince sunucuya kişiyi tanımlamayan anonim bir istatistik gider. Google Play ve App Store uygulamaları Google AdMob reklamları
-gösterir (AB, AEA, Birleşik Krallık ve İsviçre'de Google'ın izin penceresiyle). Skor tablosuna katılmak isteğe bağlıdır
+gösterir (AB, AEA, Birleşik Krallık ve İsviçre'de Google'ın izin penceresiyle); reklamları kaldıran isteğe bağlı satın almanın
+ödemesini mağaza alır, ödeme bilgisi bize gelmez. Skor tablosuna katılmak isteğe bağlıdır
 (takma ad ve haftalık puan); diğer oyun bilgileri yalnızca cihazda saklanır.
 Ayrıntılar: [Gizlilik Politikası ve KVKK Aydınlatma Metni](https://heroblock.herouygulama.com.tr/gizlilik.html) · [Kullanım Koşulları](https://heroblock.herouygulama.com.tr/kosullar.html) ·
 [Destek](https://heroblock.herouygulama.com.tr/destek.html) · [Hesap ve veri silme](https://heroblock.herouygulama.com.tr/veri-silme.html)

@@ -80,7 +80,7 @@ keyPassword=ŞİFRE
 
 - **Başlık çubuğu yok, kenardan kenara:** oyun durum ve gezinme çubuklarının arkasına uzanır (koyu zemin, açık simgeler). `MainActivity` önce Capacitor'un temasını (`AppTheme.NoActionBar`) kurar, kenardan kenara görünümü **sonra** açar; sıra ters olursa Android 12 ve sonrasında üstte "Hero Block" yazan bir başlık çubuğu çıkar. Pencere zemini oyunun koyu rengi (`@color/hbArkaPlan`, `#050817`).
 - **Web sitesi gibi değil:** sayfa kaymaz, esnemez; oyunun altındaki şirket bilgisi şeridi uygulamada yok (bilgiler ve gizlilik, koşullar, destek bağlantıları ana menüde). Haftalık skor tablosu ana menüde **HAFTANIN EN İYİLERİ** düğmesiyle açılır; ana menü tek ekrana sığar.
-- **ANA MENÜ düğmesi (⌂):** üst bilgide solda, yanında yeniden başlat. Düello ana menüde ve oyun sonunda; günlük bulmacadan ve meydan okumadan çıkış da bu düğmeyle (oynanmışsa önce sorar).
+- **ANA MENÜ düğmesi (⌂):** üst bilgide solda, yanında yeniden başlat. Oyunu duraklatır: ana menü kartının üstünde **DURAKLATILDI**, **DEVAM ET** ile kaldığın yerden sürer (sitede de aynı düğme var). Düello ana menüde ve oyun sonunda; günlük bulmacadan ve meydan okumadan çıkış da bu düğmeyle (oynanmışsa önce sorar).
 - **Android geri tuşu:** açık pencereyi kapatır; oyundaysan ana menüye döner (oyun kayıtlı, **DEVAM ET** ile sürer); düelloda, günlük bulmacada ya da meydan okumada önce sorar; oyun bittiyse yeni oyunla ana menüye; ana menüdeyken uygulamayı arka plana alır.
 
 ## Paylaşım (Arkadaşına meydan oku, Arkadaşınla düello)
@@ -114,6 +114,27 @@ Gerçek kimlikleri yazınca `npx cap sync` çalıştır. Gerisi kendiliğinden o
 - **Denetim:** biçimi yanlış (`~` ile `/` karışmış) ya da başka hesaba ait bir kimlik varsa `npx cap sync` ve Android derlemesi hata verip durur. Elle denetlemek için `npm run admob` çalıştır.
 
 Ayrıca sitenin köküne `app-ads.txt` konur (`google.com, pub-…, DIRECT, f08c47fec0942fa0`; `pub-…` uygulama kimliğindeki numaradır).
+
+## Reklamsız oyun (uygulama içi satın alma)
+
+Uygulama, `@capgo/native-purchases` (8.9.16; Google Play Billing 9, iOS StoreKit 2) eklentisiyle **tek seferlik** bir ürün satar: **REKLAMSIZ OYUN**. Satın alan oyuncuda şerit ve oyun arası reklam çıkmaz; ödüllü reklamlar (joker hakkı, ikinci şans) isteğe bağlı kalır. Sitede satın alma yoktur.
+
+- **Ana menüde REKLAMLARI KALDIR** düğmesi (mağazanın fiyatıyla) ve **oyun her açıldığında** (ve uygulamaya 30 dakikadan uzun aradan sonra dönülünce) bir kez küçük bir pencere: başlık, açıklama, **SATIN AL ₺100,00**, **ŞİMDİ DEĞİL**, **SATIN ALIMI GERİ YÜKLE**. Pencere ana menü açıkken çıkar; takma ad, izin (UMP) ya da başka bir pencere varken bekler, oyuncu o arada oyuna başladıysa çıkmaz.
+- **Fiyat mağazada belirlenir** (Google, uygulama içi ödemede fiyatın mağazadan gelmesini şart koşar). Oyun fiyatı mağazadan okur ve oyuncunun para biriminde gösterir; kodda fiyat yoktur.
+- **Yönetim paneli** (skor sunucusu sürüm 6 › Uzaktan ayar › **REKLAMSIZ PAKET**): satışı aç / kapat, açılış penceresini aç / kapat, ürün kimliği (`reklamsiz` ile başlar), Türkçe / İngilizce ad ve açıklama. Uygulama bunları açılışta `?a=config` adresinden okur (birkaç dakikada yayılır).
+- **Fiyatı değiştirmek:** Play Console › Para kazanma › Ürünler › Uygulama içi ürünler › `reklamsiz` › fiyatı düzenle. Ya da farklı fiyatlı ikinci bir ürün aç (ör. `reklamsiz_150`) ve kimliğini panele yaz: `reklamsiz` ile başlayan **herhangi bir** ürünü almış oyuncu reklamsızdır, eski fiyattan alanlar etkilenmez.
+- **Doğrulama:** satın alma cihazda saklanır (açılışta banner hiç görünmez); mağaza her açılışta ve uygulamaya dönünce yeniden sorulur. İade edilen satın alma geri alınır (reklamlar geri gelir); sonradan tamamlanan (bekleyen, ör. nakit) ödeme onaylanır (`acknowledgePurchase`; onaylanmayan satın almayı Google 3 gün içinde iade eder). Mağaza sorulamazsa (internet yok) bilinen durum kalır.
+
+### Google Play Console'da ürünü açmak (bir kez)
+
+1. Ürün açabilmek için uygulamanın bu sürümü (Billing izni olan, 1.0.8 ve sonrası) Play Console'a en az **dahili test** kanalına yüklenmiş olmalı. Satıcı hesabı (ödeme profili) gerekir: Play Console › Ayarlar › Ödeme profili.
+2. **Para kazanma › Ürünler › Uygulama içi ürünler › Ürün oluştur:** ürün kimliği **`reklamsiz`** (sonradan değiştirilemez), ad ve açıklama (`magaza/magaza-metinleri.txt` › UYGULAMA İÇİ ÜRÜN), satın alma seçeneği: tek seferlik (**satın al**), fiyat **100,00 TRY**; diğer ülkeler için önerilen fiyatları kabul et. Kaydet ve **Etkinleştir**.
+3. **Deneme:** Play Console › Ayarlar › **Lisans testi** listesine kendi Google hesabını ekle. Uygulamayı dahili test bağlantısıyla **Play Store'dan** yükle (elle kurulan APK'da mağaza ürünü bulamayabilir). Lisans testçisi gerçek para ödemez ("Test kartı, her zaman onaylar"); "yavaş test kartı" ile bekleyen ödemeyi deneyebilirsin. İadeyi Play Console › **Sipariş yönetimi**'nden dene (iade ederken "hakkı kaldır"ı seç): uygulama bir sonraki açılışta reklamları geri getirir.
+4. Ürün etkinleşene kadar (ya da mağaza bulunamazsa) oyunda düğme ve pencere görünmez; oyun bunu kendisi yeniden dener.
+
+### App Store Connect (iOS)
+
+Uygulama › **Uygulama İçi Satın Almalar** › **Tüketilmeyen** (Non-Consumable): ürün kimliği **`reklamsiz`**, fiyat 100 TRY'ye en yakın basamak, görünen ad ve açıklama (mağaza metinleri dosyasında). İlk ürün, uygulamanın bir sürümüyle birlikte incelemeye gönderilir. iOS'ta **SATIN ALIMI GERİ YÜKLE** zorunludur, pencerede var.
 
 ## Mağaza bağlantıları
 

@@ -516,7 +516,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   html.uygulama #lbStart { display: none !important; }
   #btnTablo svg { color: var(--gold); }
   /* Kısa ekranda ana menü tek ekrana sığsın: alt başlık yok, düğmeler ve satırlar biraz daha sık */
-  @media (max-height: 800px) {
+  @media (max-height: 900px) {
     html.uygulama #stSub { display: none; }
     html.uygulama #stCard { padding: 18px 18px 16px; }
     html.uygulama #stCard .title { margin-bottom: 12px; }
@@ -524,6 +524,24 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     html.uygulama #stCard .btn-gap { margin-top: 8px; }
     html.uygulama #stCard .music-row, html.uygulama #stCard .dil-row, html.uygulama #stCard .bt-row { margin-top: 8px; }
     html.uygulama #stCard .card-foot { margin-top: 10px; font-size: 11px; }
+    html.uygulama #stCard .btn.btn-reklamsiz { padding-top: 9px; padding-bottom: 8px; }
+  }
+  @media (max-height: 800px) {
+    html.uygulama #stCard { padding-top: 16px; padding-bottom: 14px; }
+    html.uygulama #stCard .title { margin-bottom: 10px; }
+    html.uygulama #stCard .btn { padding-top: 10px; padding-bottom: 9px; }
+    html.uygulama #stCard .btn.btn-reklamsiz { padding-top: 8px; padding-bottom: 7px; }
+    html.uygulama #stCard .btn-gap { margin-top: 7px; }
+    html.uygulama #stCard .music-row, html.uygulama #stCard .dil-row, html.uygulama #stCard .bt-row { margin-top: 7px; }
+    html.uygulama #stCard .hp-kart { margin-top: 9px; padding-top: 8px; padding-bottom: 8px; row-gap: 4px; }
+    html.uygulama #stCard .hp-simge { width: 36px; height: 36px; border-radius: 9px; }
+    html.uygulama #stCard .card-foot { margin-top: 8px; }
+  }
+  /* Dar ve kısa ekranda blok teması seçimi tek satırda kalsın (iki satıra inmesin) */
+  @media (max-height: 900px) and (max-width: 380px) {
+    html.uygulama #stCard .bt { width: 37px; height: 37px; border-radius: 11px; }
+    html.uygulama #stCard .bt canvas { width: 30px; height: 30px; }
+    html.uygulama #stCard .bt-secim { gap: 6px; }
   }
   /* Düello çubuğu: tahta ile raf arasında; düelloyu açana sıradakini, bağlantıyla gelen arkadaşa hedefi gösterir */
   #duelBar {
@@ -868,6 +886,35 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   /* Deneme banner alanı (#test&banner): uygulamadaki banner reklamın yerini gösterir */
   #reklamAlani { position: fixed; z-index: 25; left: 0; right: 0; bottom: env(safe-area-inset-bottom, 0px); height: var(--reklam-alt, 50px); display: grid; place-items: center; border-top: 1px dashed rgba(92, 160, 255, .6); background: repeating-linear-gradient(135deg, rgba(43, 140, 255, .16) 0 10px, rgba(43, 140, 255, .07) 10px 20px), #060b1f; color: #8ea6d8; font: 700 12px/1 var(--ui); letter-spacing: .2em; pointer-events: none; }
   #btnReklamGizlilik { display: block; margin: 8px auto 0; font-size: 12px; }
+  /* ================= Reklamsız oyun (uygulama içi satın alma) ================= */
+  .btn-reklamsiz { padding-top: 12px; padding-bottom: 11px; color: #d4ffe6; background: linear-gradient(180deg, rgba(8, 58, 42, .92), rgba(20, 24, 62, .92)); box-shadow: inset 0 0 0 1px rgba(64, 232, 150, .5), 0 0 18px rgba(64, 232, 150, .14); font-size: clamp(13px, 4.2vw, 17px); letter-spacing: clamp(.03em, .3vw, .1em); white-space: nowrap; }
+  .btn-reklamsiz[hidden] { display: none; }
+  .btn-reklamsiz svg { color: #5dffa8; }
+  .rs-fiyat { flex: none; padding: 4px 8px 3px; border-radius: 999px; font: 700 13px/1 var(--ui); letter-spacing: .02em; color: #03230f; background: linear-gradient(180deg, #c4ffdc, #34d88a); box-shadow: 0 0 10px rgba(52, 216, 138, .35); }
+  .rs-fiyat:empty, .stn-fiyat:empty { display: none; }
+  #ovSatin { z-index: 26; }
+  .stn-card { width: min(320px, 100%); padding: 22px 20px 14px; }
+  .stn-kapat { appearance: none; -webkit-appearance: none; position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 0; border-radius: 10px; background: transparent; color: var(--muted); cursor: pointer; }
+  .stn-kapat svg { width: 18px; height: 18px; }
+  .stn-kapat:hover { color: var(--text); background: rgba(255, 255, 255, .06); }
+  .stn-kapat:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .stn-ikon { display: grid; place-items: center; width: 62px; height: 62px; margin: 2px auto 10px; border-radius: 50%; color: #6dffb4; border: 1.5px solid rgba(64, 232, 150, .65); background: radial-gradient(circle at 50% 40%, rgba(64, 232, 150, .26), rgba(43, 140, 255, .05) 70%); box-shadow: 0 0 24px rgba(64, 232, 150, .28); }
+  .stn-ikon svg { width: 32px; height: 32px; }
+  #stnBaslik { margin-bottom: 6px; font-size: clamp(22px, 6.6vw, 27px); overflow-wrap: anywhere; }
+  .stn-aciklama { margin: 0 0 16px; font-size: 15px; line-height: 1.4; overflow-wrap: anywhere; }
+  .stn-al { display: flex; align-items: center; justify-content: center; gap: 10px; color: #03230f; background: linear-gradient(180deg, #b8ffd6 0%, #2fd47f 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .3), 0 8px 24px rgba(47, 212, 127, .32), 0 0 26px rgba(64, 232, 150, .22); }
+  .stn-al:hover { filter: brightness(1.06); }
+  .stn-fiyat { padding: 4px 9px 3px; border-radius: 999px; background: rgba(3, 35, 15, .14); font: 700 15px/1 var(--ui); letter-spacing: .02em; }
+  .stn-durum { margin: 10px 0 0; font: 600 13.5px/1.35 var(--ui); color: #9fe9c4; }
+  .stn-durum[hidden] { display: none; }
+  #stnSonra { margin-top: 8px; }
+  .stn-not { margin: 4px 0 0; font: 600 11.5px/1.4 var(--ui); color: var(--muted); }
+  .stn-geri { margin-top: 2px; padding: 7px 10px; font-size: 11.5px; letter-spacing: .06em; }
+  #stnSonra:disabled, .stn-geri:disabled { opacity: .45; cursor: default; }
+  /* Oyun ⌂ / geri tuşu / Esc ile duraklatıldı: ana menü kartının üst kenarına oturan küçük rozet */
+  .badge.st-duraklat { position: absolute; z-index: 1; top: 0; left: 50%; transform: translate(-50%, -50%); margin: 0; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; background: #0f1b4a; }
+  .badge.st-duraklat[hidden] { display: none; }
+  .st-duraklat svg { width: 12px; height: 12px; margin-top: -1px; }
   @media (max-height: 680px) {
     .btn-devam { gap: 4px; margin-bottom: 8px; padding: 10px 12px 9px; }
     .bd-ust { font-size: 15px; }
@@ -1023,8 +1070,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   /* Üst bilgideki başlık iki yandaki düğmelere sığmazsa şimşekler gizlenir (yazı da gerekirse küçülür) */
   .hud-title.dar svg { display: none; }
   .btn-meydan svg { width: 20px; height: 20px; color: var(--gold); }
-  /* Tek kişilik oyuna dön (günlük bulmaca ve meydan okumada düello düğmesinin yerinde) */
-  #btnKipCik[hidden] { display: none; }
   /* Ana menü: blok teması seçici (dar ekranda düğmeler alt satıra geçer) */
   .bt-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 10px; margin-top: 10px; padding: 7px 8px 7px 12px; border-radius: 14px; background: rgba(12, 22, 62, .72); border: 1px solid rgba(92, 160, 255, .25); }
   .bt-baslik { flex: 1 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; text-align: left; }
@@ -1189,6 +1234,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   html.light .hud-best.gecti #hudBest { color: #0b9a52; text-shadow: none; }
   html.light .btn-gunluk { color: #6a4300; background: linear-gradient(180deg, #fff6dc, #ffeab0); box-shadow: inset 0 0 0 1px rgba(214, 150, 0, .55), 0 4px 14px rgba(200, 140, 0, .15); }
   html.light .btn-gunluk svg, html.light .btn-meydan svg { color: #d48a00; }
+  html.light .btn-reklamsiz { color: #0c5132; background: linear-gradient(180deg, #e6fff1, #c9f5dd); box-shadow: inset 0 0 0 1px rgba(20, 160, 90, .5), 0 4px 14px rgba(20, 160, 90, .14); }
+  html.light .btn-reklamsiz svg { color: #13a35c; }
+  html.light .stn-ikon { color: #13a35c; border-color: rgba(20, 160, 90, .55); background: radial-gradient(circle at 50% 40%, rgba(40, 200, 120, .2), rgba(43, 140, 255, .04) 70%); }
+  html.light .stn-durum { color: #0f7a45; }
+  html.light .badge.st-duraklat { background: #fff; color: #a86b00; border-color: rgba(214, 150, 0, .6); box-shadow: 0 2px 10px rgba(200, 140, 0, .18); }
   html.light .btn-meydan { color: #6a4300; box-shadow: inset 0 0 0 1px rgba(214, 150, 0, .5); }
   html.light .gn-seri { background: rgba(255, 150, 30, .1); border-color: rgba(230, 130, 20, .5); color: #a85a00; }
   html.light .gn-seri b { color: #e07800; text-shadow: none; }
@@ -1290,13 +1340,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   <div class="cr-line"><span><span data-t="kurucu">Kurucu</span>: <b>Baran Yavuz</b></span><span aria-hidden="true">·</span><a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><span aria-hidden="true">·</span><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a></div>
 </footer>
 
-<button id="btnMenu" class="icon-btn" type="button" data-ta="anaMenuAria" aria-label="Ana menü" title="Ana menü" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 11.4 12 4.2l8.4 7.2"/><path d="M6 9.8V19a1 1 0 0 0 1 1h3.4v-5.2h3.2V20H17a1 1 0 0 0 1-1V9.8"/></svg></button>
+<button id="btnMenu" class="icon-btn" type="button" data-ta="anaMenuAria" aria-label="Duraklat, ana menü" title="Duraklat, ana menü"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 11.4 12 4.2l8.4 7.2"/><path d="M6 9.8V19a1 1 0 0 0 1 1h3.4v-5.2h3.2V20H17a1 1 0 0 0 1-1V9.8"/></svg></button>
 <button id="btnRestart" class="icon-btn" type="button" data-ta="yenidenBaslat" aria-label="Yeniden başlat" title="Yeniden başlat">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4v5h5"/></svg>
 </button>
 <button id="btnSound" class="icon-btn" type="button" aria-label="Sesi kapat" title="Sesi kapat"></button>
-<button id="btnDuel" class="icon-btn" type="button" data-ta="duelloAria" aria-label="Arkadaşınla düello" title="Arkadaşınla düello"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg></button>
-<button id="btnKipCik" class="icon-btn" type="button" data-ta="kipCikAria" aria-label="Tek kişilik oyuna dön" title="Tek kişilik oyuna dön" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 11.2 12 4l8.5 7.2"/><path d="M6 9.6V20h12V9.6"/><path d="M10 20v-5.6h4V20"/></svg></button>
 <button id="btnMode" class="icon-btn" type="button" aria-label="Aydınlık moda geç" title="Aydınlık moda geç"></button>
 <button id="btnBoard" type="button" data-ta="haftalikTablo" aria-label="Haftalık skor tablosu" title="Haftalık skor tablosu" hidden></button>
 <div id="duelBar" aria-hidden="true" hidden></div>
@@ -1336,6 +1384,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 <div id="ovStart" class="overlay" role="dialog" aria-modal="true" aria-labelledby="stTitle" hidden>
   <div class="st-wrap">
   <div id="stCard" class="card" tabindex="-1">
+    <div id="stDuraklat" class="badge badge-beta st-duraklat" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.5v13M15.5 5.5v13" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg><span data-t="duraklatildi">DURAKLATILDI</span></div>
     <h2 id="stTitle" class="title">HERO BLOCK</h2>
     <p id="stSub" class="sub">Parçaları sürükle, satır ve sütunları patlat!</p>
     <aside id="duyuru" class="duyuru" role="note" aria-labelledby="dyRozet" hidden>
@@ -1348,6 +1397,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     <button id="btnGunluk" class="btn btn-ghost btn-gap btn-ico btn-gunluk" type="button" aria-label="Günlük bulmaca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="m9 15.2 2 2 4-4"/></svg><span data-t="gunlukBtn">GÜNLÜK BULMACA</span><b id="gunlukCip" class="gn-cip" aria-hidden="true" hidden></b></button>
     <button id="btnDuelStart" class="btn btn-ghost btn-gap btn-ico btn-duello" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg><span data-t="duelloOyna">ARKADAŞINLA DÜELLO</span></button>
     <button id="btnTablo" class="btn btn-ghost btn-gap btn-ico" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5.2a4 4 0 0 1-8 0V4z"/><path d="M8 6.2H5.2a3 3 0 0 0 3 3.6M16 6.2h2.8a3 3 0 0 1-3 3.6"/><path d="M12 13.2V17M8.6 20h6.8M10 17h4"/></svg><span data-t="tabloBtn">HAFTANIN EN İYİLERİ</span></button>
+    <button id="btnReklamsiz" class="btn btn-ghost btn-gap btn-ico btn-reklamsiz" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3v5.6c0 4.4-3 8.1-7.5 9.6-4.5-1.5-7.5-5.2-7.5-9.6V6z"/><path d="M8.2 14.2l1.6-4.6h.5l1.6 4.6M8.7 12.8h2.5" stroke-width="1.9"/><path d="M13.2 9.6h.9a2.3 2.3 0 0 1 0 4.6h-.9z" stroke-width="1.9"/></svg><span data-t="reklamlariKaldir">REKLAMLARI KALDIR</span><b id="rsFiyat" class="rs-fiyat"></b></button>
     <div id="muzikRow" class="music-row">
       <button id="muzikBtn" class="music-btn" type="button" aria-pressed="true" aria-label="Menü müziğini kapat" title="Menü müziği" data-tt="menuMuzigi"></button>
       <label for="muzikSes" class="music-lbl" data-t="menuMuzigiBaslik">MENÜ MÜZİĞİ</label>
@@ -1506,6 +1556,19 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   </div>
 </div>
 
+<div id="ovSatin" class="overlay" role="dialog" aria-modal="true" aria-labelledby="stnBaslik" aria-describedby="stnAciklama" hidden>
+  <div id="stnCard" class="card stn-card" tabindex="-1">
+    <button id="stnKapat" class="stn-kapat" type="button" data-ta="satinKapatAria" aria-label="Kapat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11m0-11-11 11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+    <div class="stn-ikon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3v5.6c0 4.4-3 8.1-7.5 9.6-4.5-1.5-7.5-5.2-7.5-9.6V6z"/><path d="M8.2 14.2l1.6-4.6h.5l1.6 4.6M8.7 12.8h2.5" stroke-width="1.9"/><path d="M13.2 9.6h.9a2.3 2.3 0 0 1 0 4.6h-.9z" stroke-width="1.9"/></svg></div>
+    <h2 id="stnBaslik" class="title small">REKLAMSIZ OYUN</h2>
+    <p id="stnAciklama" class="sub stn-aciklama"></p>
+    <button id="stnAl" class="btn stn-al" type="button"><span data-t="satinAl">SATIN AL</span><b id="stnFiyat" class="stn-fiyat"></b></button>
+    <p id="stnDurum" class="stn-durum" role="status" aria-live="polite" hidden></p>
+    <button id="stnSonra" class="link-btn" type="button" data-t="simdiDegil">ŞİMDİ DEĞİL</button>
+    <p id="stnNot" class="stn-not"></p>
+    <button id="stnGeri" class="link-btn stn-geri" type="button" data-t="satinGeriYukle">SATIN ALIMI GERİ YÜKLE</button>
+  </div>
+</div>
 <div id="ovReklam" class="overlay" role="dialog" aria-modal="true" aria-labelledby="rkBaslik" hidden>
   <div id="rkCard" class="card rk-card" tabindex="-1">
     <div id="rkRozet" class="badge badge-beta">TEST REKLAMI</div>
@@ -1892,6 +1955,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     devamEt: 'DEVAM ET',
     oyna: 'OYNA',
     devamAlt: 'Kaldığın yerden devam et.',
+    oyunDuraklatildi: 'Oyun duraklatıldı.',
     oynaAlt: 'Parçaları sürükle, satır ve sütunları patlat!',
     karanlikModa: 'Karanlık moda geç',
     aydinlikModa: 'Aydınlık moda geç',
@@ -2011,6 +2075,24 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     rkYok: 'Şu an gösterilecek reklam yok. Biraz sonra tekrar dene.',
     rkYarim: 'Reklam bitmeden kapandı; ödül verilmedi.',
     rkAlan: 'REKLAM ALANI · TEST',
+    // Reklamsız oyun (uygulama içi satın alma); pencere başlığı ve açıklaması yönetim panelinden değişebilir
+    reklamlariKaldir: 'REKLAMLARI KALDIR',
+    satinAl: 'SATIN AL',
+    simdiDegil: 'ŞİMDİ DEĞİL',
+    satinGeriYukle: 'SATIN ALIMI GERİ YÜKLE',
+    satinKapatAria: 'Kapat',
+    satinVarsayilanAd: 'REKLAMSIZ OYUN',
+    satinVarsayilanAciklama: 'Banner ve oyun arası reklamlar tamamen kalkar. Tek seferlik ödeme, abonelik yok.',
+    satinNotAndroid: 'Ödeme Google Play ile alınır. Ödül için izlenen reklamlar isteğe bağlı kalır.',
+    satinNotIos: 'Ödeme App Store ile alınır. Ödül için izlenen reklamlar isteğe bağlı kalır.',
+    satinAciliyor: 'Ödeme ekranı açılıyor…',
+    satinSoruluyor: 'Satın alımların soruluyor…',
+    satinTesekkur: 'Teşekkürler! Reklamlar kaldırıldı.',
+    satinOnayBekliyor: 'Ödemen onay bekliyor. Onaylanınca reklamlar kendiliğinden kalkar.',
+    satinHata: 'Satın alma tamamlanamadı. Biraz sonra yeniden dene.',
+    satinGeriYuklendi: 'Satın alımın geri yüklendi. Reklamlar kaldırıldı.',
+    satinBulunamadi: 'Bu hesapta reklamsız oyun satın alımı bulunamadı.',
+    satinMagazaYok: 'Mağazaya ulaşılamadı. İnternet bağlantını kontrol edip yeniden dene.',
     // Jokerler ve ikinci şans
     jkAria: (a, n, d) => (d === 'reklam' ? a + ': hakkın bitti. Reklam izle, 1 hak kazan' : a + ': ' + n + ' hak'),
     jkIpDondur: 'DÖNDÜRMEK İÇİN PARÇAYA DOKUN',
@@ -2096,8 +2178,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     destek: 'Support',
     kurucu: 'Founder',
     yenidenBaslat: 'Restart',
-    duelloAria: 'Duel a friend',
-    anaMenuAria: 'Main menu',
+    anaMenuAria: 'Pause, main menu',
     tabloBtn: 'THIS WEEK’S BEST',
     haftalikTablo: 'Weekly leaderboard',
     yeniRekor: 'NEW BEST!',
@@ -2168,6 +2249,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     devamEt: 'CONTINUE',
     oyna: 'PLAY',
     devamAlt: 'Pick up where you left off.',
+    duraklatildi: 'PAUSED',
+    oyunDuraklatildi: 'Game paused.',
     oynaAlt: 'Drag the pieces, clear rows and columns!',
     karanlikModa: 'Switch to dark mode',
     aydinlikModa: 'Switch to light mode',
@@ -2290,6 +2373,23 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     rkYok: 'No ad available right now. Try again in a bit.',
     rkYarim: 'The ad was closed early, so no reward this time.',
     rkAlan: 'AD SPACE · TEST',
+    reklamlariKaldir: 'REMOVE ADS',
+    satinAl: 'BUY',
+    simdiDegil: 'NOT NOW',
+    satinGeriYukle: 'RESTORE PURCHASE',
+    satinKapatAria: 'Close',
+    satinVarsayilanAd: 'AD-FREE PLAY',
+    satinVarsayilanAciklama: 'Banner and between-game ads are gone for good. One-time payment, no subscription.',
+    satinNotAndroid: 'Payment is handled by Google Play. Ads you choose to watch for rewards stay optional.',
+    satinNotIos: 'Payment is handled by the App Store. Ads you choose to watch for rewards stay optional.',
+    satinAciliyor: 'Opening checkout…',
+    satinSoruluyor: 'Checking your purchases…',
+    satinTesekkur: 'Thank you! Ads are removed.',
+    satinOnayBekliyor: 'Your payment is pending. Ads will be removed once it is approved.',
+    satinHata: 'The purchase could not be completed. Please try again later.',
+    satinGeriYuklendi: 'Your purchase was restored. Ads are removed.',
+    satinBulunamadi: 'No ad-free purchase was found on this account.',
+    satinMagazaYok: 'Could not reach the store. Check your internet connection and try again.',
     jkAria: (a, n, d) => (d === 'reklam' ? a + ': none left. Watch an ad to get 1 more' : a + ': ' + n + ' left'),
     jkIpDondur: 'TAP A PIECE TO ROTATE',
     jkIpSil: 'TAP A BLOCK TO ERASE',
@@ -2315,7 +2415,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     meydanRozet: 'CHALLENGE',
     meydanAlt: 'Can you beat this score with the same pieces?',
     meydanKabul: 'ACCEPT',
-    kipCikAria: 'Back to single player',
     // Koddaki yazılar
     tamTemizlik: 'ALL CLEAR!',
     tamTemizlikDuyuru: b => 'All clear! +' + b + ' bonus points.',
@@ -2437,6 +2536,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       blokSecimCiz();
       gunlukDugmeCiz();
       duyuruCiz();
+      Satin.ciz();
       if (!$('reklamAlani').hidden) $('reklamAlani').textContent = yaz('rkAlan');
       // Sayı biçimi ve yazı genişlikleri değişti: üst bilgi, alt bilgi ve REKOR düğmesi yeniden sığdırılır
       scoreText = ''; bestText = '';
@@ -2496,7 +2596,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const ovRapor = $('ovRapor');
   const btnBoard = $('btnBoard');
   const duelBar = $('duelBar');
-  const btnDuel = $('btnDuel');
   const hudBestLabel = hudBestBox.querySelector('.hud-label');
   const hudTitleText = document.querySelector('.hud-title span');
   const probe = $('insetProbe');
@@ -2508,8 +2607,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const toastEl = $('toast');
   const goDevam = $('goDevam');
   const ovReklam = $('ovReklam');
+  const ovSatin = $('ovSatin');
   const ovGunluk = $('ovGunluk'), ovMeydan = $('ovMeydan');
-  const btnKipCik = $('btnKipCik'), goMeydan = $('goMeydan'), goCik = $('goCik');
+  const goMeydan = $('goMeydan'), goCik = $('goCik');
   const REKOR_ETIKET = hudBestLabel.innerHTML;  // REKOR kutusunun özgün etiketi (taç + REKOR)
   const HEDEF_IKON = '<svg viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:var(--gold);stroke-width:2.4"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="4.6"/><circle cx="12" cy="12" r="1.2" style="fill:var(--gold)"/></svg>';
 
@@ -2527,6 +2627,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
        • Web sitesi: reklam yok, hata da yok. Ödüllü reklam isteyen düğmeler gizlenir (odulluVar()), geçiş reklamı atlanır.
        • Test (adreste #test, uygulama dışında): ödüllü reklam 2 saniyelik "REKLAM İZLENİYOR…" penceresiyle taklit edilir ve ödül
          verilir; geçiş reklamı da kısa bir pencereyle. #test&banner ile 50 piksellik deneme banner alanı açılır.
+     Reklamsız oyun (uygulama içi satın alma, aşağıda Satin): AdManager.reklamsiz(true) banner'ı kaldırır ve geçiş reklamını kapatır;
+     ödüllü reklamlar oyuncu isterse açılır, kalır.
      Kimlikler: bütün AdMob kimlikleri uygulama projesindeki TEK dosyada, uygulama/admob.config.json. "npx cap sync" (ve Android
      derlemesi) onun bir kopyasını uygulamanın içine koyar; oyun reklam birimi kimliklerini açılışta oradan okur. Dosya yoksa ya
      da bir kimlik biçime uymuyorsa o kimlik için aşağıdaki Google deneme kimliği kullanılır (yalnızca "Test Ad" çıkar). */
@@ -2557,6 +2659,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const D = { basladi: false, izinSuruyor: false, altyapi: false, hazir: false, odullu: null, gecisHazir: false, gecisYukleniyor: false,
       banner: 0, bannerIstendi: false, acik: false, kapanis: 0, gizlilik: false, izin: null };
     let kanca = {}, istek = null, bannerT = 0, bannerDeneme = 0, izinT = 0, odulT = 0, gecisT = 0;
+    let reklamsizMi = false;   // reklamsız oyun satın alındı: banner ve geçiş reklamı yok
     // Reklam kimlikleri: uygulamanın içindeki admob.config.json (uygulama projesindeki ayar dosyasının kopyası).
     // Okunamazsa ya da bir kimlik biçime uymuyorsa o kimlik için Google'ın deneme kimliği kalır.
     const ayarSozu = !yerel ? Promise.resolve() : fetch('admob.config.json', { cache: 'no-store' })
@@ -2683,7 +2786,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       return p;
     }
     function gecisYukle() {
-      if (!D.hazir || D.gecisHazir || D.gecisYukleniyor) return;
+      if (!D.hazir || D.gecisHazir || D.gecisYukleniyor || reklamsizMi) return;
       D.gecisYukleniyor = true;
       clearTimeout(gecisT);
       yap('prepareInterstitial', { adId: KIM.gecis })
@@ -2712,6 +2815,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     function showInterstitialAd(onComplete) {
       const son = typeof onComplete === 'function' ? onComplete : () => {};
       if (!(yerel || sim) || D.acik) { son(false); return; }
+      if (reklamsizMi) { son(false); return; }                            // reklamsız oyun satın alındı
       if (!REKLAM_AYAR.herKac) { son(false); return; }                    // uzaktan ayarla kapatıldı
       if (sayac.biten <= REKLAM_AYAR.ilkOyunlar) { son(false); return; } // ilk oyunlar reklamsız
       sayac.tekrar++;
@@ -2730,22 +2834,37 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
 
     function initBannerAd() {
-      if (sim && HASHQ.has('banner')) { const el = $('reklamAlani'); el.textContent = yaz('rkAlan'); el.hidden = false; bannerBoyu(50); return; }
+      if (sim && HASHQ.has('banner')) { simBanner(); return; }
       if (!yerel) return;
       D.bannerIstendi = true;
       if (D.hazir) bannerGoster(); else baslat();
     }
+    function simBanner() {
+      if (reklamsizMi) return;
+      const el = $('reklamAlani');
+      el.textContent = yaz('rkAlan');
+      el.hidden = false;
+      bannerBoyu(50);
+    }
     function bannerGoster() {
       clearTimeout(bannerT);
-      yap('showBanner', { adId: KIM.banner, adSize: 'ADAPTIVE_BANNER', position: 'BOTTOM_CENTER', margin: 0 }).catch(bannerTekrar);
+      if (reklamsizMi) return;
+      yap('showBanner', { adId: KIM.banner, adSize: 'ADAPTIVE_BANNER', position: 'BOTTOM_CENTER', margin: 0 })
+        .then(() => { if (reklamsizMi) bannerKaldir(); }, bannerTekrar);   // yüklenirken reklamsız olduysa hemen kaldırılır
+    }
+    function bannerKaldir() {
+      clearTimeout(bannerT);
+      yap('removeBanner').catch(() => {});
+      bannerBoyu(0);
     }
     // Banner yüklenemedi: giderek uzayan aralıklarla (en çok 5 dakika) yeniden denenir; internet gelince hemen
     function bannerTekrar() {
       clearTimeout(bannerT);
+      if (reklamsizMi) return;
       bannerT = setTimeout(bannerGoster, Math.min(300000, 30000 * Math.pow(2, bannerDeneme++)));
     }
     function bannerBoyu(h) {
-      h = Math.max(0, Math.min(200, Math.round(Number(h) || 0)));
+      h = reklamsizMi ? 0 : Math.max(0, Math.min(200, Math.round(Number(h) || 0)));
       if (h === D.banner) return;
       D.banner = h;
       document.documentElement.style.setProperty('--reklam-alt', h + 'px');
@@ -2756,6 +2875,22 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (!D.hazir) baslat();
       else if (D.bannerIstendi && !D.banner) bannerGoster();
     });
+
+    // Reklamsız oyun (satın alındı): banner kalkar, geçiş reklamı çıkmaz; ödüllü reklamlar oyuncu isterse açılır, kalır.
+    // Satın alma geri alınırsa (iade) banner ve geçiş reklamı geri gelir
+    function reklamsiz(v) {
+      v = !!v;
+      if (v === reklamsizMi) return;
+      reklamsizMi = v;
+      if (v) {
+        clearTimeout(gecisT);
+        if (yerel && D.hazir) bannerKaldir(); else bannerBoyu(0);
+        if (sim && HASHQ.has('banner')) $('reklamAlani').hidden = true;
+        return;
+      }
+      if (sim && HASHQ.has('banner')) simBanner();
+      if (D.hazir) { if (D.bannerIstendi) bannerGoster(); gecisYukle(); }
+    }
 
     // Reklam gizlilik ayarları (izni değiştirme): Google'ın penceresi açılır, sonra izin durumu yeniden okunur
     function gizlilikAyarlari() {
@@ -2773,8 +2908,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       bannerYuksekligi: () => D.banner,
       oyunBitti() { if (!(yerel || sim)) return; sayac.biten = Math.min(1e6, sayac.biten + 1); kaydet(); },
       gizlilikAyarlari,
+      reklamsiz,
+      reklamsizMi: () => reklamsizMi,
+      izinSuruyor: () => D.izinSuruyor,                 // Google'ın izin (UMP) süreci sürüyor mu
       baglan(k) { kanca = k || {}; },
-      durum: () => ({ yerel, sim, ios, hazir: D.hazir, odulluHazir: !!D.odullu, gecisHazir: D.gecisHazir, banner: D.banner, acik: D.acik,
+      durum: () => ({ yerel, sim, ios, reklamsiz: reklamsizMi, hazir: D.hazir, odulluHazir: !!D.odullu, gecisHazir: D.gecisHazir, banner: D.banner, acik: D.acik,
         sayac: Object.assign({}, sayac), izin: D.izin, gizlilik: D.gizlilik, ayar: D.ayar || '', kimlik: Object.assign({}, KIM), testCihazi: testCihazlari.length }),
       sayacAyarla(o) { if (o && typeof o === 'object') { if (Number.isFinite(o.biten)) sayac.biten = Math.max(0, o.biten | 0); if (Number.isFinite(o.tekrar)) sayac.tekrar = Math.max(0, o.tekrar | 0); if (Number.isFinite(o.son)) sayac.son = Math.max(0, o.son); kaydet(); } }
     };
@@ -3005,15 +3143,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     hs.setProperty('--yb', (R.b - h.y) + 'px');
     hs.setProperty('--pad', (L.bs * 0.015) + 'px');
     const bsz = Math.round(clamp(L.bs * 0.105, 36, 50));
-    if (UYGULAMA) {
-      // Uygulamada solda ANA MENÜ ve YENİDEN BAŞLAT; düello ana menüde, günlük bulmacadan ve meydan okumadan çıkış ANA MENÜ'de
-      placeBtn(btnMenu, h.x, R.a - bsz / 2, bsz);
-      placeBtn(btnRestart, h.x + bsz + Math.round(bsz * 0.22), R.a - bsz / 2, bsz);
-    } else {
-      placeBtn(btnRestart, h.x, R.a - bsz / 2, bsz);
-      placeBtn(btnDuel, h.x + bsz + Math.round(bsz * 0.22), R.a - bsz / 2, bsz);
-      placeBtn(btnKipCik, h.x + bsz + Math.round(bsz * 0.22), R.a - bsz / 2, bsz);
-    }
+    // Solda ANA MENÜ (oyunu duraklatır) ve YENİDEN BAŞLAT; düello ana menüde, günlük bulmacadan ve meydan okumadan çıkış ANA MENÜ'de
+    placeBtn(btnMenu, h.x, R.a - bsz / 2, bsz);
+    placeBtn(btnRestart, h.x + bsz + Math.round(bsz * 0.22), R.a - bsz / 2, bsz);
     placeBtn(btnSound, h.x + h.w - bsz, R.a - bsz / 2, bsz);
     placeBtn(btnMode, h.x + h.w - 2 * bsz - Math.round(bsz * 0.22), R.a - bsz / 2, bsz);
     placeDuelBar();
@@ -3532,7 +3664,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
 
   function updateHint() { hint.hidden = !(moves === 0 && gameState === 'play' && !drag && !duel && kip !== 'gunluk'); }
-  function setModal() { document.body.classList.toggle('modal', !ovOver.hidden || !ovConfirm.hidden || !ovStart.hidden || !ovDuel.hidden || !ovNick.hidden || !ovBoard.hidden || !ovRapor.hidden || !ovReklam.hidden || !ovGunluk.hidden || !ovMeydan.hidden); }
+  function setModal() { document.body.classList.toggle('modal', !ovOver.hidden || !ovConfirm.hidden || !ovStart.hidden || !ovDuel.hidden || !ovNick.hidden || !ovBoard.hidden || !ovRapor.hidden || !ovReklam.hidden || !ovGunluk.hidden || !ovMeydan.hidden || !ovSatin.hidden); }
 
   // Uzun sayılar kutusuna sığsın diye yazı boyunu küçültür
   function fitText(el, text, maxPx, width) {
@@ -5497,7 +5629,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     setTimeout(() => {
       if (document.hidden) return;
       if (duel) { if (duel.phase === 'paused' && ovDuel.hidden && ovConfirm.hidden) showDuelReady(true); return; }
-      if (AdManager.acik() || AdManager.yeniKapandi()) return; // reklamdan dönüş: devam ekranı açılmaz (ses durduysa bildirim çıkar)
+      // Reklamdan ya da mağazanın ödeme ekranından dönüş: devam ekranı açılmaz (ses durduysa bildirim çıkar)
+      if (AdManager.acik() || AdManager.yeniKapandi() || Satin.mesgul()) return;
       if (gameState === 'play' && soundOn && Sound.ac && Sound.ac.state !== 'running') showStart(true);
     }, 600);
   });
@@ -5509,9 +5642,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     $('btnStart').textContent = yaz(cont ? 'devamEt' : 'oyna');
     $('stSub').textContent = yaz(cont ? 'devamAlt' : 'oynaAlt');
   }
-  function showStart(resume) {
+  // duraklat: oyun ortasında ⌂ / geri tuşu / Esc ile açıldı (kartın üstünde DURAKLATILDI)
+  function showStart(resume, duraklat) {
     if (duel || !ovOver.hidden || !ovConfirm.hidden || !ovDuel.hidden) return;
     ovStart.dataset.devam = resume || moves > 0 ? '1' : '';
+    $('stDuraklat').hidden = !(duraklat && ovStart.dataset.devam);
+    ovStart.scrollTop = 0;   // menü her açılışta baştan (rozet ve DEVAM ET görünür)
     baslangicYazilari();
     ovStart.hidden = false;
     setModal();
@@ -5677,13 +5813,22 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   ovConfirm.addEventListener('pointerdown', e => { if (e.target === ovConfirm) closeConfirm(); });
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
-    if (!ovConfirm.hidden) closeConfirm();
+    if (!ovSatin.hidden) Satin.kapat();
+    else if (!ovConfirm.hidden) closeConfirm();
     else if (!ovMeydan.hidden) $('mdVazgec').click();
     else if (!ovGunluk.hidden) gunlukGeri();
     else if (!ovDuel.hidden && !$('dSetup').hidden) cancelDuelSetup();
     else if (!ovDuel.hidden && !$('dInvite').hidden) duelloDavetVazgec();
     else if (jokerMod) jokerModBitir();
+    else if (ustPencereAcik() || AdManager.acik()) return;   // o pencere kendi Esc'iyle kapanır
+    else if (!ovStart.hidden) { if (ovStart.dataset.devam && !duel) startPlay(); }
+    else if (gameState === 'play' && kip === 'klasik' && !duel) anaMenuyeDon();
   });
+  // Ana menü dışında açık bir pencere var mı (Esc ve açılış penceresi bunu bekler)
+  function ustPencereAcik() {
+    return !ovOver.hidden || !ovConfirm.hidden || !ovDuel.hidden || !ovNick.hidden || !ovBoard.hidden || !ovRapor.hidden || !ovReklam.hidden
+      || !ovGunluk.hidden || !ovMeydan.hidden || !ovSatin.hidden;
+  }
 
 
   /* ================= Arkadaşınla düello (bağlantıyla) =================
@@ -5818,7 +5963,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     duelDavet = null;
     duelGorunum = null;
     hudBestLabel.innerHTML = CLOCK_LABEL();
-    btnDuel.hidden = true;
     btnMode.hidden = true; // düelloda başlıktaki oyuncu adına yer kalsın
     bestText = '';
     ovStart.hidden = true; ovOver.hidden = true; ovConfirm.hidden = true; ovMeydan.hidden = true; ovGunluk.hidden = true;
@@ -6138,7 +6282,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     hudBestLabel.innerHTML = BEST_LABEL;
     dilUygula(hudBestLabel);
     hudBestBox.classList.remove('urgent');
-    btnDuel.hidden = UYGULAMA;
     btnMode.hidden = false;
     duelBar.hidden = true;
     bestText = '';
@@ -6205,7 +6348,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     duelBar.style.top = (below ? (L.by + L.bs + L.tray.y) / 2 : Math.min((L.hud.y + L.hud.h + L.tray.y) / 2, L.tray.y - 18)) + 'px';
   }
 
-  btnDuel.addEventListener('click', () => openDuelSetup());
   $('btnDuelStart').addEventListener('click', e => { e.stopPropagation(); openDuelSetup('start'); });
   $('btnDuelOver').addEventListener('click', () => openDuelSetup('over'));
   $('dGo').addEventListener('click', startDuel);
@@ -6472,7 +6614,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
      Açılışta okunur (en çok 6 sn beklenir, oyun beklemez); son alınan ayar cihazda saklanır ve sonraki açılışta hemen uygulanır.
      Geçiş reklamı sıklığı: ilk kaç oyun reklamsız, kaç TEKRAR OYNA'da bir, iki reklam arasında en az kaç saniye (sınırlar içinde).
      Duyuru: ana menüde kısa bir kart (Türkçe / İngilizce, isteğe bağlı https bağlantısı ve son gün). Oyuncu kapatınca aynı duyuru
-     ona bir daha gösterilmez; metin değişince (yeni kimlik) yeniden gösterilir. */
+     ona bir daha gösterilmez; metin değişince (yeni kimlik) yeniden gösterilir.
+     Satış: reklamsız oyunun ürün kimliği, adı, açıklaması; satış ve açılış penceresi açık mı (aşağıda Satin). */
   const K_UZAK = 'blokKahramani.uzakAyar', K_DUYURU_KAPALI = 'blokKahramani.duyuruKapali';
   let duyuru = null;
   function duyuruGecerli(d) {
@@ -6507,17 +6650,18 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     REKLAM_AYAR.araSn = sayi(r.gecis_ara_sn, 0, 3600, REKLAM_VARSAYILAN.araSn);
     duyuru = duyuruGecerli(a.duyuru);
     duyuruCiz();
+    Satin.ayarla(a.satis);
   }
   function uzakAyarYukle() {
     uzakAyarUygula(store.get(K_UZAK, null));
-    if (!SKOR_API) return;
+    if (!SKOR_API) return Promise.resolve();
     const ctl = typeof AbortController === 'function' ? new AbortController() : null;
     const t = ctl ? setTimeout(() => ctl.abort(), 6000) : 0;
-    fetch(SKOR_API + '?a=config', ctl ? { signal: ctl.signal } : {})
+    return fetch(SKOR_API + '?a=config', ctl ? { signal: ctl.signal } : {})
       .then(r => (r.ok ? r.json() : null))
       .then(a => {
         if (!a || a.ok !== true) return;
-        const sakla = { reklam: a.reklam, duyuru: a.duyuru || null, alindi: Date.now() };
+        const sakla = { reklam: a.reklam, duyuru: a.duyuru || null, satis: a.satis || null, alindi: Date.now() };
         store.set(K_UZAK, sakla);
         uzakAyarUygula(sakla);
       })
@@ -6531,6 +6675,282 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     duyuruCiz();
     try { $('btnStart').focus({ preventScroll: true }); } catch (e) { /* odak yok */ }
   });
+
+  /* ================= Reklamsız oyun (uygulama içi satın alma) =================
+     Google Play / App Store'da tek seferlik (tüketilmeyen) ürün. Satın alan oyuncuda banner ve geçiş reklamı hiç çıkmaz; ödül
+     için izlenen reklamlar (ikinci şans, joker hakkı) oyuncunun isteğiyle açılır, kalır. Ödeme mağazanın kendi penceresiyle alınır.
+     Fiyat mağazadaki ürünün fiyatıdır (Play Console / App Store Connect); oyunda mağazanın verdiği yerel biçimle görünür
+     (ör. ₺100,00), oyun kendisi fiyat yazmaz.
+     Ürün kimliği, pencerenin başlığı ve açıklaması (Türkçe / İngilizce), satışın ve açılış penceresinin açık olup olmadığı skor
+     sunucusunun uzaktan ayarından (yönetim paneli) gelir. "reklamsiz" ile başlayan herhangi bir ürünü almış oyuncu reklamsızdır:
+     fiyat mağazada değiştirilir ya da yeni fiyatlı ikinci bir ürün (ör. reklamsiz_150) açılıp panelden o seçilir (önceden alanlar
+     reklamsız kalır).
+     Satın alma cihazda da saklanır (açılışta banner hiç görünmez); mağaza her açılışta ve uygulamaya dönünce yeniden sorulur:
+     iade edilen satın alma geri alınır, sonradan tamamlanan (bekleyen) ödeme onaylanıp reklamlar kalkar.
+     Açılış penceresi: her açılışta (ve uygulamaya 30 dakikadan uzun aradan sonra dönünce) bir kez, ana menü açıkken. Başka pencere,
+     reklam ya da Google'ın izin penceresi varken beklenir; oyuncu o arada oyuna başladıysa çıkmaz (oyunun ortasına girmez).
+     Sitede (tarayıcıda) satın alma yok: düğme ve pencere görünmez. */
+  const K_REKLAMSIZ = 'blokKahramani.reklamsiz';
+  const SATIS_DONUS = 30 * 60000;   // uygulamaya bu kadar aradan sonra dönünce açılış penceresi yeniden çıkar
+  const Satin = (() => {
+    let NP = null, ios = false;
+    try {
+      if (UYGULAMA && (typeof CAP.isPluginAvailable !== 'function' || CAP.isPluginAvailable('NativePurchases'))) NP = eklenti('NativePurchases');
+      ios = !!NP && typeof CAP.getPlatform === 'function' && CAP.getPlatform() === 'ios';
+    } catch (e) { NP = null; }
+    const k0 = store.get(K_REKLAMSIZ, null);
+    const D = {
+      ayar: satisAyari(null),
+      urun: null, urunSoz: null, urunT: 0, urunDeneme: 0,   // mağazadan gelen ürün: { id, fiyat }
+      sahip: !!(k0 && k0.sahip === true),
+      mesgul: false, sonIslem: 0, durum: '',                // satın alma ya da geri yükleme sürüyor; penceredeki durum yazısı
+      denetim: null, sonDenetim: 0, denetlendi: false,      // mağaza açılışta en az bir kez soruldu (yanıtlı ya da yanıtsız)
+      ayarGeldi: false,                                     // açılışta sunucunun ayarı okundu (ya da okunamadı)
+      gosterildi: false, acilisT: 0, gizlendi: 0
+    };
+    const yap = (ad, arg) => { try { const p = NP[ad](arg); return p && typeof p.then === 'function' ? p : Promise.resolve(p); } catch (e) { return Promise.reject(e); } };
+
+    // Sunucunun satış ayarı; biçime uymayan alan varsayılanda kalır (boş başlık / açıklama: oyunun kendi yazısı)
+    function satisAyari(s) {
+      const a = { acik: true, pencere: true, urun: 'reklamsiz', ad: { tr: '', en: '' }, aciklama: { tr: '', en: '' } };
+      if (!s || typeof s !== 'object') return a;
+      const evet = v => (v === true || v === 1 ? true : v === false || v === 0 ? false : null);
+      if (evet(s.acik) !== null) a.acik = evet(s.acik);
+      if (evet(s.pencere) !== null) a.pencere = evet(s.pencere);
+      if (typeof s.urun === 'string' && /^reklamsiz[a-z0-9._]{0,30}$/.test(s.urun)) a.urun = s.urun;
+      const metin = (v, n) => (typeof v === 'string' ? v.replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/ {2,}/g, ' ').trim().slice(0, n) : '');
+      for (const d of ['tr', 'en']) {
+        a.ad[d] = metin(s.ad && s.ad[d], 40);
+        a.aciklama[d] = metin(s.aciklama && s.aciklama[d], 220);
+      }
+      return a;
+    }
+    function ayarla(s) {
+      const a = satisAyari(s), eski = D.ayar.urun;
+      D.ayar = a;
+      if (a.urun !== eski) { D.urun = null; D.urunSoz = null; D.urunDeneme = 0; clearTimeout(D.urunT); }
+      if (a.acik && !D.urun) urunYukle();
+      ciz();
+    }
+
+    // Ürün ve fiyatı mağazadan; alınamazsa (internet yok, ürün mağazada henüz yok) giderek uzayan aralıklarla yeniden denenir
+    function urunYukle() {
+      if (!NP || !D.ayar.acik || D.sahip) return Promise.resolve(null);
+      if (D.urun) return Promise.resolve(D.urun);
+      if (D.urunSoz) return D.urunSoz;
+      clearTimeout(D.urunT);
+      const id = D.ayar.urun;
+      const p = yap('getProducts', { productIdentifiers: [id], productType: 'inapp' }).then(r => {
+        if (D.urunSoz !== p) return D.urun;   // bu arada ürün kimliği değişti
+        D.urunSoz = null;
+        const u = r && Array.isArray(r.products) ? r.products.find(x => x && x.identifier === id) : null;
+        const fiyat = u && typeof u.priceString === 'string' ? u.priceString.trim().slice(0, 24) : '';
+        if (!fiyat) throw new Error('ürün yok');
+        D.urun = { id, fiyat };
+        D.urunDeneme = 0;
+        ciz();
+        return D.urun;
+      }).catch(() => {
+        if (D.urunSoz === p) D.urunSoz = null;
+        if (D.ayar.urun === id && !D.urun && !D.sahip) D.urunT = setTimeout(urunYukle, Math.min(600000, 15000 * Math.pow(2, D.urunDeneme++)));
+        return null;
+      });
+      D.urunSoz = p;
+      return p;
+    }
+    function urunYeniden() {
+      if (!NP || D.urun || D.urunSoz || !D.ayar.acik || D.sahip) return;
+      clearTimeout(D.urunT);
+      D.urunDeneme = 0;
+      urunYukle();
+    }
+
+    // Mağazaya sorulur: bu hesap "reklamsiz" ürünlerinden birini almış mı. Döner: true / false; sorulamazsa (mağaza ya da internet
+    // yok) null ve bilinen durum kalır. sessiz: geri yüklendi bildirimini çağıran gösterir
+    function denetle(sessiz) {
+      if (!NP) return Promise.resolve(null);
+      if (D.denetim) return D.denetim;
+      D.sonDenetim = Date.now();
+      const p = yap('getPurchases', ios ? { onlyCurrentEntitlements: true } : { productType: 'inapp' }).then(r => {
+        let alindi = false;
+        for (const t of (r && Array.isArray(r.purchases) ? r.purchases : [])) {
+          if (!t || typeof t.productIdentifier !== 'string' || t.productIdentifier.indexOf('reklamsiz') !== 0 || t.revocationDate) continue;
+          if (!ios && String(t.purchaseState) !== '1') continue;   // Android: 1 alındı, 2 ödeme bekliyor
+          alindi = true;
+          // Onaylanmamış satın alma (ör. sonradan tamamlanan bekleyen ödeme) onaylanır; onaylanmazsa Google 3 gün içinde iade eder
+          if (!ios && t.isAcknowledged === false && t.purchaseToken) yap('acknowledgePurchase', { purchaseToken: t.purchaseToken }).catch(() => {});
+        }
+        if (sahipAyarla(alindi) && alindi && !sessiz) bildir('satinGeriYuklendi');
+        return alindi;
+      }, () => null).then(v => { D.denetim = null; D.denetlendi = true; return v; });
+      D.denetim = p;
+      return p;
+    }
+
+    // Satın alma durumu: cihazda saklanır; reklamlar kalkar ya da (iade) geri gelir. Döner: değişti mi
+    function sahipAyarla(v) {
+      v = !!v;
+      AdManager.reklamsiz(v);
+      if (v === D.sahip) return false;
+      D.sahip = v;
+      store.set(K_REKLAMSIZ, { sahip: v, t: Date.now() });
+      if (v) kapat(); else urunYukle();
+      ciz();
+      return true;
+    }
+
+    // Ana menüdeki REKLAMLARI KALDIR düğmesi (mağaza fiyatıyla) ve açık pencerenin yazıları
+    function ciz() {
+      const sat = !!(NP && D.ayar.acik && !D.sahip && D.urun);
+      $('btnReklamsiz').hidden = !sat;
+      $('rsFiyat').textContent = sat ? D.urun.fiyat : '';
+      if (!ovSatin.hidden) yazilar();
+    }
+    function yazilar() {
+      const d = DIL === 'en' ? 'en' : 'tr';
+      $('stnBaslik').textContent = upTR(D.ayar.ad[d] || yaz('satinVarsayilanAd'));
+      $('stnAciklama').textContent = D.ayar.aciklama[d] || yaz('satinVarsayilanAciklama');
+      $('stnFiyat').textContent = D.urun ? D.urun.fiyat : '';
+      $('stnNot').textContent = yaz(ios ? 'satinNotIos' : 'satinNotAndroid');
+      const el = $('stnDurum');
+      el.textContent = D.durum ? yaz(D.durum) : '';
+      el.hidden = !D.durum;
+      $('stnAl').disabled = D.mesgul || !D.urun;
+      $('stnGeri').disabled = D.mesgul;
+    }
+    function durumYaz(anahtar) {
+      D.durum = anahtar || '';
+      yazilar();
+    }
+
+    function ac() {
+      if (!NP || D.sahip || !D.ayar.acik || !ovSatin.hidden) return false;
+      D.durum = '';
+      yazilar();
+      ovSatin.hidden = false;
+      setModal();
+      focusDialog('stnAl', 'stnCard');
+      if (!D.urun) urunYukle();
+      return true;
+    }
+    function kapat() {
+      if (ovSatin.hidden) return;
+      ovSatin.hidden = true;
+      setModal();
+      if (!ovStart.hidden) focusDialog('btnStart', 'stCard');
+    }
+    function bildir(anahtar) {
+      toast(yaz(anahtar), 3800);
+      announce(yaz(anahtar));
+    }
+    function islemBitti() {
+      D.mesgul = false;
+      D.sonIslem = Date.now();
+    }
+
+    // SATIN AL: mağazanın ödeme penceresi. Vazgeçince sessizce geri döner; bekleyen ödemede (ör. nakit) onaylanınca reklamlar kalkar
+    function satinAl() {
+      if (!NP || D.mesgul || D.sahip) return;
+      if (!D.urun) { durumYaz('satinMagazaYok'); urunYeniden(); return; }
+      D.mesgul = true;
+      durumYaz('satinAciliyor');
+      yap('purchaseProduct', { productIdentifier: D.urun.id, productType: 'inapp' }).then(t => {
+        islemBitti();
+        if (!ios && t && t.purchaseState != null && String(t.purchaseState) !== '1') { durumYaz('satinOnayBekliyor'); return; }
+        if (!ios && t && t.isAcknowledged === false && t.purchaseToken) yap('acknowledgePurchase', { purchaseToken: t.purchaseToken }).catch(() => {});
+        sahipAyarla(true);
+        bildir('satinTesekkur');
+      }, e => {
+        islemBitti();
+        const k = String((e && e.code) || '') + ' ' + String((e && e.message) || e || '');
+        if (/USER_CANCEL|cancel/i.test(k)) { durumYaz(''); return; }          // oyuncu vazgeçti
+        if (/pending/i.test(k)) { durumYaz('satinOnayBekliyor'); return; }
+        if (/ALREADY_OWNED|already owned/i.test(k)) {                          // daha önce alınmış: satın alma geri yüklenir
+          D.mesgul = true;
+          durumYaz('satinSoruluyor');
+          denetle(true).then(v => { islemBitti(); if (v) bildir('satinGeriYuklendi'); else durumYaz('satinHata'); });
+          return;
+        }
+        durumYaz('satinHata');
+      });
+    }
+    // SATIN ALIMI GERİ YÜKLE: yeni telefonda ya da uygulama yeniden kurulunca (App Store'da gerekli; Google Play'de açılışta kendiliğinden)
+    function geriYukle() {
+      if (!NP || D.mesgul) return;
+      D.mesgul = true;
+      durumYaz('satinSoruluyor');
+      yap('restorePurchases').catch(() => {}).then(() => denetle(true)).then(v => {
+        islemBitti();
+        if (v) bildir('satinGeriYuklendi');
+        else durumYaz(v === false ? 'satinBulunamadi' : 'satinMagazaYok');
+      });
+    }
+
+    // Açılış penceresi şimdi açılabilir mi (donus: uzun aradan sonra uygulamaya dönüldü; tek kişilik oyun ekranında da açılır)
+    function acilisUygun(donus) {
+      // Mağazanın yanıtı da beklenir: yeni kurulumda daha önce satın almış oyuncuya pencere bir an bile görünmesin
+      if (!NP || D.sahip || !D.urun || !D.ayar.acik || !D.ayar.pencere || D.mesgul || !D.ayarGeldi || !D.denetlendi) return false;
+      if (document.hidden || duel || ustPencereAcik() || AdManager.acik() || AdManager.izinSuruyor()) return false;
+      return !ovStart.hidden || (!!donus && gameState === 'play' && kip === 'klasik' && !drag && !jokerMod);
+    }
+    // Her açılışta bir kez: ürün fiyatı ve sunucunun ayarı gelince, ana menü açıkken; en çok 1 dakika beklenir
+    function acilisDene(donus) {
+      clearTimeout(D.acilisT);
+      if (!NP || D.sahip || D.gosterildi) return;
+      const bas = Date.now();
+      const dene = () => {
+        if (D.gosterildi || D.sahip) return;
+        if (acilisUygun(donus)) { D.gosterildi = true; ac(); return; }
+        // Oyuncu bu arada oyuna başladıysa bu açılışta pencere çıkmaz
+        if (!donus && ovStart.hidden && !ustPencereAcik() && gameState === 'play' && !document.hidden) { D.gosterildi = true; return; }
+        if (Date.now() - bas < 60000) D.acilisT = setTimeout(dene, 600);
+      };
+      dene();
+    }
+
+    $('btnReklamsiz').addEventListener('click', () => ac());
+    $('stnAl').addEventListener('click', satinAl);
+    $('stnSonra').addEventListener('click', kapat);
+    $('stnKapat').addEventListener('click', kapat);
+    $('stnGeri').addEventListener('click', geriYukle);
+    ovSatin.addEventListener('pointerdown', e => { if (e.target === ovSatin) kapat(); });
+    // Uygulamaya dönünce: satın almalar yeniden sorulur (en çok dakikada bir), ürün alınamamışsa yeniden denenir; uzun aradan sonra
+    // açılış penceresi yeniden çıkar
+    document.addEventListener('visibilitychange', () => {
+      if (!NP) return;
+      if (document.hidden) { D.gizlendi = Date.now(); clearTimeout(D.acilisT); return; }
+      const ara = D.gizlendi ? Date.now() - D.gizlendi : 0;
+      D.gizlendi = 0;
+      if (!D.mesgul && Date.now() - D.sonDenetim > 60000) denetle();
+      urunYeniden();
+      if (ara >= SATIS_DONUS) D.gosterildi = false;
+      if (!D.gosterildi) D.acilisT = setTimeout(() => acilisDene(ara >= SATIS_DONUS), 900);
+    });
+    window.addEventListener('online', urunYeniden);
+    if (D.sahip) AdManager.reklamsiz(true);   // açılışta banner hiç görünmesin (mağaza birazdan yeniden sorulur)
+
+    return {
+      // Açılışta (boot): ayarSozu uzaktan ayarın sunucudan okunması (açılış penceresi yeni ayarı bekler, en çok 8 sn)
+      basla(ayarSozu) {
+        if (!NP) return;
+        const geldi = () => { D.ayarGeldi = true; };
+        Promise.resolve(ayarSozu).then(geldi, geldi);
+        setTimeout(geldi, 8000);
+        urunYukle();
+        denetle();
+        acilisDene(false);
+      },
+      ayarla,
+      ciz,
+      ac,
+      kapat,
+      denetle,
+      acilisDene,
+      mesgul: () => D.mesgul || Date.now() - D.sonIslem < 4000,   // mağazanın ödeme ekranından az önce dönüldü mü
+      durum: () => ({ eklenti: !!NP, ios, sahip: D.sahip, urun: D.urun && Object.assign({}, D.urun), ayar: JSON.parse(JSON.stringify(D.ayar)),
+        mesgul: D.mesgul, ayarGeldi: D.ayarGeldi, gosterildi: D.gosterildi, acik: !ovSatin.hidden, durum: D.durum, urunDeneme: D.urunDeneme })
+    };
+  })();
 
   // Uzun oyunda tablo canlı kalsın: haftalık en iyiyi geçince en çok dakikada bir gönderilir
   function skorCanli() {
@@ -6929,12 +7349,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   /* ================= Oyun kipi: klasik, günlük bulmaca, meydan okuma =================
      Günlük bulmaca ve meydan okuma sürerken tek kişilik oyun kayıtlı bekler; ikisinin puanı rekoru ve haftalık tabloyu
-     etkilemez. Düello düğmesinin yerinde "tek kişilik oyuna dön" düğmesi çıkar. */
+     etkilemez. Çıkış ⌂ ANA MENÜ düğmesiyle (oynanmışsa önce sorulur). */
   function kipAyarla(k) {
     kip = k;
-    const ozel = k !== 'klasik';
-    btnKipCik.hidden = UYGULAMA || !ozel;
-    btnDuel.hidden = UYGULAMA || ozel || !!duel;
     jokerCiz();
     updateHud();
     placeBoardBtn();
@@ -6955,11 +7372,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     updateHint();
     showNotice();
   }
-  btnKipCik.addEventListener('click', () => {
-    if (kip === 'klasik' || AdManager.acik()) return;
-    if (gameState !== 'play' || moves === 0) { kipCik(); return; }
-    askConfirm('kip');
-  });
 
   /* ================= Günlük bulmaca =================
      Her gün herkese aynı bulmaca: tarih (cihazın yerel günü, YYYY-AA-GG) tohum olur. 12-15 dolu kareyle başlayan tahta,
@@ -7848,13 +8260,14 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       },
       // Düello gibi: aynı tohumla boş tahtada üretilen ilk üçlü (RNG sonra eski haline döner)
       ilkUclu: tohum => { const eski = RNG; RNG = seededRng(tohum >>> 0); const t = chooseTrayShapes(new Int8Array(N * N).fill(-1), MODE, 0, 0, 0, []).map(q => q.id); RNG = eski; return t; },
-      AdManager
+      AdManager,
+      Satin
     };
   }
 
-  /* ================= Ana menüye dönüş (uygulamada ⌂ düğmesi ve Android geri tuşu) ================= */
-  // Oyundan ana menüye: tek kişilik oyun kayıtlı kalır, ana menüde DEVAM ET ile sürer. Düello ya da günlük bulmaca /
-  // meydan okuma sürüyorsa önce sorulur (çıkınca ana menü açılır)
+  /* ================= Ana menüye dönüş: ⌂ düğmesi (sitede ve uygulamada), Android geri tuşu, bilgisayarda Esc ================= */
+  // Oyundan ana menüye (duraklat): tek kişilik oyun kayıtlı kalır, ana menüde DURAKLATILDI rozeti çıkar, DEVAM ET ile sürer.
+  // Düello ya da günlük bulmaca / meydan okuma sürüyorsa önce sorulur (çıkınca ana menü açılır)
   function anaMenuyeDon() {
     if (AdManager.acik()) return;
     if (drag) endDrag(null, true);
@@ -7872,7 +8285,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       askConfirm('kip', true);
       return;
     }
-    showStart(true);
+    showStart(score > 0, true);   // hamle yapılmamış yeni oyunda OYNA, sürenkinde DEVAM ET ve DURAKLATILDI
+    if (ovStart.dataset.devam) announce(yaz('oyunDuraklatildi'));
   }
   // Oyun bitti ekranından ana menüye: biten oyunun yerine yeni oyun hazırlanır (ana menüde OYNA)
   function oyunSonuMenuye() {
@@ -7897,9 +8311,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   /* ================= Uygulama (Google Play / App Store) ================= */
   if (UYGULAMA) {
-    btnMenu.hidden = false;
-    btnDuel.hidden = true;
-    btnKipCik.hidden = true;
     $('btnTablo').hidden = !SKOR_API;
     document.documentElement.classList.add('uygulama');
     sistemCubugu();
@@ -7914,7 +8325,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       try {
         AppEk.addListener('backButton', () => {
           if (!ovReklam.hidden || AdManager.acik()) return; // reklam penceresi kendiliğinden kapanır
-          if (!ovConfirm.hidden) $('btnCancel').click();
+          if (!ovSatin.hidden) Satin.kapat();
+          else if (!ovConfirm.hidden) $('btnCancel').click();
           else if (!ovRapor.hidden) raporKapat();
           else if (!ovBoard.hidden) tabloKapat();
           else if (!ovNick.hidden) $('nkSkip').click();
@@ -7970,7 +8382,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     else if (SKOR_API && oyuncu.ad && !kosulTamam() && !banli()) adSor(() => showStart(false), () => yaz('kosulEklendi'));
     else showStart(false);
     if (SKOR_API) { bekleyenGonder('acilis'); tabloYukle(true); }
-    uzakAyarYukle();
+    // Uzaktan ayar (kayıtlısı hemen, yenisi sunucudan); uygulamada reklamsız oyunun fiyatı, satın alımlar ve açılış penceresi
+    Satin.basla(uzakAyarYukle());
     muzikYukle();
     wake();
   }
