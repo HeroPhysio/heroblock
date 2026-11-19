@@ -20,6 +20,7 @@ Bu deponun kökü GitHub Pages ile yayınlanan **tanıtım ve indirme sayfasıd�
 | `og.jpg` | Bağlantı paylaşılınca görünen önizleme görseli (1200x630) |
 | `sw.js` | Sitenin eski hâlinin tarayıcıya kaydettiği çevrimdışı oyun kopyasını siler ve kendini kaldırır |
 | `.well-known/assetlinks.json` | Android App Links: sitenin bağlantılarını Hero Block uygulamasına bağlar (paket adı ve imza sertifikalarının SHA-256 parmak izleri) |
+| `app-ads.txt` | Google AdMob yetkili satıcılar dosyası (app-ads.txt): uygulamanın reklam yayıncı kimliği (`pub-1035107027510605`); AdMob mağazadaki geliştirici sitesinin kökünde arar |
 | `fonts/` | Russo One ve Rajdhani (SIL Open Font License) |
 
 **Google Play bağlantısı:** uygulama yayınlanınca mağaza adresi `index.html`'in başındaki `PLAY_URL` satırına yazılır:
