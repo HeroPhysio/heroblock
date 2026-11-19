@@ -19,6 +19,7 @@ Bu deponun kökü GitHub Pages ile yayınlanan **tanıtım ve indirme sayfasıd�
 | `img/` | Ekran görüntüleri (WebP ve JPEG) |
 | `og.jpg` | Bağlantı paylaşılınca görünen önizleme görseli (1200x630) |
 | `sw.js` | Sitenin eski hâlinin tarayıcıya kaydettiği çevrimdışı oyun kopyasını siler ve kendini kaldırır |
+| `.well-known/assetlinks.json` | Android App Links: sitenin bağlantılarını Hero Block uygulamasına bağlar (paket adı ve imza sertifikalarının SHA-256 parmak izleri) |
 | `fonts/` | Russo One ve Rajdhani (SIL Open Font License) |
 
 **Google Play bağlantısı:** uygulama yayınlanınca mağaza adresi `index.html`'in başındaki `PLAY_URL` satırına yazılır:
@@ -26,7 +27,8 @@ Bu deponun kökü GitHub Pages ile yayınlanan **tanıtım ve indirme sayfasıd�
 Boş kaldıkça indirme düğmeleri "YAKINDA Google Play'de" yazar ve tıklanmaz.
 
 Uygulamadan paylaşılan düello (`?duel=`) ve meydan okuma (`?challenge=`) bağlantıları bu sayfayı açar; sayfa ziyaretçiye
-bunların uygulamada oynandığını söyler.
+bunların uygulamada oynandığını söyler. Android'de uygulama yüklüyse bağlantılar tarayıcı yerine doğrudan uygulamada açılır
+(`.well-known/assetlinks.json`; uygulamanın 1.0.11 sürümünden başlayarak).
 
 ## Uygulama: `uygulama/`
 

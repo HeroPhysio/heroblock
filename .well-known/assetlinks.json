@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "tr.com.herouygulama.heroblock",
+      "sha256_cert_fingerprints": [
+        "E1:2C:F0:99:15:FE:C2:5C:69:A1:3D:2A:B1:22:90:DA:00:ED:3F:C8:A9:D0:10:91:2A:07:8E:23:AA:6D:30:89",
+        "96:A3:47:D7:93:5C:ED:8A:8B:D7:42:4D:C5:17:DA:94:F3:CE:6E:1D:90:BD:35:23:51:53:33:75:3F:F9:8E:A6"
+      ]
+    }
+  }
+]
