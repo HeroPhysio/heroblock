@@ -1,0 +1,2 @@
+/* Hero Block: uygulama takip izni (ATT) penceresindeki açıklama, Türkçe (Info.plist'teki metinle aynı) */
+"NSUserTrackingUsageDescription" = "Reklamları ilgi alanlarına göre gösterebilmek için kullanılır. İzin vermesen de oyunun tamamı oynanır.";

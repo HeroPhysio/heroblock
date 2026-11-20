@@ -3100,7 +3100,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
                                                       Banner yenilenirken ya da yüklenemediğinde alan korunur, tahta zıplamaz.
      Ortamlar:
        • Google Play / App Store uygulaması (Capacitor + @capacitor-community/admob): gerçek reklamlar. Açılışta gerekiyorsa Google'ın
-         izin penceresi (UMP: AB, AEA, Birleşik Krallık, İsviçre) çıkar; izin süreci bitmeden reklam istenmez.
+         izin penceresi (UMP: AB, AEA, Birleşik Krallık, İsviçre) çıkar; izin süreci bitmeden reklam istenmez. iOS'ta ardından
+         Apple'ın uygulama takip izni (ATT) bir kez sorulur; izin verilmese de reklamlar (kişiselleştirilmeden) çıkar.
        • Web sitesi: reklam yok, hata da yok. Ödüllü reklam isteyen düğmeler gizlenir (odulluVar()), geçiş reklamı atlanır.
        • Test (adreste #test, uygulama dışında): ödüllü reklam 2 saniyelik "REKLAM İZLENİYOR…" penceresiyle taklit edilir ve ödül
          verilir; geçiş reklamı da kısa bir pencereyle. #test&banner ile 50 piksellik deneme banner alanı açılır.
@@ -3234,10 +3235,19 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (g !== D.gizlilik) { D.gizlilik = g; cagir('gizlilik', g); }
       if (b.canRequestAds) altyapi(); else if (!D.altyapi) alanAyarla(0);
     }
+    // iOS: uygulama takip izni (ATT). UMP'den sonra, reklam altyapısı kurulmadan önce; durum belirsizse sistem penceresi bir kez
+    // açılır. Yanıt gelmezse (ör. uygulama arka plandaysa) en çok 60 sn beklenir; her durumda reklam altyapısı kurulur
+    function takipIzni() {
+      if (!ios) return Promise.resolve();
+      const durumu = () => yap('trackingAuthorizationStatus').then(d => { D.takip = (d && d.status) || D.takip || ''; return D.takip; });
+      return sinirli(durumu()
+        .then(s => (s === 'notDetermined' ? yap('requestTrackingAuthorization').then(durumu, durumu) : s))
+        .catch(() => {}), 60000);
+    }
     function altyapi() {
       if (D.altyapi) return;
       D.altyapi = true;
-      ayarSozu.then(() => {
+      ayarSozu.then(takipIzni).then(() => {
         const ilk = { maxAdContentRating: REKLAM_AYAR.icerik };
         if (testCihazlari.length) { ilk.initializeForTesting = true; ilk.testingDevices = testCihazlari; }
         return yap('initialize', ilk);
@@ -3410,7 +3420,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       izinSuruyor: () => D.izinSuruyor,                 // Google'ın izin (UMP) süreci sürüyor mu
       baglan(k) { kanca = k || {}; },
       durum: () => ({ yerel, sim, ios, reklamsiz: reklamsizMi, hazir: D.hazir, odulluHazir: !!D.odullu, gecisHazir: D.gecisHazir, banner: D.banner, alan: D.alan, acik: D.acik,
-        sayac: Object.assign({}, sayac), izin: D.izin, gizlilik: D.gizlilik, ayar: D.ayar || '', kimlik: Object.assign({}, KIM), testCihazi: testCihazlari.length }),
+        sayac: Object.assign({}, sayac), izin: D.izin, takip: D.takip || '', gizlilik: D.gizlilik, ayar: D.ayar || '', kimlik: Object.assign({}, KIM), testCihazi: testCihazlari.length }),
       sayacAyarla(o) { if (o && typeof o === 'object') { if (Number.isFinite(o.biten)) sayac.biten = Math.max(0, o.biten | 0); if (Number.isFinite(o.tekrar)) sayac.tekrar = Math.max(0, o.tekrar | 0); if (Number.isFinite(o.son)) sayac.son = Math.max(0, o.son); kaydet(); } }
     };
   })();

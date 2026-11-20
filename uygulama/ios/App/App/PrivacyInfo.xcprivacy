@@ -2,8 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- Hero Block gizlilik bildirimi: izleme yok; yalnızca isteğe bağlı haftalık skor tablosu için takma ad + rastgele oyuncu
-	     kimliği (User ID), puanlar (Gameplay Content) ve şikayetler (Other User Content) uygulamanın çalışması amacıyla işlenir. -->
+	<!-- Hero Block'un kendi kodunun gizlilik bildirimi: oyun kodu izleme yapmaz; yalnızca isteğe bağlı haftalık skor tablosu için
+	     takma ad + rastgele oyuncu kimliği (User ID), puanlar (Gameplay Content) ve şikayetler (Other User Content) uygulamanın
+	     çalışması amacıyla işlenir. Reklam verisini Google Mobile Ads SDK'sı kendi gizlilik bildirimiyle (paketin içinde) bildirir;
+	     oyuncu takip iznini (ATT) verirse reklam kimliğini (IDFA) yalnızca o SDK kullanır. App Store Connect › Uygulama Gizliliği
+	     bu ikisine göre doldurulur. -->
 	<key>NSPrivacyTracking</key>
 	<false/>
 	<key>NSPrivacyTrackingDomains</key>

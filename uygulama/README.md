@@ -25,7 +25,7 @@ Oyun güncellenince `www/index.html` yenilenir, sonra paketlenir.
 İkisi de GitHub'da, **Actions** sekmesinden **Run workflow** ile çalışır:
 
 - **Android · Google Play paketi (AAB)**: imzalı `.aab` üretir. Çalıştırma bitince sayfanın altındaki **Artifacts** bölümünden indirilir, Play Console'a yüklenir. Her yüklemede **sürüm kodu** bir öncekinden büyük olmalı (ilk paket 1 idi; sonraki 2, 3...).
-- **iOS · App Store Connect'e yükle**: GitHub'ın Mac sunucusunda derler, imzalar ve App Store Connect'e (TestFlight) gönderir. Derleme numarası kendiliğinden artar.
+- **iOS · App Store Connect'e yükle**: GitHub'ın Mac sunucusunda (macOS 26, Xcode 26) derler, Apple'ın bulut imzasıyla imzalar ve App Store Connect'e (TestFlight) gönderir; Mac gerekmez, sertifika ya da profil dosyası hazırlanmaz. Sürüm çalıştırırken yazılır (varsayılan 1.0.11), derleme numarası kendiliğinden artar. **yukle** kutusu işaretsizken yalnızca derleme denemesi yapılır (imzasız; Apple hesabı ve gizli bilgi gerekmez). `admob.config.json` › `ios` bölümünde Google'ın test kimlikleri varken yükleme yapılmaz.
 
 ### Gerekli gizli bilgiler
 
@@ -35,10 +35,10 @@ GitHub › Settings › Secrets and variables › Actions › **New repository s
 | --- | --- |
 | `ANDROID_KEYSTORE_BASE64` | Yükleme anahtarı dosyasının (`heroblock-yukleme-anahtari.jks`) base64 hâli |
 | `ANDROID_KEYSTORE_PASSWORD` | Yükleme anahtarının şifresi |
-| `APPLE_TEAM_ID` | Apple geliştirici takım kimliği (10 karakter) |
-| `APPSTORE_API_KEY_ID` | App Store Connect API anahtarının Key ID'si |
-| `APPSTORE_API_ISSUER_ID` | App Store Connect API Issuer ID |
-| `APPSTORE_API_PRIVATE_KEY` | İndirilen `AuthKey_XXXX.p8` dosyasının içeriğinin tamamı |
+| `APPLE_TEAM_ID` | Apple geliştirici takım kimliği (10 karakter; developer.apple.com › Account › Membership details) |
+| `APPSTORE_API_KEY_ID` | App Store Connect API anahtarının Key ID'si (App Store Connect › Kullanıcılar ve Erişim › Entegrasyonlar › App Store Connect API › Takım Anahtarları › **+**; erişim **Admin**, bulut imzası için gerekli) |
+| `APPSTORE_API_ISSUER_ID` | App Store Connect API Issuer ID (aynı sayfanın üstünde) |
+| `APPSTORE_API_PRIVATE_KEY` | İndirilen `AuthKey_XXXX.p8` dosyasının içeriğinin tamamı (BEGIN/END satırları dahil; dosya yalnızca bir kez indirilebilir) |
 
 > Yükleme anahtarı, şifreler ve `.p8` dosyası **hiçbir zaman** bu depoya konmaz (`.gitignore` bunları dışarıda tutar).
 > Yükleme anahtarını kaybetmemek için iki ayrı yerde sakla.
@@ -98,7 +98,7 @@ Uygulama, `@capacitor-community/admob` (8.3.0) eklentisiyle reklam gösterir. Si
 - **Şerit (banner):** ekranın en altında, güvenli bölgenin üstünde; Google'ın uyarlanabilir boyu (telefonda yaklaşık 50-70, tablette 90 dp). Alanı sabittir: banner istendiği anda ayrılır (bu cihazdaki son banner boyu; ilk açılışta genişliğe göre tahmin), banner yenilenirken ya da yüklenemediğinde korunur. Tahta, raf ve jokerler hep onun üstünde kalır, banner gelip gidince zıplamaz. Reklamsız oyunda (ve reklam izni yoksa) alan kalkar.
 - **Oyun arası reklam:** ilk 2 oyunda çıkmaz. Sonra her 3 **TEKRAR OYNA**'da bir kez çıkar. Bu sıklık (ilk kaç oyun reklamsız, kaç **TEKRAR OYNA**'da bir, iki reklam arasında en az kaç saniye; 0 = kapalı) yeni sürüm yayımlamadan skor sunucusunun yönetim panelindeki **Uzaktan ayar** bölümünden değiştirilir: uygulama açılışta `https://skor.herouygulama.com.tr/index.php?a=config` adresini okur, son alınan ayarı cihazda saklar. Ana menüdeki kısa duyuru da aynı yerden yazılır.
 - **Ödüllü reklam:** isteğe bağlıdır. Hakkı biten jokere +1 hak verir. **KAYBETTİN** penceresindeki **REKLAM İZLE — TAHTAYI TEMİZLE VE DEVAM ET** düğmesiyle oyun başına bir kez ikinci şans verir: tahtadaki bütün bloklar patlar, skor, kombo ve eldeki parçalar aynen kalır.
-- **İzin:** AB, AEA, Birleşik Krallık ve İsviçre'de açılışta Google'ın izin penceresi (UMP) çıkar. Oyuncu kararını menüdeki **REKLAM GİZLİLİK AYARLARI** ile değiştirebilir. iOS takip izni (ATT) sorulmaz.
+- **İzin:** AB, AEA, Birleşik Krallık ve İsviçre'de açılışta Google'ın izin penceresi (UMP) çıkar. Oyuncu kararını menüdeki **REKLAM GİZLİLİK AYARLARI** ile değiştirebilir. **iOS:** Google'ın izin penceresinden sonra, reklamlar başlamadan önce Apple'ın uygulama takip izni (ATT) bir kez sorulur. Penceredeki açıklama `ios/App/App/Info.plist` › `NSUserTrackingUsageDescription` (Türkçe) ve `en.lproj` / `tr.lproj` › `InfoPlist.strings`'te. İzin verilmese de reklamlar kişiselleştirilmeden çıkar, oyunun tamamı oynanır. Bu yüzden App Store Connect › Uygulama Gizliliği'nde reklam verisi "sizi izlemek için kullanılan veri" olarak bildirilir (Google'ın listesi: developers.google.com/admob/ios/privacy/data-disclosure).
 
 ### Kimlikler: tek dosya, `admob.config.json`
 

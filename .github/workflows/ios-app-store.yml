@@ -1,20 +1,34 @@
-# Hero Block iOS uygulamasını GitHub'ın Mac sunucusunda derler, imzalar ve App Store Connect'e (TestFlight) yükler.
+# Hero Block iOS uygulamasını GitHub'ın Mac sunucusunda (macOS 26, Xcode 26) derler, imzalar ve App Store Connect'e
+# (TestFlight) yükler. Mac gerekmez: dağıtım sertifikasını ve profili Apple'ın bulut imzası, App Store Connect API anahtarıyla
+# kendisi oluşturur (sertifika ya da profil dosyası hazırlanmaz).
+#
 # Çalıştırmak için: GitHub › Actions › "iOS · App Store Connect'e yükle" › Run workflow.
-# Gerekli gizli bilgiler (Settings › Secrets and variables › Actions › New repository secret):
-#   APPLE_TEAM_ID              Apple geliştirici takım kimliği (10 karakter, developer.apple.com › Membership)
+#   surum : App Store'da görünecek sürüm (ör. 1.0.11). Derleme numarası her çalıştırmada kendiliğinden artar.
+#   yukle : işaretsizse yalnızca derleme denemesi yapılır (imzasız, yükleme yok, Apple hesabı ve gizli bilgi gerekmez).
+#
+# Yükleme için gerekli gizli bilgiler (Settings › Secrets and variables › Actions › New repository secret):
+#   APPLE_TEAM_ID              Apple geliştirici takım kimliği (10 karakter, developer.apple.com › Account › Membership details)
 #   APPSTORE_API_KEY_ID        App Store Connect API anahtarının kimliği (Key ID)
 #   APPSTORE_API_ISSUER_ID     App Store Connect API "Issuer ID"
-#   APPSTORE_API_PRIVATE_KEY   İndirilen AuthKey_XXXX.p8 dosyasının içeriğinin tamamı
-# Derleme numarası her çalıştırmada kendiliğinden artar (GitHub çalıştırma numarası).
+#   APPSTORE_API_PRIVATE_KEY   İndirilen AuthKey_XXXX.p8 dosyasının içeriğinin tamamı (BEGIN/END satırları dahil)
+# API anahtarı: App Store Connect › Kullanıcılar ve Erişim › Entegrasyonlar › App Store Connect API › Takım Anahtarları › "+".
+#   Erişim: Admin (bulut imzası için gerekli). .p8 dosyası yalnızca bir kez indirilebilir.
+#
+# Reklam: uygulama/admob.config.json › ios bölümünde Google'ın test kimlikleri varken yükleme yapılmaz.
 name: iOS · App Store Connect'e yükle
 
 on:
   workflow_dispatch:
     inputs:
       surum:
-        description: "App Store'da görünecek sürüm (ör. 1.0.0)"
+        description: "App Store'da görünecek sürüm (ör. 1.0.11)"
         required: true
-        default: "1.0.0"
+        default: "1.0.11"
+      yukle:
+        description: "İmzala ve App Store Connect'e yükle (işaretsiz: yalnızca derleme denemesi)"
+        type: boolean
+        required: true
+        default: true
 
 permissions:
   contents: read
@@ -37,10 +51,18 @@ jobs:
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       SURUM: ${{ inputs.surum }}
       DERLEME: ${{ github.run_number }}
+      YUKLE: ${{ inputs.yukle }}
     steps:
       - uses: actions/checkout@v4
 
+      - name: Sürüm biçimi
+        run: |
+          if ! [[ "$SURUM" =~ ^[0-9]+(\.[0-9]+){1,2}$ ]]; then
+            echo "::error::Sürüm 1.0.11 gibi olmalı (yazılan: '$SURUM')"; exit 1
+          fi
+
       - name: Gizli bilgiler girilmiş mi
+        if: inputs.yukle
         env:
           ASC_P8: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
         run: |
@@ -53,14 +75,39 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: uygulama/package-lock.json
 
       - name: Paketleri kur
         run: npm ci
 
-      - name: Oyun dosyalarını iOS projesine kopyala
+      - name: iOS reklam kimliklerini denetle
+        run: |
+          node -e '
+            const a = require("./admob.config.json").ios || {};
+            const test = ["appId", "banner", "interstitial", "rewarded"].filter(k => String(a[k] || "").includes("3940256099942544"));
+            if (!test.length) { console.log("iOS AdMob kimlikleri gerçek: " + a.appId); process.exit(0); }
+            const m = "admob.config.json › ios bölümünde Google test kimlikleri var (" + test.join(", ") + "). AdMob › Uygulamalar ›"
+              + " Uygulama ekle › iOS ile Hero Block için uygulama ve 3 reklam birimi (banner, geçiş, ödüllü) oluşturup kimlikleri bu dosyaya yaz.";
+            if (process.env.YUKLE === "true") { console.log("::error::" + m + " Test kimlikleriyle App Store Connect'e yükleme yapılmaz."); process.exit(1); }
+            console.log("::warning::" + m);
+          '
+
+      - name: Oyun dosyalarını ve reklam ayarını iOS projesine kopyala
         run: npx cap sync ios
 
+      - name: Info.plist ve gizlilik dosyalarını denetle
+        run: |
+          P=ios/App/App
+          plutil -lint $P/Info.plist $P/PrivacyInfo.xcprivacy $P/en.lproj/InfoPlist.strings $P/tr.lproj/InfoPlist.strings
+          for k in GADApplicationIdentifier NSUserTrackingUsageDescription ITSAppUsesNonExemptEncryption; do
+            printf '%s = ' "$k"; /usr/libexec/PlistBuddy -c "Print :$k" $P/Info.plist
+          done
+          test -f $P/public/index.html
+          test -f $P/public/admob.config.json && cat $P/public/admob.config.json
+
       - name: App Store Connect API anahtarını hazırla
+        if: inputs.yukle
         env:
           ASC_P8: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
         run: |
@@ -75,18 +122,35 @@ jobs:
         run: |
           ortak=(-project ios/App/App.xcodeproj -scheme App -configuration Release
                  -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/HeroBlock.xcarchive"
-                 -allowProvisioningUpdates -authenticationKeyPath "$ASC_KEY_PATH"
-                 -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID"
-                 DEVELOPMENT_TEAM="$APPLE_TEAM_ID" MARKETING_VERSION="$SURUM" CURRENT_PROJECT_VERSION="$DERLEME")
+                 -skipPackagePluginValidation -skipMacroValidation
+                 MARKETING_VERSION="$SURUM" CURRENT_PROJECT_VERSION="$DERLEME")
+          imzasiz=(CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="")
+          if [ "$YUKLE" != "true" ]; then
+            # Derleme denemesi: imzasız, Apple hesabı gerekmez
+            xcodebuild archive "${ortak[@]}" "${imzasiz[@]}"
+            exit 0
+          fi
+          imza=(-allowProvisioningUpdates -authenticationKeyPath "$ASC_KEY_PATH"
+                -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID" DEVELOPMENT_TEAM="$APPLE_TEAM_ID")
           # 1. yol: otomatik imza (Xcode gereken sertifika ve profilleri API anahtarıyla kendisi oluşturur)
-          if ! xcodebuild archive "${ortak[@]}" CODE_SIGN_STYLE=Automatic; then
+          if ! xcodebuild archive "${ortak[@]}" "${imza[@]}" CODE_SIGN_STYLE=Automatic; then
             # 2. yol: imzasız arşiv; imza bir sonraki adımda Apple'ın bulut imzasıyla atılır
             echo "::warning::Otomatik imzalı arşiv olmadı; imzasız arşivlenip dışa aktarımda bulut imzası kullanılacak."
             rm -rf "$RUNNER_TEMP/HeroBlock.xcarchive"
-            xcodebuild archive "${ortak[@]}" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
+            xcodebuild archive "${ortak[@]}" "${imza[@]}" "${imzasiz[@]}"
           fi
 
+      - name: Uygulama paketini denetle
+        run: |
+          A="$RUNNER_TEMP/HeroBlock.xcarchive/Products/Applications/App.app"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" -c "Print :CFBundleShortVersionString" -c "Print :CFBundleVersion" "$A/Info.plist"
+          test -f "$A/en.lproj/InfoPlist.strings" && test -f "$A/tr.lproj/InfoPlist.strings"
+          test -f "$A/PrivacyInfo.xcprivacy" && test -f "$A/public/index.html" && test -f "$A/public/admob.config.json"
+          echo "Takip izni açıklaması (İngilizce):"; plutil -p "$A/en.lproj/InfoPlist.strings"
+          du -sh "$A"
+
       - name: İmzala ve App Store Connect'e yükle
+        if: inputs.yukle
         run: |
           cat > "$RUNNER_TEMP/ExportOptions.plist" <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
@@ -110,7 +174,7 @@ jobs:
             -authenticationKeyPath "$ASC_KEY_PATH" \
             -authenticationKeyID "$ASC_KEY_ID" \
             -authenticationKeyIssuerID "$ASC_ISSUER_ID"
-          echo "Yüklendi. App Store Connect › Uygulamam › TestFlight'ta 10-30 dakika içinde 'İşleniyor' olarak görünür."
+          echo "Yüklendi: sürüm $SURUM, derleme $DERLEME. App Store Connect › Hero Block › TestFlight'ta 10-30 dakika içinde görünür."
 
       - name: Anahtarı sil
         if: always()
