@@ -53,7 +53,7 @@ jobs:
       DERLEME: ${{ github.run_number }}
       YUKLE: ${{ inputs.yukle }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Sürüm biçimi
         run: |
@@ -72,7 +72,7 @@ jobs:
           done
           exit $eksik
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -83,15 +83,15 @@ jobs:
 
       - name: iOS reklam kimliklerini denetle
         run: |
-          node -e '
-            const a = require("./admob.config.json").ios || {};
-            const test = ["appId", "banner", "interstitial", "rewarded"].filter(k => String(a[k] || "").includes("3940256099942544"));
-            if (!test.length) { console.log("iOS AdMob kimlikleri gerçek: " + a.appId); process.exit(0); }
-            const m = "admob.config.json › ios bölümünde Google test kimlikleri var (" + test.join(", ") + "). AdMob › Uygulamalar ›"
-              + " Uygulama ekle › iOS ile Hero Block için uygulama ve 3 reklam birimi (banner, geçiş, ödüllü) oluşturup kimlikleri bu dosyaya yaz.";
-            if (process.env.YUKLE === "true") { console.log("::error::" + m + " Test kimlikleriyle App Store Connect'e yükleme yapılmaz."); process.exit(1); }
-            console.log("::warning::" + m);
-          '
+          node <<'JS'
+          const a = require('./admob.config.json').ios || {};
+          const test = ['appId', 'banner', 'interstitial', 'rewarded'].filter(k => String(a[k] || '').includes('3940256099942544'));
+          if (!test.length) { console.log('iOS AdMob kimlikleri gerçek: ' + a.appId); process.exit(0); }
+          const m = 'admob.config.json › ios bölümünde Google test kimlikleri var (' + test.join(', ') + '). AdMob › Uygulamalar ›'
+            + ' Uygulama ekle › iOS ile Hero Block için uygulama ve 3 reklam birimi (banner, geçiş, ödüllü) oluşturup kimlikleri bu dosyaya yaz.';
+          if (process.env.YUKLE === 'true') { console.log('::error::' + m + ' Test kimlikleriyle App Store Connect\'e yükleme yapılmaz.'); process.exit(1); }
+          console.log('::warning::' + m);
+          JS
 
       - name: Oyun dosyalarını ve reklam ayarını iOS projesine kopyala
         run: npx cap sync ios
