@@ -29,7 +29,7 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<!-- Google AdMob uygulama kimliği: uygulama/admob.config.json › ios.appId'den "npx cap sync" ile yazılır. Burayı değil o dosyayı değiştir. -->
 	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-3940256099942544~1458002511</string>
+	<string>ca-app-pub-1035107027510605~6888817214</string>
 	<!-- Uygulama takip izni (ATT): oyun, Google'ın izin penceresinden (UMP) sonra ve reklamlar başlamadan önce bir kez sorar
 	     (AdMob eklentisinin requestTrackingAuthorization yöntemi). Bu yazı Apple'ın sistem penceresinde görünür. Türkçe:
 	     bu dosya ve tr.lproj/InfoPlist.strings; İngilizce: en.lproj/InfoPlist.strings. İzin verilmese de reklamlar

@@ -11,7 +11,7 @@ Bu klasör, Hero Block oyununun telefon uygulamasıdır. Oyun aynı oyun; [Capac
 | Klasör / dosya | Ne var |
 | --- | --- |
 | `capacitor.config.json` | Uygulama kimliği `tr.com.herouygulama.heroblock`, adı **Hero Block**, web klasörü `www` |
-| `admob.config.json` | **Bütün Google AdMob kimlikleri** (tek dosya; Android'de gerçek kimlikler, iOS'ta şimdilik Google'ın test kimlikleri) |
+| `admob.config.json` | **Bütün Google AdMob kimlikleri** (tek dosya; Android ve iOS'ta gerçek kimlikler) |
 | `www/` | Oyunun uygulama sürümü (yazı tipleri ve menü müziği içinde; internetsiz açılır) |
 | `android/` | Android Studio projesi (Google Play için `.aab`) |
 | `ios/` | Xcode projesi (App Store için) |
@@ -102,7 +102,7 @@ Uygulama, `@capacitor-community/admob` (8.3.0) eklentisiyle reklam gösterir. Si
 
 ### Kimlikler: tek dosya, `admob.config.json`
 
-Bütün AdMob kimlikleri yalnızca **`uygulama/admob.config.json`** dosyasındadır. **Android: gerçek kimlikler** (1.0.11'den başlayarak; AdMob hesabı `pub-1035107027510605`, uygulama `ca-app-pub-1035107027510605~7969060635`; şerit, oyun arası ve ödüllü reklam birimleri aynı hesabın). Kendi reklamına dokunma: geçersiz tıklama hesabı riske atar. Deneme APK'sını kendi telefonunda açacaksan telefonu AdMob › Ayarlar › Test cihazları'na ya da aşağıdaki `testDevices`'a ekle; o telefonda yalnızca test reklamı çıkar. **iOS:** App Store uygulaması açılana kadar Google'ın resmi TEST kimlikleri.
+Bütün AdMob kimlikleri yalnızca **`uygulama/admob.config.json`** dosyasındadır. **Android: gerçek kimlikler** (1.0.11'den başlayarak; AdMob hesabı `pub-1035107027510605`, uygulama `ca-app-pub-1035107027510605~7969060635`; şerit, oyun arası ve ödüllü reklam birimleri aynı hesabın). Kendi reklamına dokunma: geçersiz tıklama hesabı riske atar. Deneme APK'sını kendi telefonunda açacaksan telefonu AdMob › Ayarlar › Test cihazları'na ya da aşağıdaki `testDevices`'a ekle; o telefonda yalnızca test reklamı çıkar. **iOS: gerçek kimlikler** (App Store sürümü 1.0.11'den başlayarak; aynı AdMob hesabı, uygulama `ca-app-pub-1035107027510605~6888817214`; şerit, oyun arası ve ödüllü reklam birimleri aynı hesabın). TestFlight'ta da kendi reklamına dokunma; iPhone'unu AdMob › Ayarlar › Test cihazları'na ekleyebilirsin. App Store'da yayına girince AdMob'daki iOS uygulamasını App Store kaydına bağla.
 
 | Alan | Ne | Biçim |
 | --- | --- | --- |
@@ -114,7 +114,7 @@ Gerçek kimlikleri yazınca `npx cap sync` çalıştır. Gerisi kendiliğinden o
 
 - **Android:** `android/app/build.gradle` uygulama kimliğini her derlemede bu dosyadan okuyup `AndroidManifest.xml`'deki `com.google.android.gms.ads.APPLICATION_ID`'ye yazar ve oyunun okuduğu kopyayı yalnızca Android kimlikleriyle yeniden yazar.
 - **iOS:** `npx cap sync` sonrasında `scripts/admob-ayarla.mjs` çalışır ve uygulama kimliğini `ios/App/App/Info.plist` › `GADApplicationIdentifier`'a yazar.
-- **Oyun:** reklam birimlerini uygulamanın içine konan kopyadan okur (her platformun kopyasında yalnızca kendi kimlikleri; Android paketinde iOS'un test kimlikleri yoktur). Dosya yoksa ya da bir kimlik bozuksa o reklam türü hiç istenmez; Google'ın test kimliklerine dönülmez.
+- **Oyun:** reklam birimlerini uygulamanın içine konan kopyadan okur (her platformun kopyasında yalnızca kendi kimlikleri: Android paketinde iOS'unkiler, iOS paketinde Android'inkiler yoktur). Dosya yoksa ya da bir kimlik bozuksa o reklam türü hiç istenmez; Google'ın test kimliklerine dönülmez.
 - **Denetim:** biçimi yanlış (`~` ile `/` karışmış) ya da başka hesaba ait bir kimlik varsa `npx cap sync` ve Android derlemesi hata verip durur. Android derlemesi ayrıca dosya yoksa ya da Android bölümünde Google'ın test kimlikleri varsa durur: Android paketine yalnızca gerçek kimlikler girer (kendi cihazında denemek için `testDevices`). Elle denetlemek için `npm run admob` çalıştır.
 
 Sitenin kökünde `app-ads.txt` yayında: `google.com, pub-1035107027510605, DIRECT, f08c47fec0942fa0` (AdMob mağazadaki geliştirici sitesinde, https://heroblock.herouygulama.com.tr/app-ads.txt, arar).

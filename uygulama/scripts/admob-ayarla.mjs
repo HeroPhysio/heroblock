@@ -66,7 +66,7 @@ if (!Array.isArray(testDevices) || testDevices.some(d => typeof d !== 'string' |
 oyun.testDevices = testDevices.map(d => d.trim());
 
 // Oyunun okuduğu kopya: yalnızca kopyalanan platform (elle çalıştırılınca ikisi de, klasörü varsa). Her kopyada yalnızca o
-// platformun kimlikleri: Android paketine iOS'un (App Store uygulaması açılana kadar Google test) kimlikleri girmez.
+// platformun kimlikleri: Android paketine iOS'unkiler, iOS paketine Android'inkiler girmez.
 // Android kopyası android/app/build.gradle'ın her derlemede yazdığıyla bayt bayt aynıdır.
 const platform = process.env.CAPACITOR_PLATFORM_NAME;
 const yazildi = [];
