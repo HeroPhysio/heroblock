@@ -4,7 +4,7 @@
 #
 # Çalıştırmak için: GitHub › Actions › "iOS · App Store Connect'e yükle" › Run workflow.
 #   surum : App Store'da görünecek sürüm (ör. 1.0.11). Derleme numarası her çalıştırmada kendiliğinden artar.
-#   yukle : işaretsizse yalnızca derleme denemesi yapılır (imzasız, yükleme yok, Apple hesabı ve gizli bilgi gerekmez).
+#   yukle : işaretsizse yalnızca derleme denemesi yapılır (yükleme yok; Apple hesabı ve gizli bilgi gerekmez).
 #
 # Yükleme için gerekli gizli bilgiler (Settings › Secrets and variables › Actions › New repository secret):
 #   APPLE_TEAM_ID              Apple geliştirici takım kimliği (10 karakter, developer.apple.com › Account › Membership details)
@@ -124,27 +124,22 @@ jobs:
                  -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/HeroBlock.xcarchive"
                  -skipPackagePluginValidation -skipMacroValidation
                  MARKETING_VERSION="$SURUM" CURRENT_PROJECT_VERSION="$DERLEME")
-          imzasiz=(CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="")
-          if [ "$YUKLE" != "true" ]; then
-            # Derleme denemesi: imzasız, Apple hesabı gerekmez
-            xcodebuild archive "${ortak[@]}" "${imzasiz[@]}"
-            exit 0
-          fi
-          imza=(-allowProvisioningUpdates -authenticationKeyPath "$ASC_KEY_PATH"
-                -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID" DEVELOPMENT_TEAM="$APPLE_TEAM_ID")
-          # 1. yol: otomatik imza (Xcode gereken sertifika ve profilleri API anahtarıyla kendisi oluşturur)
-          if ! xcodebuild archive "${ortak[@]}" "${imza[@]}" CODE_SIGN_STYLE=Automatic; then
-            # 2. yol: imzasız arşiv; imza bir sonraki adımda Apple'ın bulut imzasıyla atılır
-            echo "::warning::Otomatik imzalı arşiv olmadı; imzasız arşivlenip dışa aktarımda bulut imzası kullanılacak."
-            rm -rf "$RUNNER_TEMP/HeroBlock.xcarchive"
-            xcodebuild archive "${ortak[@]}" "${imza[@]}" "${imzasiz[@]}"
-          fi
+          # Arşiv geçici (ad hoc, "-") imzayla: Google'ın hazır kütüphaneleri (GoogleMobileAds, UMP) dahil her parça geçerli bir
+          # imzayla arşive girer. Gerçek dağıtım imzasını bir sonraki adımda Apple'ın bulut imzası atar: cihaz kaydı, sertifika
+          # ya da profil dosyası gerekmez. (İmzasız arşivde Google kütüphanelerinin imzası bozuk kalıyor, App Store reddediyor;
+          # otomatik geliştirici imzası ise hesapta kayıtlı cihaz olmadan profil oluşturamıyor.)
+          gecici=(CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=YES
+                  PROVISIONING_PROFILE_SPECIFIER= DEVELOPMENT_TEAM=)
+          xcodebuild archive "${ortak[@]}" "${gecici[@]}"
 
       - name: Uygulama paketini denetle
         run: |
           A="$RUNNER_TEMP/HeroBlock.xcarchive/Products/Applications/App.app"
           /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" -c "Print :CFBundleShortVersionString" -c "Print :CFBundleVersion" "$A/Info.plist"
           test -f "$A/en.lproj/InfoPlist.strings" && test -f "$A/tr.lproj/InfoPlist.strings"
+          # Gömülü kütüphaneler dahil bütün imzalar geçerli olmalı (dağıtım imzası bunların üzerine atılır)
+          codesign --verify --deep --strict --verbose=2 "$A"
+          for f in "$A"/Frameworks/*.framework; do codesign -dv "$f" 2>&1 | grep -E "^(Identifier|Signature)=" | tr '\n' ' '; echo; done
           test -f "$A/PrivacyInfo.xcprivacy" && test -f "$A/public/index.html" && test -f "$A/public/admob.config.json"
           echo "Takip izni açıklaması (İngilizce):"; plutil -p "$A/en.lproj/InfoPlist.strings"
           du -sh "$A"
