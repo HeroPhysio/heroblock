@@ -124,23 +124,32 @@ jobs:
                  -destination 'generic/platform=iOS' -archivePath "$RUNNER_TEMP/HeroBlock.xcarchive"
                  -skipPackagePluginValidation -skipMacroValidation
                  MARKETING_VERSION="$SURUM" CURRENT_PROJECT_VERSION="$DERLEME")
-          # Arşiv geçici (ad hoc, "-") imzayla: Google'ın hazır kütüphaneleri (GoogleMobileAds, UMP) dahil her parça geçerli bir
-          # imzayla arşive girer. Gerçek dağıtım imzasını bir sonraki adımda Apple'ın bulut imzası atar: cihaz kaydı, sertifika
-          # ya da profil dosyası gerekmez. (İmzasız arşivde Google kütüphanelerinin imzası bozuk kalıyor, App Store reddediyor;
-          # otomatik geliştirici imzası ise hesapta kayıtlı cihaz olmadan profil oluşturamıyor.)
-          gecici=(CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=YES
-                  PROVISIONING_PROFILE_SPECIFIER= DEVELOPMENT_TEAM=)
-          xcodebuild archive "${ortak[@]}" "${gecici[@]}"
+          # Arşiv imzasız alınır; dağıtım imzasını dışa aktarımda Apple'ın bulut imzası atar (cihaz kaydı, sertifika ya da profil
+          # dosyası gerekmez). Otomatik geliştirici imzası hesapta kayıtlı cihaz olmadan profil oluşturamıyor; iOS cihaz
+          # derlemesinde geçici (ad hoc) imzaya da izin verilmiyor.
+          xcodebuild archive "${ortak[@]}" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
+
+      - name: Gömülü kütüphanelerin eski imzalarını kaldır
+        run: |
+          # Google'ın hazır kütüphaneleri (GoogleMobileAds, UserMessagingPlatform) Google'ın imzasıyla gelir; arşivde ikili dosya
+          # inceltildiği için bu imza bozulur ve içindeki "yalnızca Google'ın takımı" şartı dağıtım imzasına taşınırsa App Store
+          # Connect yüklemeyi reddeder (Invalid Signature). Eski imza kaldırılınca dışa aktarım bunları bizim dağıtım imzamızla
+          # baştan imzalar.
+          A="$RUNNER_TEMP/HeroBlock.xcarchive/Products/Applications/App.app"
+          for f in "$A"/Frameworks/*.framework "$A"/Frameworks/*.dylib; do
+            [ -e "$f" ] || continue
+            codesign --remove-signature "$f" 2>/dev/null || true
+            rm -rf "$f/_CodeSignature"
+            printf '%s: ' "${f##*/}"; codesign -dv "$f" 2>&1 | head -1
+          done
 
       - name: Uygulama paketini denetle
         run: |
           A="$RUNNER_TEMP/HeroBlock.xcarchive/Products/Applications/App.app"
           /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" -c "Print :CFBundleShortVersionString" -c "Print :CFBundleVersion" "$A/Info.plist"
           test -f "$A/en.lproj/InfoPlist.strings" && test -f "$A/tr.lproj/InfoPlist.strings"
-          # Gömülü kütüphaneler dahil bütün imzalar geçerli olmalı (dağıtım imzası bunların üzerine atılır)
-          codesign --verify --deep --strict --verbose=2 "$A"
-          for f in "$A"/Frameworks/*.framework; do codesign -dv "$f" 2>&1 | grep -E "^(Identifier|Signature)=" | tr '\n' ' '; echo; done
           test -f "$A/PrivacyInfo.xcprivacy" && test -f "$A/public/index.html" && test -f "$A/public/admob.config.json"
+          ls "$A/Frameworks"
           echo "Takip izni açıklaması (İngilizce):"; plutil -p "$A/en.lproj/InfoPlist.strings"
           du -sh "$A"
 

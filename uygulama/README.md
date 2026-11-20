@@ -25,7 +25,7 @@ Oyun güncellenince `www/index.html` yenilenir, sonra paketlenir.
 İkisi de GitHub'da, **Actions** sekmesinden **Run workflow** ile çalışır:
 
 - **Android · Google Play paketi (AAB)**: imzalı `.aab` üretir. Çalıştırma bitince sayfanın altındaki **Artifacts** bölümünden indirilir, Play Console'a yüklenir. Her yüklemede **sürüm kodu** bir öncekinden büyük olmalı (ilk paket 1 idi; sonraki 2, 3...).
-- **iOS · App Store Connect'e yükle**: GitHub'ın Mac sunucusunda (macOS 26, Xcode 26) derler, Apple'ın bulut imzasıyla imzalar ve App Store Connect'e (TestFlight) gönderir; Mac gerekmez, sertifika ya da profil dosyası hazırlanmaz. Sürüm çalıştırırken yazılır (varsayılan 1.0.11), derleme numarası kendiliğinden artar. **yukle** kutusu işaretsizken yalnızca derleme denemesi yapılır (yükleme yok; Apple hesabı ve gizli bilgi gerekmez). Arşiv geçici (ad hoc) imzayla alınır, dağıtım imzasını Apple'ın bulut imzası atar: hesapta kayıtlı cihaz gerekmez. `admob.config.json` › `ios` bölümünde Google'ın test kimlikleri varken yükleme yapılmaz.
+- **iOS · App Store Connect'e yükle**: GitHub'ın Mac sunucusunda (macOS 26, Xcode 26) derler, Apple'ın bulut imzasıyla imzalar ve App Store Connect'e (TestFlight) gönderir; Mac gerekmez, sertifika ya da profil dosyası hazırlanmaz. Sürüm çalıştırırken yazılır (varsayılan 1.0.11), derleme numarası kendiliğinden artar. **yukle** kutusu işaretsizken yalnızca derleme denemesi yapılır (yükleme yok; Apple hesabı ve gizli bilgi gerekmez). Arşiv imzasız alınır (Google kütüphanelerinin eski imzaları kaldırılır), dağıtım imzasını Apple'ın bulut imzası atar: hesapta kayıtlı cihaz, sertifika ya da profil dosyası gerekmez. `admob.config.json` › `ios` bölümünde Google'ın test kimlikleri varken yükleme yapılmaz.
 
 ### Gerekli gizli bilgiler
 
