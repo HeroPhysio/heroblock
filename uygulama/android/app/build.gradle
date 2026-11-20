@@ -8,38 +8,48 @@ if (anahtarDosyasi.exists()) { anahtarDosyasi.withInputStream { anahtar.load(it)
 def ayar = { String ad, String ortam -> anahtar.getProperty(ad) ?: System.getenv(ortam) }
 
 // Google AdMob: bütün kimlikler tek dosyada, uygulama/admob.config.json. Android uygulama kimliği her derlemede oradan
-// okunup AndroidManifest'teki APPLICATION_ID'ye yazılır. Dosya yoksa Google'ın TEST uygulama kimliği kullanılır.
-// Biçimi yanlış ya da başka hesaba ait bir kimlik varsa derleme durur (Android Studio'dan derlemede de).
+// okunup AndroidManifest'teki APPLICATION_ID'ye yazılır. Android paketine yalnızca gerçek kimlikler girer: dosya yoksa,
+// biçimi yanlışsa, başka hesaba ait ya da Google'ın test kimliği varsa derleme durur (Android Studio'dan derlemede de).
+// Kendi cihazında denerken o cihazı testDevices'a ekle (o cihazda gerçek kimliklerle de yalnızca test reklamı çıkar).
 def admobDosyasi = rootProject.file('../admob.config.json')
-def admobAppId = 'ca-app-pub-3940256099942544~3347511713'
-if (admobDosyasi.exists()) {
-    def admob
-    try {
-        admob = new groovy.json.JsonSlurper().parse(admobDosyasi)
-    } catch (Exception e) {
-        throw new GradleException("admob.config.json okunamadı: ${e.message}")
-    }
-    def a = (admob instanceof Map && admob.android instanceof Map) ? admob.android : [:]
-    def kimlik = a.appId?.toString()?.trim()
-    def u = (kimlik ?: '') =~ /ca-app-pub-(\d{16})~\d{10}/
-    if (!u.matches()) {
-        throw new GradleException("admob.config.json: android.appId biçimi yanlış: '${kimlik}' (ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY olmalı)")
-    }
-    def yayinci = u.group(1)
-    ['banner', 'interstitial', 'rewarded'].each { alan ->
-        def v = a[alan]?.toString()?.trim()
-        def m = (v ?: '') =~ /ca-app-pub-(\d{16})\/\d{10}/
-        if (!m.matches()) {
-            throw new GradleException("admob.config.json: android.${alan} biçimi yanlış: '${v}' (ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY olmalı)")
-        }
-        if (m.group(1) != yayinci && m.group(1) != '3940256099942544') {
-            throw new GradleException("admob.config.json: android.${alan} başka bir AdMob hesabının birimi (birim ${m.group(1)}, uygulama ${yayinci})")
-        }
-    }
-    admobAppId = kimlik
-} else {
-    logger.warn('admob.config.json bulunamadı: Google AdMob TEST uygulama kimliği kullanılıyor')
+def GOOGLE_TEST = '3940256099942544'   // Google'ın test yayıncı numarası: Android paketinde kabul edilmez
+if (!admobDosyasi.exists()) {
+    throw new GradleException("admob.config.json bulunamadı (${admobDosyasi}): Android uygulama kimliği ve reklam birimleri bu dosyada")
 }
+def admob
+try {
+    admob = new groovy.json.JsonSlurper().parse(admobDosyasi)
+} catch (Exception e) {
+    throw new GradleException("admob.config.json okunamadı: ${e.message}")
+}
+def a = (admob instanceof Map && admob.android instanceof Map) ? admob.android : [:]
+def admobAppId = a.appId?.toString()?.trim()
+def u = (admobAppId ?: '') =~ /ca-app-pub-(\d{16})~\d{10}/
+if (!u.matches()) {
+    throw new GradleException("admob.config.json: android.appId biçimi yanlış: '${admobAppId}' (ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY olmalı)")
+}
+def yayinci = u.group(1)
+if (yayinci == GOOGLE_TEST) {
+    throw new GradleException("admob.config.json: android.appId Google'ın test kimliği; Android'de yalnızca gerçek AdMob kimlikleri kullanılır (kendi cihazında denemek için testDevices)")
+}
+def admobBirim = [:]
+['banner', 'interstitial', 'rewarded'].each { alan ->
+    def v = a[alan]?.toString()?.trim()
+    def m = (v ?: '') =~ /ca-app-pub-(\d{16})\/\d{10}/
+    if (!m.matches()) {
+        throw new GradleException("admob.config.json: android.${alan} biçimi yanlış: '${v}' (ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY olmalı)")
+    }
+    if (m.group(1) == GOOGLE_TEST) {
+        throw new GradleException("admob.config.json: android.${alan} Google'ın test birimi; Android'de yalnızca gerçek AdMob kimlikleri kullanılır (kendi cihazında denemek için testDevices)")
+    }
+    if (m.group(1) != yayinci) {
+        throw new GradleException("admob.config.json: android.${alan} başka bir AdMob hesabının birimi (birim ${m.group(1)}, uygulama ${yayinci})")
+    }
+    admobBirim[alan] = v
+}
+def admobTestCihazlari = (admob.testDevices instanceof List) ? admob.testDevices.collect { it.toString().trim() }.findAll { it ==~ /[A-Za-z0-9-]{8,64}/ } : []
+// Oyunun okuduğu kopya: yalnızca Android kimlikleri ve test cihazları (iOS bölümü Android paketine girmez)
+def admobOyunAyari = groovy.json.JsonOutput.toJson([android: [appId: admobAppId] + admobBirim, testDevices: admobTestCihazlari])
 
 android {
     namespace = "tr.com.herouygulama.heroblock"
@@ -48,9 +58,10 @@ android {
         applicationId "tr.com.herouygulama.heroblock"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        // Sürüm: bulut derlemesinde -PhbSurumKodu=2 -PhbSurum=1.0.1 ile verilir (her Google Play yüklemesinde kod artmalı)
-        versionCode((project.findProperty('hbSurumKodu') ?: '1') as Integer)
-        versionName((project.findProperty('hbSurum') ?: '1.0.0') as String)
+        // Sürüm: Google Play'e her yüklemede sürüm kodu bir öncekinden büyük olmalı (1.0.10 = 11). Bulut derlemesi
+        // (GitHub Actions) ya da komut satırı -PhbSurumKodu=… -PhbSurum=… ile başka bir değer verebilir
+        versionCode((project.findProperty('hbSurumKodu') ?: '12') as Integer)
+        versionName((project.findProperty('hbSurum') ?: '1.0.11') as String)
         // Google AdMob Android uygulama kimliği (yukarıda admob.config.json'dan okunur)
         manifestPlaceholders = [admobAppId: admobAppId]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -99,11 +110,17 @@ dependencies {
 
 apply from: 'capacitor.build.gradle'
 
-// Oyunun reklam birimi kimliklerini okuduğu kopya: "npx cap sync" de koyar; Android Studio'dan doğrudan derlemede de
-// admob.config.json ile aynı kalsın diye her derlemeden önce web dosyalarının yanına yeniden kopyalanır.
-def admobKopyala = tasks.register('admobAyariniKopyala', Copy) {
-    from(admobDosyasi)
-    into(layout.projectDirectory.dir('src/main/assets/public'))
+// Oyunun reklam birimi kimliklerini okuduğu kopya (yalnızca yukarıda denetlenen Android kimlikleri): "npx cap sync" de koyar;
+// Android Studio'dan doğrudan derlemede de admob.config.json ile aynı kalsın diye her derlemeden önce web dosyalarının yanına
+// yeniden yazılır.
+def admobKopyala = tasks.register('admobAyariniKopyala') {
+    def hedef = file('src/main/assets/public/admob.config.json')
+    inputs.property('ayar', admobOyunAyari)
+    outputs.file(hedef)
+    doLast {
+        hedef.parentFile.mkdirs()
+        hedef.setText(admobOyunAyari + '\n', 'UTF-8')
+    }
 }
 tasks.named('preBuild') { dependsOn(admobKopyala) }
 

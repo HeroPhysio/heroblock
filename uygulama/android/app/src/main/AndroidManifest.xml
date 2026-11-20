@@ -18,6 +18,22 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Android App Links: sitenin ana sayfasına giden bağlantılar (düello ?duel=, meydan okuma ?challenge=, paylaşılan
+                 site bağlantısı) uygulama yüklüyse tarayıcı yerine doğrudan burada açılır. Android uygulamayı kurarken ve
+                 güncellerken https://heroblock.herouygulama.com.tr/.well-known/assetlinks.json dosyasını okuyup uygulamanın
+                 imza sertifikasını oradaki parmak izleriyle karşılaştırır (autoVerify). Yalnızca ana sayfa: gizlilik, koşullar,
+                 destek ve veri silme sayfaları tarayıcıda açılmaya devam eder. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" />
+                <data android:scheme="http" />
+                <data android:host="heroblock.herouygulama.com.tr" />
+                <data android:path="/" />
+                <data android:path="/index.html" />
+            </intent-filter>
         </activity>
 
         <provider
@@ -29,7 +45,7 @@
         </provider>
 
         <!-- Google AdMob uygulama kimliği. Değer uygulama/admob.config.json › android.appId'den derlemede gelir
-             (şimdilik Google'ın TEST kimliği ca-app-pub-3940256099942544~3347511713). Burayı değil o dosyayı değiştir. -->
+             (1.0.11'den başlayarak gerçek kimlik: ca-app-pub-1035107027510605~7969060635). Burayı değil o dosyayı değiştir. -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="${admobAppId}" />

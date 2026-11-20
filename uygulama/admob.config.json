@@ -1,16 +1,17 @@
 {
   "_aciklama": [
     "Google AdMob kimlikleri: gerçek kimlikleri YALNIZCA bu dosyaya yaz.",
-    "Şimdilik Google'ın resmi TEST kimlikleri var: yalnızca 'Test Ad' etiketli reklam çıkar, AdMob hesabın riske girmez.",
+    "Android: GERÇEK kimlikler (AdMob hesabı pub-1035107027510605; 1.0.11 ve sonrası). Kendi reklamına dokunma: geçersiz tıklama hesabı riske atar.",
+    "iOS: App Store uygulaması açılana kadar Google'ın resmi TEST kimlikleri (yalnızca 'Test Ad' etiketli reklam).",
     "appId: AdMob › Uygulamalar › uygulama ayarları (ca-app-pub-…~…). banner / interstitial / rewarded: reklam birimleri (ca-app-pub-…/…).",
-    "testDevices: gerçek kimliklerle kendi telefonunda denerken o telefonun test cihazı kimliği (Android Studio Logcat'te 'setTestDeviceIds' satırında yazar). O telefonda yalnızca test reklamı çıkar.",
+    "testDevices: kendi telefonunda denerken o telefonun test cihazı kimliği (Logcat'te 'setTestDeviceIds' satırında yazar) ya da telefonu AdMob › Ayarlar › Test cihazları'na ekle. O telefonda yalnızca test reklamı çıkar.",
     "Değiştirdikten sonra 'npx cap sync' çalıştır: Android, iOS ve oyunun içindeki kopya kendiliğinden güncellenir."
   ],
   "android": {
-    "appId": "ca-app-pub-3940256099942544~3347511713",
-    "banner": "ca-app-pub-3940256099942544/9214589741",
-    "interstitial": "ca-app-pub-3940256099942544/1033173712",
-    "rewarded": "ca-app-pub-3940256099942544/5224354917"
+    "appId": "ca-app-pub-1035107027510605~7969060635",
+    "banner": "ca-app-pub-1035107027510605/6686275268",
+    "interstitial": "ca-app-pub-1035107027510605/3247604036",
+    "rewarded": "ca-app-pub-1035107027510605/9410134817"
   },
   "ios": {
     "appId": "ca-app-pub-3940256099942544~1458002511",

@@ -143,10 +143,21 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   .region { position: absolute; left: 0; top: 0; pointer-events: none; }
   #stage { position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 2; }
   #game { pointer-events: auto; touch-action: none; }
+  /* Oyun alanı ve taşlar: dokunuş doğrudan oyuna gider; tarayıcı kaydırma, yakınlaştırma, metin seçimi ya da büyüteç için
+     beklemez. Tahta katmanları (zemin ve boş hücreler, yerleşmiş bloklar, önizleme, raf, efektler) ayrı GPU katmanlarında:
+     sürüklenen parça hareket ederken tahtadaki hücreler yeniden boyanmaz, yalnızca parçanın katmanı yer değiştirir */
+  #stage, #stage canvas, #dragEl { touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-user-drag: none; -webkit-tap-highlight-color: transparent; }
+  #stage > canvas { will-change: transform; }
+  #stage > #game { will-change: transform, opacity; }   /* gizlenip görünmesi yalnızca GPU'da (yeniden boyama yok) */
+  /* Efekt katmanı boşken (patlama, kıvılcım, konfeti, rafa dönen parça yokken) ekrana bileştirilmez: her karede tam ekran
+     saydam bir katman eksik. Dokunuşları almaya devam eder (saydamlık dokunmayı etkilemez) */
+  #game.bos { opacity: 0; }
   #game.grab { cursor: grab; }
   #game.grabbing { cursor: grabbing; }
   #hl.pulse { animation: hlPulse .26s ease-in-out infinite alternate; }
-  #dragEl { position: fixed; left: 0; top: 0; z-index: 3; pointer-events: none; visibility: hidden; will-change: transform; transform-origin: 50% 50%; }
+  /* Sürüklenen parça: kendi GPU katmanında, yalnızca transform (translate3d) ile yer değiştirir. Oyun içi düğme, yazı ve
+     çubukların üstünde (önünde başka bir şey çizilmez), pencerelerin altında */
+  #dragEl { position: fixed; left: 0; top: 0; z-index: 7; pointer-events: none; visibility: hidden; will-change: transform, opacity; transform-origin: 50% 50%; }
   #dragEl.on { visibility: visible; }
 
   /* Parlayıp sönen birkaç yıldız: küçük öğeler, yalnızca opaklık animasyonu */
@@ -1390,6 +1401,59 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     #twinkle i { opacity: .5; }
     .float { animation: floatFade .95s linear both; }
   }
+
+  /* ================= Açılış: el yazısıyla "Hero Block" =================
+     Ana menüden önce görünmez bir kalem "Hero Block" yazar (SVG stroke-dashoffset), yazı parlar, oyunun renklerinde
+     bloklar saçılır, ekran ana menüye yumuşakça açılır. Video yok: hafif SVG; parıltı, bloklar ve kararma yalnızca
+     opaklık ve dönüşüm (GPU). Toplam 2 saniye; dokununca hemen geçilir. Betik çalışmazsa 6 saniyede kendiliğinden kalkar. */
+  #intro {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+    background:
+      radial-gradient(120% 65% at 50% -12%, rgba(43, 110, 255, .21), transparent 62%),
+      radial-gradient(90% 45% at 50% 112%, rgba(255, 165, 40, .09), transparent 62%),
+      radial-gradient(55% 40% at -5% 55%, rgba(24, 212, 242, .056), transparent 70%),
+      radial-gradient(55% 40% at 105% 45%, rgba(110, 112, 255, .056), transparent 70%),
+      linear-gradient(180deg, #070b22 0%, #050817 55%, #03050e 100%);
+    background-color: #050817;
+    color-scheme: dark;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+    contain: strict;
+    will-change: opacity;
+    animation: introYedek .4s ease 6s forwards;
+  }
+  #intro.calisiyor { animation: none; }
+  /* Yazı sürerken açılışın arkasındaki oyun (menünün bulanık zemini, tahta katmanları) ekrana bileştirilmez: kalem her karede
+     yalnızca kendi katmanını çizer. Yazı bitince (kararmadan önce) oyun yeniden görünür; odak ve erişilebilirlik etkilenmez */
+  html.intro-yaziyor body > :not(#intro) { opacity: 0 !important; }
+  @keyframes introYedek { to { opacity: 0; visibility: hidden; } }
+  #introSahne {
+    position: relative;
+    width: min(88vw, 900px, 150vh);
+    margin-top: -3vh;
+    will-change: transform;
+  }
+  #introSahne::before { content: ''; display: block; padding-top: 17.407%; }   /* en-boy oranı */
+  #intro.cift #introSahne { width: min(84vw, 560px, 87.1vh); }
+  #intro.cift #introSahne::before { padding-top: 57.409%; }
+  #introSahne svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; opacity: 0; }
+  #intro.hazir #introSvg { opacity: 1; }
+  #intro use { fill: none; stroke: url(#introRenk); stroke-linecap: round; stroke-linejoin: round; }
+  #intro .kor use { stroke-width: 44; }
+  #introParilti { will-change: opacity; filter: blur(calc(var(--kalem, 4px) * 1.6)); }
+  #introParilti use { stroke-width: 88; }
+  #introBloklar { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+  #introBloklar i { position: absolute; left: 0; top: 0; border-radius: 24%; opacity: 0; will-change: transform, opacity; }
 </style>
 </head>
 <body>
@@ -1404,10 +1468,193 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
         <li>Oyunu bağlantısından aç: <a href="https://heroblock.herouygulama.com.tr/">https://heroblock.herouygulama.com.tr/</a></li>
         <li>Bilgisayardaysan bu dosyayı Chrome, Safari ya da Edge ile aç.</li>
       </ol>
-      <p class="nojs-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi · Kurucu: Baran Yavuz · İletişim: <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a> · Web: <a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik Politikası</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html">Kullanım Koşulları</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html">Destek</a></p>
+      <p class="nojs-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi · İletişim: <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a> · Web: <a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html">Gizlilik Politikası</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html">Kullanım Koşulları</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html">Destek</a></p>
     </div>
   </div>
 </noscript>
+<div id="intro" aria-hidden="true">
+  <div id="introSahne">
+    <svg id="introSvg" viewBox="-7 -732 4613 803" data-tek="-7 -732 4613 803" data-cift="-7 -732 2740 1573" data-kayma="-1872 770" data-kalem="44" data-hava="80,271,134,69" preserveAspectRatio="xMidYMid meet" focusable="false"><defs><linearGradient id="introRenk" gradientUnits="userSpaceOnUse" x1="63" y1="0" x2="4535" y2="0"><stop offset="0" stop-color="#9af5ff"/><stop offset=".22" stop-color="#3fd9ff"/><stop offset=".42" stop-color="#3b9dff"/><stop offset=".53" stop-color="#ffd968"/><stop offset=".8" stop-color="#ffc531"/><stop offset="1" stop-color="#ffad1f"/></linearGradient><path id="iy0" data-l="1254.0" d="M252 -441L211 -462 192 -478 174 -502 160 -539 159 -559 169 -589 183 -615 204 -636 237 -654 265 -662 286 -658 321 -643 344 -625 361 -600 374 -569 377 -553 378 -534 374 -499 365 -453 349 -394 324 -312 301 -244 282 -192 262 -146 242 -107 214 -62 187 -30 160 -9 148 -4 132 0 113 -1 97 -4 84 -11 74 -21 69 -31 64 -47 63 -94"/><path id="iy1" data-l="5274.1" d="M252 -284L465 -355 555 -388 615 -421 681 -466 718 -498 748 -530 769 -561 784 -596 788 -617 781 -635 763 -654 753 -659 743 -662 735 -661 725 -657 699 -636 672 -604 648 -568 624 -523 600 -469 581 -418 558 -349 538 -282 521 -210 510 -146 504 -94 505 -60 511 -30 519 -17 529 -8 539 -3 555 0 579 -7 615 -25 641 -42 664 -69 723 -155 730 -162 736 -161 744 -153 786 -83 797 -70 807 -63 815 -62 829 -68 864 -86 888 -101 909 -123 929 -156 940 -183 945 -215 942 -244 934 -263 925 -273 915 -280 905 -283 895 -284 874 -278 845 -265 827 -252 813 -237 800 -214 793 -192 789 -167 788 -139 789 -111 794 -87 802 -65 816 -43 831 -28 849 -17 872 -7 900 -1 931 -1 963 -10 1000 -29 1027 -50 1058 -91 1150 -230 1174 -269 1197 -315 1197 -278 1201 -268 1207 -261 1226 -253 1268 -251 1292 -245 1306 -237 1317 -221 1323 -195 1321 -166 1315 -136 1294 -69 1291 -44 1294 -32 1304 -19 1318 -7 1332 -1 1349 -1 1373 -10 1406 -27 1430 -44 1457 -77 1518 -166 1541 -186 1558 -196 1578 -203 1657 -222 1672 -229 1683 -237 1690 -245 1696 -256 1701 -284 1664 -284 1641 -280 1621 -274 1598 -263 1575 -249 1559 -235 1545 -218 1531 -195 1521 -172 1515 -152 1512 -128 1514 -104 1519 -85 1529 -61 1538 -47 1552 -31 1570 -19 1589 -10 1617 -2 1644 0 1672 -4 1703 -17 1733 -34 1752 -50 1770 -75 1787 -108 1794 -136 1796 -167 1789 -199 1777 -226 1762 -247 1739 -265 1713 -275 1704 -276 1693 -274 1686 -269 1679 -260 1672 -240 1670 -211 1675 -183 1686 -156 1698 -138 1716 -120 1739 -107 1766 -99 1798 -95 1832 -95 1862 -100 1884 -107 1913 -123 1932 -137 1953 -158"/><path id="iy2" data-l="2865.6" d="M2741 -598L2761 -577 2769 -557 2772 -522 2769 -472 2757 -413 2732 -320 2711 -258 2689 -210 2652 -150 2617 -101 2582 -61 2546 -31 2507 -10 2489 -3 2474 0 2463 -2 2451 -8 2439 -19 2433 -30 2427 -60 2427 -101 2433 -154 2447 -229 2463 -295 2478 -345 2498 -395 2520 -438 2554 -491 2582 -529 2613 -565 2640 -590 2668 -609 2706 -627 2760 -647 2801 -658 2836 -662 2871 -661 2902 -656 2928 -647 2950 -633 2967 -615 2980 -593 2990 -565 2993 -534 2988 -498 2980 -478 2971 -459 2959 -441 2947 -426 2922 -407 2884 -387 2840 -369 2772 -346 2834 -326 2861 -314 2882 -300 2897 -281 2917 -246 2923 -228 2927 -209 2930 -164 2924 -123 2917 -101 2903 -75 2889 -55 2875 -40 2852 -25 2825 -11 2803 -4 2777 -1 2743 0 2716 -3 2693 -10 2672 -19 2655 -31 2641 -47 2615 -94"/><path id="iy3" data-l="3113.3" d="M3056 -158L3120 -256 3190 -372 3228 -439 3249 -489 3270 -555 3275 -584 3276 -604 3273 -622 3266 -638 3255 -650 3242 -654 3226 -652 3204 -641 3187 -628 3171 -608 3161 -588 3149 -556 3127 -474 3116 -412 3102 -324 3094 -256 3089 -192 3087 -132 3089 -70 3094 -36 3098 -23 3104 -15 3121 -3 3137 0 3162 -7 3198 -25 3221 -40 3236 -56 3259 -86 3312 -163 3332 -183 3347 -192 3365 -200 3448 -221 3463 -227 3475 -234 3485 -244 3490 -255 3494 -267 3496 -284 3459 -284 3440 -281 3420 -276 3396 -265 3373 -251 3356 -237 3342 -221 3326 -195 3316 -172 3310 -152 3308 -128 3309 -104 3314 -85 3324 -61 3333 -47 3347 -31 3365 -19 3384 -10 3412 -2 3439 0 3467 -4 3498 -17 3528 -34 3547 -50 3565 -75 3582 -108 3589 -136 3591 -167 3584 -199 3572 -226 3557 -247 3534 -265 3508 -275 3499 -276 3488 -274 3481 -269 3474 -260 3467 -240 3465 -211 3470 -183 3481 -156 3493 -138 3511 -120 3534 -107 3561 -99 3593 -95 3627 -95 3657 -100 3679 -107 3708 -123 3727 -137 3748 -158"/><path id="iy4" data-l="3246.6" d="M3969 -220L3967 -247 3962 -257 3954 -267 3945 -274 3935 -280 3908 -284 3877 -280 3841 -267 3806 -245 3795 -235 3783 -221 3765 -191 3755 -168 3750 -144 3749 -116 3754 -89 3765 -61 3780 -40 3798 -23 3822 -11 3849 -3 3881 0 3911 -1 3934 -7 3964 -19 3987 -33 4015 -55 4035 -75 4057 -102 4136 -220 4224 -363 4256 -420 4274 -455 4290 -494 4304 -534 4312 -565 4315 -592 4314 -615 4308 -633 4298 -647 4291 -652 4284 -654 4272 -653 4254 -647 4236 -636 4220 -622 4210 -608 4202 -592 4182 -537 4160 -448 4139 -329 4119 -194 4094 0 4117 -67 4133 -107 4149 -141 4173 -180 4199 -219 4223 -246 4246 -265 4270 -276 4285 -280 4305 -284 4325 -284 4338 -281 4350 -277 4362 -269 4369 -260 4375 -247 4378 -222 4376 -204 4367 -189 4352 -177 4332 -167 4304 -161 4277 -158 4221 -158 4258 -139 4278 -120 4291 -98 4308 -55 4320 -30 4332 -15 4348 -3 4363 0 4387 -6 4423 -23 4449 -40 4462 -53 4478 -73 4535 -158"/></defs><g class="kor"><use href="#iy0" data-i="0"/><use href="#iy1" data-i="1"/><use href="#iy2" data-i="2" class="k2"/><use href="#iy3" data-i="3" class="k2"/><use href="#iy4" data-i="4" class="k2"/></g></svg>
+    <svg id="introParilti" viewBox="-7 -732 4613 803" preserveAspectRatio="xMidYMid meet" focusable="false"><use href="#iy0"/><use href="#iy1"/><use href="#iy2" class="k2"/><use href="#iy3" class="k2"/><use href="#iy4" class="k2"/></svg>
+  </div>
+  <div id="introBloklar"></div>
+</div>
+<script>(() => {
+  'use strict'; // açılış
+  /* Açılış (#intro): görünmez kalem "Hero Block" yazar, yazı parlar, bloklar saçılır, ana menü açılır (toplam ~2 s).
+     Oyun hazır olunca (boot) HBIntro.basla() çağrılır: yazı ana iş parçacığı boşken başlar, ilk karede takılmaz.
+     Dokunuş, tuş ya da Android geri tuşu hemen geçer. HBIntro.sonra(f): açılış bitince f (bildirim, reklam izni ve
+     banner açılışın üstünde görünmesin diye bekler). Otomatik testlerde (navigator.webdriver) açılış yok; adreste
+     "intro" varsa (#intro, ?intro=1) testte de oynar. "Hareketi azalt" açıksa yazı çizilmeden belirir ve solar. */
+  const kok = document.getElementById('intro');
+  const bekleyen = [];
+  let bitti = !kok, kapaniyor = false, basladi = false, raf = 0, t0 = 0, yedekT = 0, solma = null, basili = false, kapatBekliyor = false;
+  const calistir = f => { try { f(); } catch (e) { setTimeout(() => { throw e; }); } };
+  const sonra = f => { if (bitti) calistir(f); else bekleyen.push(f); };
+  const H = document.documentElement;
+  const alttakiler = () => H.classList.remove('intro-yaziyor');   // açılışın arkasındaki oyun yeniden görünür
+  function kapat() {
+    alttakiler();
+    if (bitti) return;
+    // Parmak hâlâ ekrandaysa açılış (görünmez hâlde) parmak kalkana dek dokunuşu tutar: bırakılan parmak alttaki düğmeye basmaz
+    if (basili) { kapatBekliyor = true; return; }
+    bitti = true;
+    cancelAnimationFrame(raf);
+    removeEventListener('keydown', tus, true);
+    removeEventListener('pointerup', birak, true);
+    removeEventListener('pointercancel', birak, true);
+    if (kok && kok.parentNode) kok.parentNode.removeChild(kok);
+    bekleyen.splice(0).forEach(calistir);
+  }
+  const tus = e => { if (!bitti) { e.preventDefault(); e.stopImmediatePropagation(); gec(); } };
+  const birak = () => { if (!basili) return; basili = false; if (kapatBekliyor) setTimeout(kapat, 60); };
+  const anims = [];
+  function gec() {
+    if (bitti || kapaniyor) return;
+    kapaniyor = true;
+    cancelAnimationFrame(raf);
+    alttakiler();
+    let op = 1;
+    try { op = Math.min(1, parseFloat(getComputedStyle(kok).opacity)); } catch (e) { /* stil yok */ }
+    if (!(op >= 0)) op = 1;
+    anims.forEach(a => { try { a.cancel(); } catch (e) { /* bitti */ } });
+    kok.style.opacity = String(op);
+    if (typeof kok.animate === 'function') {
+      try { kok.animate([{ opacity: op }, { opacity: 0 }], { duration: 160, easing: 'ease-out', fill: 'forwards' }).onfinish = kapat; } catch (e) { /* yok */ }
+    }
+    setTimeout(kapat, 320);
+  }
+  function basla() {
+    if (basladi || bitti || kapaniyor) return;
+    basladi = true;
+    kok.classList.add('calisiyor');
+    setTimeout(() => { if (!t0 && !bitti) kapat(); }, 2500);   // yedek: ekran kare çizmiyorsa
+    requestAnimationFrame(() => requestAnimationFrame(now => {
+      if (bitti || kapaniyor) return;
+      t0 = now;
+      bitis();
+      tik(now);
+    }));
+  }
+  window.HBIntro = { acik: () => !bitti, gec, basla, sonra, _an: () => {} };
+  if (!kok) return;
+  if (window.__hbYonlen || (navigator.webdriver && !/[?&#]intro\b/.test(location.href))) { kapat(); return; }
+  H.classList.add('intro-yaziyor');
+  setTimeout(() => { if (!basladi && !bitti) kapat(); }, 6000);   // yedek: oyun hiç başlamazsa açılış kalkar
+
+  const AZ = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const $i = id => document.getElementById(id);
+  const svg = $i('introSvg'), par = $i('introParilti'), sahne = $i('introSahne'), bloklar = $i('introBloklar');
+  // Yerleşim: dikey ekranda iki satır (Hero üstte, Block altta içeriden), yatayda tek satır
+  const dik = innerHeight > innerWidth * 1.15;
+  kok.classList.add(dik ? 'cift' : 'tek');
+  const vb = svg.getAttribute(dik ? 'data-cift' : 'data-tek');
+  svg.setAttribute('viewBox', vb);
+  par.setAttribute('viewBox', vb);
+  if (dik) kok.querySelectorAll('.k2').forEach(u => u.setAttribute('transform', 'translate(' + svg.getAttribute('data-kayma') + ')'));
+  // Çizgiler: her biri yazılmamış hâlde (kesik çizgi deseninin boşluğunda) başlar
+  const hava = (svg.getAttribute('data-hava') || '').split(',').map(Number);
+  const iz = [];
+  let toplam = 0;
+  for (let i = 0; ; i++) {
+    const p = $i('iy' + i);
+    if (!p) break;
+    let L = 0;
+    try { L = p.getTotalLength(); } catch (e) { L = 0; }
+    if (!(L > 0)) L = parseFloat(p.getAttribute('data-l')) || 1;
+    const els = Array.prototype.slice.call(svg.querySelectorAll('[data-i="' + i + '"]'));
+    for (const u of els) { u.style.strokeDasharray = L + ' ' + (2 * L + 100); u.style.strokeDashoffset = String(L + 1); }
+    if (i) toplam += hava[i - 1] || 0;
+    iz.push({ p, els, L, bas: toplam, son: -1 });
+    toplam += L;
+  }
+  kok.classList.add('hazir');
+
+  const KALEM = +svg.getAttribute('data-kalem') || 44;           // kalem kalınlığı (yazı biriminde)
+  const YAZ = 1350;                                              // yazının süresi (ms)
+  const hiz = u => u - 0.55 * Math.sin(2 * Math.PI * u) / (2 * Math.PI);   // kalem yumuşak başlar, ortada hızlanır, yavaşlayarak biter
+  function yazi(t) {
+    const u = AZ ? 1 : Math.min(1, Math.max(0, t / YAZ)), D = hiz(u) * toplam;
+    for (const s of iz) {
+      const v = Math.min(s.L, Math.max(0, D - s.bas));
+      if (v === s.son) continue;
+      s.son = v;
+      const off = String(v > 0 ? s.L - v : s.L + 1);
+      for (const u2 of s.els) u2.style.strokeDashoffset = off;
+    }
+    return u >= 1;
+  }
+  function tik(now) {
+    raf = 0;
+    if (bitti || kapaniyor) return;
+    if (!yazi(now - t0)) raf = requestAnimationFrame(tik);
+    else alttakiler();   // yazı bitti: oyun kararmadan önce arkada yeniden çizilir
+  }
+  const anim = (el, kf, o) => {
+    if (typeof el.animate !== 'function') return null;
+    try { const a = el.animate(kf, Object.assign({ fill: 'both' }, o)); anims.push(a); return a; } catch (e) { return null; }
+  };
+  // Oyunun blok renkleri (mavi, camgöbeği, altın, turuncu, mor): üst yüz, alt yüz, parıltı
+  const RENK = [['#64aeff', '#1d6bec', '43,140,255'], ['#62e7fb', '#0caed4', '24,212,242'], ['#ffda70', '#f2a414', '255,197,49'],
+    ['#ffb45e', '#ec7811', '255,150,40'], ['#9496ff', '#5254ea', '110,112,255']];
+  let tohum = 20261119;
+  const rnd = () => (tohum = (tohum * 16807) % 2147483647) / 2147483647;
+  function bloklariAt(gecikme) {
+    const m0 = svg.getScreenCTM(), r = sahne.getBoundingClientRect();
+    if (!m0 || !r.width) return;
+    const kalem = KALEM * m0.a, b = Math.max(7, Math.min(18, kalem * 2.6));
+    kok.style.setProperty('--kalem', kalem.toFixed(2) + 'px');
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2, n = 16;
+    for (let k = 0; k < n; k++) {
+      const hedef = (k + 0.5) / n * toplam;
+      let s = iz[iz.length - 1];
+      for (const z of iz) if (hedef <= z.bas + z.L) { s = z; break; }
+      let q;
+      try { q = s.p.getPointAtLength(Math.max(0, Math.min(s.L, hedef - s.bas))); } catch (e) { continue; }
+      const m = s.els[s.els.length - 1].getScreenCTM() || m0;
+      const x = m.a * q.x + m.c * q.y + m.e, y = m.b * q.x + m.d * q.y + m.f;
+      const ac = Math.atan2(y - cy, x - cx) + (rnd() - 0.5) * 1.2, uz = (0.55 + rnd() * 0.75) * Math.min(r.height, r.width) * (dik ? 0.26 : 0.62);
+      const dx = Math.cos(ac) * uz, dy = Math.sin(ac) * uz, don = (rnd() < 0.5 ? -1 : 1) * (120 + rnd() * 200);
+      const c = RENK[k % RENK.length], el = document.createElement('i');
+      el.style.cssText = 'left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px;width:' + b.toFixed(1) + 'px;height:' + b.toFixed(1) + 'px;margin:' +
+        (-b / 2).toFixed(1) + 'px 0 0 ' + (-b / 2).toFixed(1) + 'px;background:linear-gradient(150deg,' + c[0] + ',' + c[1] + ');box-shadow:0 0 ' +
+        (b * 0.9).toFixed(1) + 'px rgba(' + c[2] + ',.8),inset 0 0 0 ' + Math.max(1, b * 0.11).toFixed(1) + 'px rgba(255,255,255,.38)';
+      bloklar.appendChild(el);
+      anim(el, [
+        { opacity: 0, transform: 'translate3d(0,0,0) rotate(0deg) scale(.25)' },
+        { opacity: 1, transform: 'translate3d(' + (dx * 0.42).toFixed(1) + 'px,' + (dy * 0.42).toFixed(1) + 'px,0) rotate(' + (don * 0.45).toFixed(0) + 'deg) scale(1)', offset: 0.28 },
+        { opacity: 0, transform: 'translate3d(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px,0) rotate(' + don.toFixed(0) + 'deg) scale(.5)' }
+      ], { delay: gecikme + k * 14, duration: 660, easing: 'cubic-bezier(.2,.6,.35,1)' });
+    }
+  }
+  // Yazı bitince: parlama, hafif büyüme, bloklar; sonra ekran ana menüye açılır. Hepsi baştan zamanlanır (GPU'da sürer)
+  function bitis() {
+    if (AZ) alttakiler();
+    if (!AZ) {
+      anim(par, [{ opacity: 0 }, { opacity: 0.95, offset: 0.3 }, { opacity: 0.5 }], { delay: YAZ - 150, duration: 700, easing: 'ease-out' });
+      anim(sahne, [{ transform: 'scale(1)' }, { transform: 'scale(1.045)' }], { delay: YAZ - 90, duration: 800, easing: 'cubic-bezier(.2,.7,.3,1)' });
+      bloklariAt(YAZ - 70);
+    }
+    solma = anim(kok, [{ opacity: 1 }, { opacity: 0 }], { delay: AZ ? 900 : YAZ + 280, duration: AZ ? 300 : 390, easing: 'ease-in-out' });
+    if (solma) solma.onfinish = kapat;
+    yedekT = setTimeout(kapat, (AZ ? 1200 : YAZ + 670) + 700);   // yedek: animasyon bitiş olayı gelmezse
+  }
+  // Önizleme ve testler için: animasyonu t anında (ms) dondurur
+  window.HBIntro._an = t => {
+    if (!t0) { basladi = true; kok.classList.add('calisiyor'); t0 = 1; bitis(); }
+    clearTimeout(yedekT);
+    if (solma) solma.onfinish = null;
+    cancelAnimationFrame(raf);
+    H.classList.toggle('intro-yaziyor', !AZ && t < YAZ);
+    yazi(t);
+    anims.forEach(a => { try { a.pause(); a.currentTime = t; } catch (e) { /* yok */ } });
+  };
+  kok.addEventListener('pointerdown', e => { e.preventDefault(); basili = true; gec(); });
+  addEventListener('pointerup', birak, true);
+  addEventListener('pointercancel', birak, true);
+  addEventListener('keydown', tus, true);
+})();
+</script>
 <div id="themeBg" aria-hidden="true"></div>
 <div id="twinkle" aria-hidden="true"></div>
 
@@ -1444,8 +1691,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 <button id="notice" type="button" hidden></button>
 
 <footer id="credits">
-  <div class="cr-line"><span>Hero Uygulama Yazılım Teknolojileri Ltd. Şti.</span><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></div>
-  <div class="cr-line"><span><span data-t="kurucu">Kurucu</span>: <b>Baran Yavuz</b></span><span aria-hidden="true">·</span><a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><span aria-hidden="true">·</span><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a></div>
+  <div class="cr-line"><span>Hero Uygulama Yazılım Teknolojileri Ltd Şti.</span><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a><span aria-hidden="true">·</span><a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></div>
+  <div class="cr-line"><a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><span aria-hidden="true">·</span><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a></div>
 </footer>
 
 <button id="btnMenu" class="icon-btn" type="button" data-ta="anaMenuAria" aria-label="Duraklat, ana menü" title="Duraklat, ana menü"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 11.4 12 4.2l8.4 7.2"/><path d="M6 9.8V19a1 1 0 0 0 1 1h3.4v-5.2h3.2V20H17a1 1 0 0 0 1-1V9.8"/></svg></button>
@@ -1486,7 +1733,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     <button id="goMeydan" class="btn btn-ghost btn-gap btn-ico btn-meydan" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="m8.3 10.8 7.4-4M8.3 13.2l7.4 4"/></svg><span data-t="meydanOku">ARKADAŞINA MEYDAN OKU</span></button>
     <button id="btnDuelOver" class="btn btn-ghost btn-gap btn-ico btn-duello" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg><span data-t="duelloOyna">ARKADAŞINLA DÜELLO</span></button>
     <button id="goCik" class="btn btn-ghost btn-gap btn-kucuk" type="button" data-t="tekKisilikDon" hidden>TEK KİŞİLİK OYUNA DÖN</button>
-    <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br><span data-t="kurucu">Kurucu</span>: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></p>
+    <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br><a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></p>
   </div>
 </div>
 
@@ -1530,7 +1777,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       <p class="hp-aciklama" data-t="hpAciklama">Yapay zeka destekli yeni nesil fizyoterapi ve egzersiz takip platformu.</p>
       <a id="hpKesfet" class="hp-git" href="https://herophysio.com.tr" target="_blank" rel="noopener" data-ta="hpKesfetAria" aria-label="HeroPhysio'yu keşfet (tarayıcıda açılır)"><span data-t="hpKesfet">Keşfet</span><span class="hp-ok" aria-hidden="true">→</span></a>
     </aside>
-    <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br><span data-t="kurucu">Kurucu</span>: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></p>
+    <p class="card-foot">Hero Uygulama Yazılım Teknolojileri Limited Şirketi<br><a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a><br><a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a> · <a href="https://heroblock.herouygulama.com.tr/gizlilik.html" data-t="gizlilik">Gizlilik</a> · <a href="https://heroblock.herouygulama.com.tr/kosullar.html" data-t="kosullar">Koşullar</a> · <a href="https://heroblock.herouygulama.com.tr/destek.html" data-t="destek">Destek</a></p>
   </div>
   <section id="lbStart" class="lb" data-ta="haftaninEnIyileriAria" aria-label="Haftanın en iyileri" hidden></section>
   </div>
@@ -2018,6 +2265,21 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
   const easeInCubic = t => t * t * t;
   const easeOutBack = t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+  // CSS cubic-bezier(x1, y1, x2, y2) zamanlama eğrisi: zamanın payı (0-1) → ilerleme (tarayıcıyla aynı; Newton, gerekirse ikiye bölme)
+  function kubikBezier(x1, y1, x2, y2) {
+    const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx, cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+    const X = s => ((ax * s + bx) * s + cx) * s, Y = s => ((ay * s + by) * s + cy) * s, dX = s => (3 * ax * s + 2 * bx) * s + cx;
+    return t => {
+      if (t <= 0) return 0;
+      if (t >= 1) return 1;
+      let s = t;
+      for (let i = 0; i < 8; i++) { const e = X(s) - t; if (Math.abs(e) < 1e-7) return Y(s); const d = dX(s); if (Math.abs(d) < 1e-6) break; s -= e / d; }
+      let lo = 0, hi = 1;
+      s = t;
+      for (let i = 0; i < 40; i++) { const v = X(s); if (Math.abs(v - t) < 1e-7) break; if (v < t) lo = s; else hi = s; s = (lo + hi) / 2; }
+      return Y(s);
+    };
+  }
   let NF = new Intl.NumberFormat('tr-TR'); // İngilizcede 1,234 biçimine geçer (dil bölümü)
   const fmt = n => NF.format(Math.round(n));
   // Raftaki sıra ve renkler de üreticinin kaynağından (düelloda iki oyuncuya aynı)
@@ -2139,6 +2401,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     duelloSonucMetin: (k, b, o) => 'Hero Block düellomuz bitti: ' + (k > 0 ? 'ben kazandım, ' + b + ' – ' + o + '!' : k < 0 ? 'sen kazandın, ' + o + ' – ' + b + '.' : 'berabere, ' + b + ' – ' + o + '.') + ' Sonuca bak, rövanş seni bekliyor.',
     duelloSonucBaslik: 'Düello sonucunu gönder',
     duelloGecersiz: 'Düello bağlantısı açılamadı: bağlantı eksik ya da bozuk.',
+    baglantiDuelloSuruyor: 'Önce süren düelloyu bitir, sonra bağlantıya yeniden dokun.',
+    baglantiOyunSuruyor: 'Önce bu oyunu bitir, sonra bağlantıya yeniden dokun.',
     sonBaglanti: s => 'SON BAĞLANTINI YENİDEN GÖNDER (' + s + ' PUAN)',
     duelloAdHata: 'Bu ad kullanılamaz. Başka bir ad yaz ya da boş bırak.',
     banYazi: d => 'Skor tablosuna katılımın ' + (d ? d + ' tarihine kadar ' : '') + 'engellendi. Oyunu oynamaya devam edebilirsin.',
@@ -2346,7 +2610,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     gizlilik: 'Privacy',
     kosullar: 'Terms',
     destek: 'Support',
-    kurucu: 'Founder',
     yenidenBaslat: 'Restart',
     anaMenuAria: 'Pause, main menu',
     tabloBtn: 'THIS WEEK’S BEST',
@@ -2467,6 +2730,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     duelloSonucMetin: (k, b, o) => 'Our Hero Block duel is over: ' + (k > 0 ? 'I won, ' + b + ' – ' + o + '!' : k < 0 ? 'you won, ' + o + ' – ' + b + '.' : 'it’s a tie, ' + b + ' – ' + o + '.') + ' See the result and take your rematch.',
     duelloSonucBaslik: 'Send the duel result',
     duelloGecersiz: 'Couldn’t open the duel link: it’s incomplete or broken.',
+    baglantiDuelloSuruyor: 'Finish your current duel first, then tap the link again.',
+    baglantiOyunSuruyor: 'Finish this game first, then tap the link again.',
     sonBaglanti: s => 'RESEND YOUR LAST LINK (' + s + ' POINTS)',
     duelloAdHata: 'This name can’t be used. Type another one or leave it empty.',
     banYazi: d => 'You’re blocked from the leaderboard' + (d ? ' until ' + d : '') + '. You can keep playing the game.',
@@ -2830,8 +3095,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
                                                       reklam yüklenemezse ya da reklam yoksa basarisiz(neden) çağrılır.
        AdManager.showInterstitialAd(bitti)            Geçiş reklamı ("TEKRAR OYNA"da). Biten oyunları sayar: ilk 2 oyun reklamsız,
                                                       sonra her 3. TEKRAR OYNA'da bir reklam. Her durumda bitti() çağrılır.
-       AdManager.initBannerAd()                       Ekranın en altındaki banner (güvenli alanın üstünde). Yüksekliği oyuna
-                                                      bildirilir; tahta, raf ve jokerler onun üstünde kalır (sürükleme alanına girmez).
+       AdManager.initBannerAd()                       Ekranın en altındaki banner (güvenli alanın üstünde). Alanı sabit yükseklikte
+                                                      ayrılır; tahta, raf ve jokerler hep onun üstünde kalır (sürükleme alanına girmez).
+                                                      Banner yenilenirken ya da yüklenemediğinde alan korunur, tahta zıplamaz.
      Ortamlar:
        • Google Play / App Store uygulaması (Capacitor + @capacitor-community/admob): gerçek reklamlar. Açılışta gerekiyorsa Google'ın
          izin penceresi (UMP: AB, AEA, Birleşik Krallık, İsviçre) çıkar; izin süreci bitmeden reklam istenmez.
@@ -2841,13 +3107,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
      Reklamsız oyun (uygulama içi satın alma, aşağıda Satin): AdManager.reklamsiz(true) banner'ı kaldırır ve geçiş reklamını kapatır;
      ödüllü reklamlar oyuncu isterse açılır, kalır.
      Kimlikler: bütün AdMob kimlikleri uygulama projesindeki TEK dosyada, uygulama/admob.config.json. "npx cap sync" (ve Android
-     derlemesi) onun bir kopyasını uygulamanın içine koyar; oyun reklam birimi kimliklerini açılışta oradan okur. Dosya yoksa ya
-     da bir kimlik biçime uymuyorsa o kimlik için aşağıdaki Google deneme kimliği kullanılır (yalnızca "Test Ad" çıkar). */
-  // Yedek: Google'ın resmi deneme (test) reklam birimleri
-  const REKLAM_KIMLIK = {
-    android: { odullu: 'ca-app-pub-3940256099942544/5224354917', gecis: 'ca-app-pub-3940256099942544/1033173712', banner: 'ca-app-pub-3940256099942544/9214589741' },
-    ios: { odullu: 'ca-app-pub-3940256099942544/1712485313', gecis: 'ca-app-pub-3940256099942544/4411468910', banner: 'ca-app-pub-3940256099942544/2435281174' }
-  };
+     derlemesi) onun bir kopyasını (yalnızca o platformun kimlikleri) uygulamanın içine koyar; oyun reklam birimi kimliklerini
+     açılışta oradan okur. Dosya yoksa ya da bir kimlik biçime uymuyorsa o reklam türü hiç istenmez (deneme kimliğine dönülmez). */
   // ilkOyunlar: reklamsız ilk oyun sayısı; herKac: sonra kaç TEKRAR OYNA'da bir geçiş reklamı; icerik: reklamların en yüksek içerik
   // derecesi (General / ParentalGuidance / Teen / MatureAudience); süreler milisaniye
   // araSn: iki geçiş reklamı arasında en az kaç saniye (0: sınır yok); herKac 0: geçiş reklamı yok. ilkOyunlar, herKac ve araSn
@@ -2863,28 +3124,31 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const sim = !yerel && HASHQ.has('test');
     let ios = false;
     try { ios = yerel && typeof CAP.getPlatform === 'function' && CAP.getPlatform() === 'ios'; } catch (e) { ios = false; }
-    let KIM = Object.assign({}, REKLAM_KIMLIK[ios ? 'ios' : 'android']);
+    let KIM = { odullu: '', gecis: '', banner: '' };   // yalnızca admob.config.json'dan; boşsa o reklam türü istenmez
     let testCihazlari = [];   // bu cihazlarda gerçek kimliklerle de yalnızca test reklamı çıkar (admob.config.json › testDevices)
     const s0 = store.get(K_REKLAM, null) || {};
     const sayac = { biten: Math.max(0, s0.biten | 0), tekrar: Math.max(0, s0.tekrar | 0), son: Number.isFinite(s0.son) && s0.son > 0 ? s0.son : 0 };
     const D = { basladi: false, izinSuruyor: false, altyapi: false, hazir: false, odullu: null, gecisHazir: false, gecisYukleniyor: false,
-      banner: 0, bannerIstendi: false, acik: false, kapanis: 0, gizlilik: false, izin: null };
+      banner: 0, alan: 0, bannerIstendi: false, acik: false, kapanis: 0, gizlilik: false, izin: null };
     let kanca = {}, istek = null, bannerT = 0, bannerDeneme = 0, izinT = 0, odulT = 0, gecisT = 0;
     let reklamsizMi = false;   // reklamsız oyun satın alındı: banner ve geçiş reklamı yok
+    // Bu cihazın son bilinen banner boyu (Google'ın uyarlanabilir banner boyu): sonraki açılışlarda banner alanı baştan ayrılır
+    const K_BANNER = 'blokKahramani.bannerBoy';
+    let sonBoy = (v => (Number.isFinite(v) && v >= 32 && v <= 200 ? Math.round(v) : 0))(Number(store.get(K_BANNER, 0)));
     // Reklam kimlikleri: uygulamanın içindeki admob.config.json (uygulama projesindeki ayar dosyasının kopyası).
-    // Okunamazsa ya da bir kimlik biçime uymuyorsa o kimlik için Google'ın deneme kimliği kalır.
+    // Okunamazsa ya da bir kimlik biçime uymuyorsa o reklam türü istenmez (Google'ın deneme kimliklerine dönülmez).
     const ayarSozu = !yerel ? Promise.resolve() : fetch('admob.config.json', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
       .then(a => {
         const p = a && a[ios ? 'ios' : 'android'];
         const birim = v => (typeof v === 'string' && /^ca-app-pub-\d{16}\/\d{10}$/.test(v.trim()) ? v.trim() : '');
-        if (p) KIM = { odullu: birim(p.rewarded) || KIM.odullu, gecis: birim(p.interstitial) || KIM.gecis, banner: birim(p.banner) || KIM.banner };
+        if (p) KIM = { odullu: birim(p.rewarded), gecis: birim(p.interstitial), banner: birim(p.banner) };
         if (a && Array.isArray(a.testDevices)) {
           testCihazlari = a.testDevices.filter(d => typeof d === 'string' && /^[A-Za-z0-9-]{8,64}$/.test(d.trim())).map(d => d.trim()).slice(0, 20);
         }
-        D.ayar = p ? 'dosya' : 'yedek';
+        D.ayar = p ? 'dosya' : 'yok';
       })
-      .catch(() => { D.ayar = 'yedek'; });
+      .catch(() => { D.ayar = 'yok'; });
     const cagir = (ad, ...a) => { try { if (typeof kanca[ad] === 'function') kanca[ad](...a); } catch (e) { /* oyun tarafı */ } };
     const kaydet = () => store.set(K_REKLAM, sayac);
     // Eklenti çağrısı: her zaman bir söz döner, hata fırlatmaz
@@ -2968,7 +3232,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       D.izin = { durum: b.status, reklamIstenebilir: !!b.canRequestAds, gizlilik: b.privacyOptionsRequirementStatus };
       const g = b.privacyOptionsRequirementStatus === 'REQUIRED';
       if (g !== D.gizlilik) { D.gizlilik = g; cagir('gizlilik', g); }
-      if (b.canRequestAds) altyapi();
+      if (b.canRequestAds) altyapi(); else if (!D.altyapi) alanAyarla(0);
     }
     function altyapi() {
       if (D.altyapi) return;
@@ -2988,7 +3252,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
     // Ödüllü reklamın ön yüklemesi; söz "hazır mı" ile sonuçlanır. Yüklenemezse bir süre sonra yeniden denenir
     function odulluYukle() {
-      if (!D.hazir) return Promise.resolve(false);
+      if (!D.hazir || !KIM.odullu) return Promise.resolve(false);
       if (D.odullu) return D.odullu;
       clearTimeout(odulT);
       const p = yap('prepareRewardVideoAd', { adId: KIM.odullu }).then(() => true, () => false);
@@ -2997,7 +3261,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       return p;
     }
     function gecisYukle() {
-      if (!D.hazir || D.gecisHazir || D.gecisYukleniyor || reklamsizMi) return;
+      if (!D.hazir || D.gecisHazir || D.gecisYukleniyor || reklamsizMi || !KIM.gecis) return;
       D.gecisYukleniyor = true;
       clearTimeout(gecisT);
       yap('prepareInterstitial', { adId: KIM.gecis })
@@ -3010,7 +3274,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       const no = typeof onRewardFail === 'function' ? onRewardFail : () => {};
       if (D.acik) { no('mesgul'); return; }
       if (sim) { taklit('odullu', REKLAM_AYAR.simOdul, () => ok({ type: 'test', amount: 1 })); return; }
-      if (!yerel || !D.hazir) { no('yok'); return; }
+      if (!yerel || !D.hazir || !KIM.odullu) { no('yok'); return; }
       D.acik = true; // reklam yüklenirken ikinci bir dokunuş yeni reklam istemez
       pencere('yukleniyor');
       sinirli(odulluYukle(), REKLAM_AYAR.yukleBekle).then(hazir => {
@@ -3059,14 +3323,16 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
     function bannerGoster() {
       clearTimeout(bannerT);
-      if (reklamsizMi) return;
+      if (reklamsizMi || !KIM.banner) return;
+      if (!D.alan) alanAyarla(sonBoy || tahminiBoy());   // alan banner gelmeden ayrılır: banner yüklenince tahta yerinden oynamaz
       yap('showBanner', { adId: KIM.banner, adSize: 'ADAPTIVE_BANNER', position: 'BOTTOM_CENTER', margin: 0 })
         .then(() => { if (reklamsizMi) bannerKaldir(); }, bannerTekrar);   // yüklenirken reklamsız olduysa hemen kaldırılır
     }
     function bannerKaldir() {
       clearTimeout(bannerT);
       yap('removeBanner').catch(() => {});
-      bannerBoyu(0);
+      D.banner = 0;
+      alanAyarla(0);
     }
     // Banner yüklenemedi: giderek uzayan aralıklarla (en çok 5 dakika) yeniden denenir; internet gelince hemen
     function bannerTekrar() {
@@ -3074,12 +3340,29 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (reklamsizMi) return;
       bannerT = setTimeout(bannerGoster, Math.min(300000, 30000 * Math.pow(2, bannerDeneme++)));
     }
+    // Banner'ın gerçek boyu (eklentinin bildirdiği; 0: şu an görünmüyor). Boy gelince alan ona uyar ve bu cihaz için saklanır.
+    // Banner yenilenirken ya da yüklenemediğinde (boy 0) alan korunur: tahta zıplamaz
     function bannerBoyu(h) {
       h = reklamsizMi ? 0 : Math.max(0, Math.min(200, Math.round(Number(h) || 0)));
-      if (h === D.banner) return;
       D.banner = h;
+      if (!h) return;
+      if (h !== sonBoy) { sonBoy = h; if (yerel) store.set(K_BANNER, h); }
+      alanAyarla(h);
+    }
+    // Oyunun banner'a ayırdığı alan (tahta, raf ve jokerler bunun üstünde); yalnızca reklamsız oyunda ya da reklam izni yoksa 0
+    function alanAyarla(h) {
+      h = reklamsizMi ? 0 : Math.max(0, Math.min(200, Math.round(Number(h) || 0)));
+      if (h === D.alan) return;
+      D.alan = h;
       document.documentElement.style.setProperty('--reklam-alt', h + 'px');
       cagir('banner', h);
+    }
+    // Google'ın uyarlanabilir (anchored adaptive) banner boyunun tahmini: ekran genişliğine göre 50-90 dp (CSS pikseli).
+    // Yalnızca bu cihazda henüz banner görülmediyse; gerçek boy gelince o kullanılır
+    function tahminiBoy() {
+      const w = Math.round(window.innerWidth || 360), y = Math.round(window.innerHeight || 640);
+      const ham = w > 655 ? Math.round(w / 728 * 90) : w > 632 ? 81 : w > 526 ? Math.round(w / 468 * 60) : w > 432 ? 68 : Math.round(w / 320 * 50);
+      return Math.max(50, Math.min(ham, 90, Math.round(y * 0.15)));
     }
     window.addEventListener('online', () => {
       if (!yerel) return;
@@ -3095,13 +3378,16 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       reklamsizMi = v;
       if (v) {
         clearTimeout(gecisT);
-        if (yerel && D.hazir) bannerKaldir(); else bannerBoyu(0);
+        if (yerel && D.hazir) bannerKaldir(); else { D.banner = 0; alanAyarla(0); }
         if (sim && HASHQ.has('banner')) $('reklamAlani').hidden = true;
         return;
       }
       if (sim && HASHQ.has('banner')) simBanner();
       if (D.hazir) { if (D.bannerIstendi) bannerGoster(); gecisYukle(); }
     }
+
+    // Uygulamada bu cihazın banner boyu biliniyorsa alan açılıştan itibaren ayrılır (banner gelince tahta yerinden oynamaz)
+    if (yerel && sonBoy) alanAyarla(sonBoy);
 
     // Reklam gizlilik ayarları (izni değiştirme): Google'ın penceresi açılır, sonra izin durumu yeniden okunur
     function gizlilikAyarlari() {
@@ -3113,17 +3399,17 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       showRewardedAd,
       showInterstitialAd,
       initBannerAd,
-      odulluVar: () => sim || (yerel && D.hazir),      // ödüllü reklam sunulabilir mi (sitede hayır)
+      odulluVar: () => sim || (yerel && D.hazir && !!KIM.odullu),   // ödüllü reklam sunulabilir mi (sitede ya da kimlik yoksa hayır)
       acik: () => D.acik,                               // reklam ya da reklam penceresi açık mı
       yeniKapandi: () => Date.now() - D.kapanis < 4000,  // az önce bir reklam kapandı mı (uygulamaya dönüş reklamdan)
-      bannerYuksekligi: () => D.banner,
+      bannerYuksekligi: () => D.alan,                   // banner'a ayrılan alan (banner yenilenirken de korunur)
       oyunBitti() { if (!(yerel || sim)) return; sayac.biten = Math.min(1e6, sayac.biten + 1); kaydet(); },
       gizlilikAyarlari,
       reklamsiz,
       reklamsizMi: () => reklamsizMi,
       izinSuruyor: () => D.izinSuruyor,                 // Google'ın izin (UMP) süreci sürüyor mu
       baglan(k) { kanca = k || {}; },
-      durum: () => ({ yerel, sim, ios, reklamsiz: reklamsizMi, hazir: D.hazir, odulluHazir: !!D.odullu, gecisHazir: D.gecisHazir, banner: D.banner, acik: D.acik,
+      durum: () => ({ yerel, sim, ios, reklamsiz: reklamsizMi, hazir: D.hazir, odulluHazir: !!D.odullu, gecisHazir: D.gecisHazir, banner: D.banner, alan: D.alan, acik: D.acik,
         sayac: Object.assign({}, sayac), izin: D.izin, gizlilik: D.gizlilik, ayar: D.ayar || '', kimlik: Object.assign({}, KIM), testCihazi: testCihazlari.length }),
       sayacAyarla(o) { if (o && typeof o === 'object') { if (Number.isFinite(o.biten)) sayac.biten = Math.max(0, o.biten | 0); if (Number.isFinite(o.tekrar)) sayac.tekrar = Math.max(0, o.tekrar | 0); if (Number.isFinite(o.son)) sayac.son = Math.max(0, o.son); kaydet(); } }
     };
@@ -3182,6 +3468,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
      Kare yalnızca bir şey değiştiğinde ya da animasyon sürerken çizilir; oyun beklerken hiçbir şey çizilmez. */
   let rafId = 0, last = 0, frameDt = 1 / 60, animUntil = 0, trayAnimUntil = 0, wasBusy = false, trayWasBusy = false;
   let cellsDirty = true, fxDirty = true, trayDirty = true, previewDirty = false, previewKey = '', greyRows = -1;
+  // Sayaçlar (testler okur): katman çizimleri, işlenen parmak konumları, sığma denetimi ve çizgi hesabı
+  const CIZIM = { zemin: 0, hucre: 0, onizleme: 0, efekt: 0, raf: 0, konum: 0, sigma: 0, cizgi: 0 };
   function wake() { if (!rafId) rafId = requestAnimationFrame(frame); }
   function animate(ms) { animUntil = Math.max(animUntil, performance.now() + ms); wake(); }
   function animateTray(ms) { trayAnimUntil = Math.max(trayAnimUntil, performance.now() + ms); trayDirty = true; wake(); }
@@ -3263,7 +3551,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     // Tam cihaz çözünürlüğü (iPhone'larda 3x): bloklar ve yazılar keskin
     const dpr = Math.min(window.devicePixelRatio || 1, 3);
     const ins = readInsets();
-    // Uygulamadaki banner reklam ekranın en altında (güvenli alanın üstünde) durur: oyun onun üstünde kalır, arada küçük bir boşluk
+    // Uygulamadaki banner reklam ekranın en altında (güvenli alanın üstünde) sabit bir alanda durur: oyun onun üstünde kalır,
+    // arada küçük bir boşluk
     const bh = AdManager.bannerYuksekligi(), ba = bh ? bh + 6 : 0;
     const key = [W, H, dpr, ins.t, ins.r, ins.b, ins.l, ba].join('|');
     if (key === layoutKey) return; // boyut aynıysa hiçbir şeyi yeniden kurma
@@ -3622,6 +3911,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   // Sabit arka katman: yıldızlar, tahta çerçevesi, boş hücreler, altın köşeler, raf paneli
   function drawBg() {
+    CIZIM.zemin++;
     const g = bctx, { cs, bs, fp, dpr } = L, T = TH(Math.max(0, themeIdx));
     g.clearRect(0, 0, L.W, L.H);
     // yıldızlar (üst bilgi alanına düşenler atlanır; aydınlık modda yıldız yok)
@@ -4223,17 +4513,82 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     return { uid: ++pieceUid, shape, cells: shape.cells, w: shape.w, h: shape.h, color, fits: true, enter: null, ret: null, hv: 0, don: null };
   }
 
-  const ENTER = { delay: 60, stagger: 60, dur: 320 };
-  function startEnter(pieces) {
-    const now = performance.now();
-    pieces.forEach((p, i) => { if (p) p.enter = { t0: now + ENTER.delay + i * ENTER.stagger, dur: ENTER.dur }; });
-    animateTray(ENTER.delay + 2 * ENTER.stagger + ENTER.dur + 40);
+  // Yeni üçlünün girişi: parçalar soldan sağa GIRIS.ara (45 ms) arayla, her biri 0,2 boyundan büyüyüp 1,08'e taşar ve 1'e oturur:
+  // cubic-bezier(0.34, 1.56, 0.64, 1), GIRIS.ms (220 ms). Her parçanın çevresinde 3-4 minik parıltı yanıp söner.
+  // gec: parça bırakınca yerine oturduktan sonra başlasın diye (ms). "Hareketi azalt" açıksa büyüme ve parıltı yok, yalnızca belirir.
+  const GIRIS = { ara: 45, ms: 220, bas: 0.2 };
+  const girisEgri = kubikBezier(0.34, 1.56, 0.64, 1);
+  const girisOlcek = q => lerp(GIRIS.bas, 1, girisEgri(q));
+  const PARILTI = { ms: 380, ilk: 45, ara: 35 };      // parıltının ömrü, büyüme başlayınca ilk parıltı, parıltılar arası
+  const PARILTI_SON = PARILTI.ilk + 3 * PARILTI.ara + 30 + PARILTI.ms;
+  let parilti = [];
+  function startEnter(pieces, gec) {
+    const now = performance.now() + (gec || 0);
+    parilti = [];
+    pieces.forEach((p, i) => {
+      if (!p) return;
+      const t0 = now + i * GIRIS.ara;
+      p.enter = { t0, dur: GIRIS.ms };
+      if (!REDUCED) parlat(p, i, t0);
+    });
+    animateTray((gec || 0) + 2 * GIRIS.ara + Math.max(GIRIS.ms, PARILTI_SON) + 40);
+  }
+  // Parçanın çevresine (raftaki boyunda, parçanın kenarlarının biraz dışına) 3-4 parıltı: açıları eşit aralıklı, biraz oynatılmış
+  function parlat(p, i, t0) {
+    const n = Math.random() < 0.5 ? 3 : 4, a0 = rand(0, Math.PI * 2);
+    for (let j = 0; j < n; j++) {
+      parilti.push({ i, p, a: a0 + (j / n) * Math.PI * 2 + rand(-0.4, 0.4), u: rand(1.0, 1.22), t0: t0 + PARILTI.ilk + j * PARILTI.ara + rand(0, 30),
+        ms: PARILTI.ms, b: rand(0.8, 1.15), don: rand(-0.6, 0.6) });
+    }
+  }
+  // Parıltının yeri: parçanın raftaki merkezinden s.a yönünde, parçayı çevreleyen dikdörtgenin (kenarlarından 0,3 kare dışarıda)
+  // üzerinde ya da biraz dışında: parçanın üstüne binmez. Rafın kendi bölmesinden taşmaz
+  function pariltiYeri(s) {
+    const p = s.p, home = trayHome(s.i), tcs = trayCs(p), t = L.tray, m = tcs * 0.3, R = tcs * 0.3 * s.b;
+    const ca = Math.cos(s.a), sa = Math.sin(s.a), ex = (p.w * tcs) / 2 + m, ey = (p.h * tcs) / 2 + m;
+    const k = Math.min(ex / Math.max(1e-6, Math.abs(ca)), ey / Math.max(1e-6, Math.abs(sa))) * s.u;
+    const x = clamp(home.x + ca * k, t.x + L.slotW * s.i + R, t.x + L.slotW * (s.i + 1) - R);
+    const y = clamp(home.y + sa * k, t.y + R, t.y + t.h - R);
+    return { x, y, R };
+  }
+  // Dört köşeli parıltı: beyaz (aydınlık modda parçanın renginde) çekirdek, parçanın renginde hale; büyüyüp söner, hafifçe döner
+  function pariltiCiz(g, now) {
+    let k = 0;
+    for (const s of parilti) if (now < s.t0 + s.ms) parilti[k++] = s;
+    parilti.length = k;
+    if (!k) return;
+    g.save();
+    if (!LIGHT) g.globalCompositeOperation = 'lighter';
+    for (const s of parilti) {
+      const q = (now - s.t0) / s.ms;
+      if (q < 0 || tray[s.i] !== s.p) continue;   // parça alındıysa parıltısı da gider
+      const e = Math.sin(Math.PI * q), { x, y, R } = pariltiYeri(s), r = R * e, col = PALETTE[s.p.color];
+      if (r < 0.3) continue;
+      const hg = g.createRadialGradient(x, y, 0, x, y, r * 1.5);
+      hg.addColorStop(0, 'rgba(' + col.rgb + ',' + (0.55 * e).toFixed(3) + ')');
+      hg.addColorStop(1, 'rgba(' + col.rgb + ',0)');
+      g.fillStyle = hg;
+      g.beginPath(); g.arc(x, y, r * 1.5, 0, Math.PI * 2); g.fill();
+      g.globalAlpha = Math.min(1, e * 1.4);
+      g.fillStyle = LIGHT ? col.base : '#ffffff';
+      g.beginPath();
+      const a = s.don * q, w = r * 0.16;
+      for (let j = 0; j < 4; j++) {
+        const t = a + (j * Math.PI) / 2, cx = Math.cos(t), sy = Math.sin(t), nx = Math.cos(t + Math.PI / 4), ny = Math.sin(t + Math.PI / 4);
+        if (j === 0) g.moveTo(x + cx * r, y + sy * r);
+        g.quadraticCurveTo(x + nx * w, y + ny * w, x + Math.cos(t + Math.PI / 2) * r, y + Math.sin(t + Math.PI / 2) * r);
+      }
+      g.closePath();
+      g.fill();
+      g.globalAlpha = 1;
+    }
+    g.restore();
   }
 
   let recentFams = []; // son iki üçlüde çıkan şekil aileleri (çeşitlilik için)
   // Yeni üçlü: günlük bulmacada sabit diziden, meydan okumada arkadaşın oyunundaki sırayla (kayıt bitince tohumla üretilir),
   // diğerlerinde tahtaya göre; klasik oyunda gerekirse merhamet. Gelen her üçlü meydan okuma bağlantısı için kaydedilir.
-  function generateTray() {
+  function generateTray(gec) {
     let pieces = kip === 'gunluk' ? gunlukUclu() : kip === 'meydan' ? meydanUclu() : null;
     if (!pieces) {
       const colors = shuffle([0, 1, 2, 3, 4]);
@@ -4244,7 +4599,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     recentFams = recentFams.concat(pieces.map(p => famOf(p.shape))).slice(-6);
     ucluKaydet(pieces);
     for (const p of pieces) p.fits = fitsAnywhere(p);
-    startEnter(pieces);
+    startEnter(pieces, gec);
     return pieces;
   }
 
@@ -4265,13 +4620,16 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (kip === 'meydan' && meydan && !meydan.gecti && !duel && score > meydan.hedef) meydanGecti();
   }
 
-  function commitPlace(p, slot, r0, c0) {
-    Sound.place(p.cells.length); // ses en başta: hesaplar ve çizim hazırlığı sesi geciktirmesin
-    const now = performance.now();
+  // gec (ms): parça bırakınca gölge hücrelere bu sürede oturur (1.0.11: 60 ms). Oyun hemen işlenir (tahta, puan, patlama, yeni üçlü);
+  // ses, yerleşme parıltısı, patlama efektleri ve yeni üçlünün girişi parça oturunca başlar
+  function commitPlace(p, slot, r0, c0, gec) {
+    gec = gec > 0 ? gec : 0;
+    Sound.place(p.cells.length, gec / 1000); // ses en başta: hesaplar ve çizim hazırlığı sesi geciktirmesin (parça oturunca çalar)
+    const now = performance.now(), tg = now + gec;
     tray[slot] = null;
     const idx = p.cells.map(([r, c]) => (r0 + r) * N + c0 + c);
     if (ghosts.length) ghosts = ghosts.filter(g => idx.indexOf(g.r * N + g.c) < 0);
-    for (const i of idx) { board[i] = p.color; pops.push({ i, t0: now, s: 1, fl: 0 }); }
+    for (const i of idx) { board[i] = p.color; pops.push({ i, t0: tg, s: 1, fl: 0 }); }
     moves++;
     gorevOlay('parca', 1);
     if (oyunSure !== null) oyunSure += Math.min(60000, Math.max(0, now - sonHamleT));
@@ -4279,21 +4637,21 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     addScore(yerlesimPuani(p.cells.length)); // yerleştirilen her kare +5
     const ln = fullLines();
     if (ln.rows.length || ln.cols.length) {
-      doClear(ln.rows, ln.cols, p, r0, c0, now);
+      doClear(ln.rows, ln.cols, p, r0, c0, tg, gec);
     } else if (combo > 0) {
       // Kombo: üst üste belirli sayıda hamlede patlatma olmazsa kombo bozulur
       comboMoves--;
       if (comboMoves <= 0) { combo = 0; comboMoves = 0; }
     }
-    if (!tray[0] && !tray[1] && !tray[2]) tray = generateTray();
+    if (!tray[0] && !tray[1] && !tray[2]) tray = generateTray(gec);
     refreshFits();
     save();
     updateHud();
     updateHint();
     cellsDirty = true;
-    animate(220);
+    animate(220 + gec);
     // Her 10.000 puanda tema değişir: patlatma animasyonu eski renklerle bitsin, sonra geçilsin
-    if (themeFor(score) !== themeIdx) queueTheme(ln.rows.length || ln.cols.length ? 520 : 80);
+    if (themeFor(score) !== themeIdx) queueTheme((ln.rows.length || ln.cols.length ? 520 : 80) + gec);
     if (kip === 'gunluk' && gunlukHedefKontrol()) return; // günlük bulmaca çözüldü
     if (!tray.some(t => t && t.fits)) oyunTikandi(); // elde işe yarar joker varsa oyun hemen bitmez
     else skorCanli();
@@ -4349,7 +4707,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
   }
 
-  function doClear(rows, cols, p, r0, c0, now) {
+  function doClear(rows, cols, p, r0, c0, now, gec) {
+    gec = gec > 0 ? gec : 0;
     const set = new Set();
     for (const r of rows) for (let c = 0; c < N; c++) set.add(r * N + c);
     for (const c of cols) for (let r = 0; r < N; r++) set.add(r * N + c);
@@ -4365,8 +4724,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     gorevOlay('kombo', combo);
     let perfect = true; // patlamadan sonra tahta tamamen boş mu?
     for (let i = 0; i < N * N; i++) if (board[i] >= 0 && !set.has(i)) { perfect = false; break; }
-    Sound.clear(lines, combo); // ses önce, efekt hazırlığı sonra (komboya göre tırmanan nota, çok çizgide akor)
-    if (perfect) Sound.allClear(0.09); // tam temizlik: patlamanın hemen ardından zafer arpeji
+    Sound.clear(lines, combo, gec / 1000); // ses önce, efekt hazırlığı sonra (komboya göre tırmanan nota, çok çizgide akor)
+    if (perfect) Sound.allClear(0.09 + gec / 1000); // tam temizlik: patlamanın hemen ardından zafer arpeji
     const big = perfect || lines >= 3;
     const bonus = perfect ? perfectBonus() : 0;
     if (perfect) temizlik++;
@@ -4399,17 +4758,20 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const items = perfect ? [] : [[pickPraise(lines, combo), 'praise']];
     if (combo >= 2) items.push([yaz('komboX', fmt(combo)), 'combo']);
     items.push(['+' + fmt(pts - bonus), 'pts']);
-    if (perfect) tamTemizlik(bonus);
-    const gap = cs * 0.9, y0 = fy - ((items.length - 1) * gap) / 2;
-    items.forEach((it, k) => spawnFloat(it[0], fx, y0 + k * gap, it[1], k * 60));
-
-    shake(perfect ? 12 : Math.min(9, 1.5 + lines * 1.8));
-    // Büyük patlatmada (3+ çizgi ya da tüm tahta) ekran parlar
-    if (big && !REDUCED && typeof flashEl.animate === 'function') {
-      try { flashEl.animate([{ opacity: 0 }, { opacity: perfect ? 1 : 0.7, offset: 0.15 }, { opacity: 0 }], { duration: perfect ? 750 : 520, easing: 'ease-out' }); } catch (e) { /* desteklenmiyor */ }
-    }
-    if (combo >= 2) bump(hudCombo, 1.3);
-    buzz(lines > 1 ? [18, 40, 22] : 16);
+    const gap = cs * 0.9, y0 = fy - ((items.length - 1) * gap) / 2, kombo = combo;
+    // Yazılar, sarsıntı, parlama ve titreşim parça yerine oturunca (bırakınca gec ms'lik oturma)
+    const sunum = () => {
+      if (perfect) tamTemizlik(bonus);
+      items.forEach((it, k) => spawnFloat(it[0], fx, y0 + k * gap, it[1], k * 60));
+      shake(perfect ? 12 : Math.min(9, 1.5 + lines * 1.8));
+      // Büyük patlatmada (3+ çizgi ya da tüm tahta) ekran parlar
+      if (big && !REDUCED && typeof flashEl.animate === 'function') {
+        try { flashEl.animate([{ opacity: 0 }, { opacity: perfect ? 1 : 0.7, offset: 0.15 }, { opacity: 0 }], { duration: perfect ? 750 : 520, easing: 'ease-out' }); } catch (e) { /* desteklenmiyor */ }
+      }
+      if (kombo >= 2) bump(hudCombo, 1.3);
+      buzz(lines > 1 ? [18, 40, 22] : 16);
+    };
+    if (gec > 0) setTimeout(sunum, gec); else sunum();
     announce((perfect ? yaz('tamTemizlikDuyuru', fmt(bonus)) + ' ' : '') + yaz('patlamaDuyuru', lines, fmt(pts), combo, fmt(score)));
   }
 
@@ -4982,6 +5344,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   let toastT = 0;
   function toast(msg, ms) {
+    if (window.HBIntro && HBIntro.acik()) { HBIntro.sonra(() => toast(msg, ms)); return; }   // açılış bitince
     toastEl.textContent = msg;
     toastEl.classList.add('on');
     clearTimeout(toastT);
@@ -5571,8 +5934,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       try { SES[ad](this.ac, this.yol.sfx, this.ac.currentTime + 0.004 + (gecikme || 0), a, b); } catch (e) { /* ses çalınamadı */ }
     },
     pick(k) { this.cal('pick', k); },
-    place(kare) { this.cal('place', kare); },
-    clear(cizgi, kombo) { this.cal('clear', cizgi, kombo); },
+    place(kare, gecikme) { this.cal('place', kare, undefined, gecikme); },
+    clear(cizgi, kombo, gecikme) { this.cal('clear', cizgi, kombo, gecikme); },
     allClear(gecikme) { this.cal('allClear', undefined, undefined, gecikme); },
     joker() { this.cal('joker'); },
     gameOver() { this.cal('gameOver'); },
@@ -5606,21 +5969,26 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   // Yerleşmiş bloklar katmanı: yalnızca tahta değiştiğinde yeniden çizilir
   function renderCells() {
+    CIZIM.hucre++;
     const { bx, by, cs } = L;
     cctx.clearRect(REG.x, REG.y, REG.w, REG.h);
     const gr = gameState === 'play' ? -1 : greyRows;
+    const gizle = inisGizli(); // yerine oturmakta olan parçanın hücreleri: parça oturunca çizilir
     for (let r = 0; r < N; r++) {
       for (let c = 0; c < N; c++) {
         const v = board[r * N + c];
-        if (v < 0) continue;
+        if (v < 0 || (gizle && gizle.has(r * N + c))) continue;
         drawCell(cctx, r < gr ? greySprite : sprites[v], bx + c * cs, by + r * cs, cs, 1, 1);
       }
     }
   }
 
   // Önizleme katmanı: parçanın oturacağı yer ve patlayacak çizgiler; yalnızca hedef kare değişince çizilir.
-  // Patlama olacaksa katman CSS ile hafifçe nabız gibi atar.
+  // Patlama olacaksa katman CSS ile hafifçe nabız gibi atar. Satır/sütun tamamlama görünümü 1.0.10'daki gibi: çizgiler parçanın
+  // rengine bürünür, gölge %80. Tamamlanmayacaksa gölge parçanın kendi renginde %35 opak.
+  const GOLGE_A = 0.35;
   function renderPreview() {
+    CIZIM.onizleme++;
     hctx.clearRect(REG.x, REG.y, REG.w, REG.h);
     const pv = drag && drag.preview;
     const willClear = !!(pv && pv.rows.length + pv.cols.length);
@@ -5645,7 +6013,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       for (const i of marked) drawCell(hctx, whiteSprite, bx + (i % N) * cs, by + ((i / N) | 0) * cs, cs, 0.2 * ISIK.flas, 1);
       hctx.globalCompositeOperation = 'source-over';
     }
-    const a = willClear ? 0.8 : 0.4;
+    const a = willClear ? 0.8 : GOLGE_A;
     for (const [r, c] of p.cells) drawCell(hctx, spr, bx + (c0 + c) * cs, by + (r0 + r) * cs, cs, a, 1);
   }
 
@@ -5658,9 +6026,16 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
 
   function positionDrag(now) {
-    if (drag.type !== 'mouse' && now - drag.t0 < LIFT_MS + 40) updateDrag(); // yükselirken hedef kare de güncellensin
-    const v = dragVisual(drag, now), h = dragSize / 2, s = v.cs / L.cs;
-    dragEl.style.transform = 'translate(' + (v.x - h).toFixed(2) + 'px,' + (v.y - h).toFixed(2) + 'px) scale(' + s.toFixed(3) + ')';
+    const d = drag;
+    if (d.type !== 'mouse' && now - d.t0 < KALKIS_MS + 40) updateDrag(); // yükselirken hedef kare de güncellensin
+    const v = dragVisual(d, now), h = dragSize / 2, s0 = v.cs / L.cs, s = Math.abs(s0 - 1) < 1e-4 ? 1 : s0;
+    // Parça doğrudan parmağın son gerçek konumuna kilitli: tahmin, yumuşatma (lerp) ya da gecikme yok. Kalkış bitince
+    // parmakla arasındaki uzaklık sabittir. Cihaz pikseline hizalı: hareket ederken kenarları bulanıklaşmaz
+    const k = L.dpr, x = Math.round((v.x - h) * k) / k, y = Math.round((v.y - h) * k) / k;
+    if (x === d.sx && y === d.sy && s === d.ss) return;   // yer ve boy aynıysa stil yazılmaz
+    d.sx = x; d.sy = y; d.ss = s;
+    // Yalnızca GPU katmanının yeri değişir (translate3d): sayfa yeniden düzenlenmez, hiçbir şey yeniden boyanmaz
+    dragEl.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)' + (s === 1 ? '' : ' scale(' + s.toFixed(3) + ')');
   }
 
   function hideDragEl() {
@@ -5681,7 +6056,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const { bx, by, cs } = L;
     for (const p of pops) {
       const v = board[p.i];
-      if (v < 0) continue;
+      if (v < 0 || now < p.t0) { p.fl = 0; continue; } // parça yerine oturunca başlar
       const q = clamp((now - p.t0) / POP_MS, 0, 1);
       p.s = 1 + 0.16 * (1 - easeOutCubic(q));
       p.fl = (1 - q) * 0.5 * ISIK.flas;
@@ -5689,7 +6064,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
     ctx.globalCompositeOperation = 'lighter';
     for (const p of pops) {
-      if (board[p.i] < 0 || p.fl <= 0.01) continue;
+      if (board[p.i] < 0 || now < p.t0 || p.fl <= 0.01) continue;
       drawCell(ctx, whiteSprite, bx + (p.i % N) * cs, by + ((p.i / N) | 0) * cs, cs, p.fl, p.s);
     }
     ctx.globalCompositeOperation = 'source-over';
@@ -5702,8 +6077,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     for (const g of ghosts) if ((now - g.t0) / g.dur < 1) ghosts[k++] = g;
     ghosts.length = k;
     if (!k) return;
-    const { bx, by, cs } = L;
+    const { bx, by, cs } = L, gizle = inisGizli();
     for (const g of ghosts) {
+      if (gizle && gizle.has(g.r * N + g.c)) continue; // yerine oturmakta olan parçanın hücresi
       const p = (now - g.t0) / g.dur;
       const x = bx + g.c * cs, y = by + g.r * cs;
       if (p < 0) { g.s = 1; g.a = 1; g.fl = 0.18; }
@@ -5716,6 +6092,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
     ctx.globalCompositeOperation = 'lighter';
     for (const g of ghosts) {
+      if (gizle && gizle.has(g.r * N + g.c)) continue;
       const a = Math.min(1, g.fl * g.a) * ISIK.flas;
       if (a > 0.01) drawCell(ctx, whiteSprite, bx + g.c * cs, by + g.r * cs, cs, a, g.s);
     }
@@ -5815,13 +6192,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   // Raftaki parçanın görünümü: giriş animasyonu ya da (fareyle) üzerine gelince hafif büyüme
   function trayVisual(p, i, now) {
     const home = trayHome(i), tcs = trayCs(p);
-    if (p.enter) { // yeni parça girişi
+    if (p.enter) { // yeni parça girişi: 0,2 → 1,08 → 1 (cubic-bezier(0.34, 1.56, 0.64, 1)); ilk 44 ms'de belirir
       const en = p.enter, q = clamp((now - en.t0) / en.dur, 0, 1);
       if (q >= 1) p.enter = null;
-      else {
-        const e = easeOutBack(q);
-        return { x: home.x, y: home.y + (1 - e) * L.tray.h * 0.45, cs: tcs * lerp(0.35, 1, e), a: clamp(q * 3, 0, 1) };
-      }
+      else if (REDUCED) return { x: home.x, y: home.y, cs: tcs, a: q };
+      else return { x: home.x, y: home.y, cs: tcs * girisOlcek(q), a: clamp(q * 5, 0, 1) };
     }
     if (p.don) { // DÖNDÜR jokeri: yeni şekil -90°'den 0°'a döner (parça saat yönünde çevrilmiş görünür)
       const q = clamp((now - p.don.t0) / p.don.dur, 0, 1);
@@ -5840,6 +6215,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   // Raf katmanı: yalnızca raf değişince ya da giriş/üzerine gelme animasyonu sürerken çizilir
   function renderTray(now) {
+    CIZIM.raf++;
     tctx.clearRect(TRG.x, TRG.y, TRG.w, TRG.h);
     for (let i = 0; i < 3; i++) {
       const p = tray[i];
@@ -5852,6 +6228,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (v.rot) { tctx.save(); tctx.translate(v.x, v.y); tctx.rotate(v.rot); drawPiece(tctx, p, 0, 0, v.cs, v.a, spr); tctx.restore(); }
       else drawPiece(tctx, p, v.x, v.y, v.cs, v.a, spr);
     }
+    if (parilti.length) pariltiCiz(tctx, now);
   }
 
   function anyRet() { return !!((tray[0] && tray[0].ret) || (tray[1] && tray[1].ret) || (tray[2] && tray[2].ret)); }
@@ -5866,26 +6243,63 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
   }
 
-  // Dokunmatikte sürüklenen parça parmağın üstüne çıkar ki parmak kapatmasın: alt kenarı parmağın LIFT_GAP
-  // kare üstünde durur. Dokununca hemen ama fırlamadan, LIFT_MS içinde yumuşakça (yavaş başlayıp yavaş biterek)
-  // yükselir; parmak hızlı kaydırılırsa ilk LIFT_RAMP karede daha da erken yükselir.
-  // Farede kaldırma yok: tutulan nokta imlecin altında kalır.
-  const LIFT_GAP = 1.3, LIFT_RAMP = 1.6, LIFT_MS = 140;
+  // Dokunma anı (touch lift): raftaki parçaya dokununca parça KALKIS_MS (80 ms) içinde tahta boyuna (1,0) büyür ve parmağın
+  // üstüne çıkar ki parmak kapatmasın: merkezi parmağın KALKIS_UST (1,9) kare yukarısında. Uzun parçalarda (4-5 kare boy) alt
+  // kenar parmağın en az KALKIS_PAY (0,5) kare üstünde kalsın diye merkez biraz daha yukarıda. Yatayda raftaki parçanın neresine
+  // dokunulduysa tahta boyunda da orantılı olarak orası parmağın hizasında. Farede kaldırma yok: tutulan nokta imlecin altında.
+  const KALKIS_MS = 80, KALKIS_UST = 1.9, KALKIS_PAY = 0.5;
+  function kalkisUst(p) { return Math.max(KALKIS_UST, p.h / 2 + KALKIS_PAY); }
   function liftCells(d, now) { // parça merkezinin parmağın ne kadar üstünde olduğu (kare biriminde)
     if (d.type === 'mouse') return d.gv;
-    const t = Math.max(clamp((now - d.t0) / LIFT_MS, 0, 1), clamp(d.far / (LIFT_RAMP * L.cs), 0, 1));
-    return lerp(d.gv, d.piece.h / 2 + LIFT_GAP, t * t * (3 - 2 * t));
+    return lerp(d.gv, kalkisUst(d.piece), easeOutCubic(clamp((now - d.t0) / KALKIS_MS, 0, 1)));
   }
 
-  // Sürüklenen parça raftaki boyundan tahta boyuna tutulan nokta çevresinde büyür
+  // Sürüklenen parça raftaki boyundan tahta boyuna tutulan nokta çevresinde büyür (KALKIS_MS)
   function dragVisual(d, now) {
-    const q = clamp((now - d.t0) / 150, 0, 1), cs = lerp(d.scs, L.cs, easeOutCubic(q));
+    const q = clamp((now - d.t0) / KALKIS_MS, 0, 1), cs = lerp(d.scs, L.cs, easeOutCubic(q));
     return { x: d.px - d.gu * cs, y: d.py - liftCells(d, now) * cs, cs };
   }
 
+  // Bırakınca oturma (INIS_MS, 60 ms): oyun hemen işlenir (tahta, puan, patlama, yeni üçlü); parça bıraktığı yerden gölge
+  // hücrelere yumuşak ve hızlı kayar (yavaşlayarak). Bu sürede o hücreler tahtada çizilmez; yerleşme parıltısı, sesler, patlama ve
+  // yeni üçlünün girişi parça oturunca başlar. Bir şey araya girerse (yeni dokunuş, pencere, menü) oturma hemen biter.
+  const INIS_MS = 60;
+  function inisGizli() { return drag && drag.inis ? drag.inis.idx : null; }
+  function inisBasla(d, now) {
+    const { r, c } = d.preview, p = d.piece, { bx, by, cs } = L, h = dragSize / 2, k = L.dpr;
+    const gec = REDUCED ? 0 : INIS_MS;
+    d.inis = { t0: now, ms: gec, r, c, x0: isNaN(d.sx) ? 0 : d.sx, y0: isNaN(d.sy) ? 0 : d.sy, s0: isNaN(d.ss) ? 1 : d.ss,
+      x1: Math.round((bx + (c + p.w / 2) * cs - h) * k) / k, y1: Math.round((by + (r + p.h / 2) * cs - h) * k) / k,
+      idx: new Set(p.cells.map(([rr, cc]) => (r + rr) * N + c + cc)) };
+    commitPlace(p, d.slot, r, c, gec);
+    if (!gec) inisBitir();
+  }
+  function inisAdim(now) {
+    const n = drag.inis, q = n.ms > 0 ? clamp((now - n.t0) / n.ms, 0, 1) : 1;
+    if (q >= 1) { inisBitir(); return; }
+    const e = easeOutCubic(q), k = L.dpr, s0 = lerp(n.s0, 1, e), s = Math.abs(s0 - 1) < 1e-4 ? 1 : s0;
+    const x = Math.round(lerp(n.x0, n.x1, e) * k) / k, y = Math.round(lerp(n.y0, n.y1, e) * k) / k;
+    dragEl.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)' + (s === 1 ? '' : ' scale(' + s.toFixed(3) + ')');
+  }
+  function inisBitir() {
+    if (!drag || !drag.inis) return;
+    drag = null;
+    hideDragEl();
+    cellsDirty = true;
+    fxDirty = true;
+    trayDirty = true;
+    updateHint();
+    wake();
+  }
+
   // Efekt katmanı: yalnızca efekt sürerken çizilir
+  let fxBos = false;
   function renderFx(now) {
+    CIZIM.efekt++;
     ctx.clearRect(0, 0, L.W, L.H);
+    const bos = !pops.length && !ghosts.length && !beams.length && !particles.length && !konfeti.length && !anyRet();
+    if (bos !== fxBos) { fxBos = bos; canvas.classList.toggle('bos', bos); }
+    if (bos) return;
     drawPops(now);
     drawGhosts(now);
     drawBeams(now);
@@ -5907,19 +6321,31 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       const g = clamp(Math.floor((now - overT0) / 75), -1, N);
       if (g !== greyRows) { greyRows = g; cellsDirty = true; }
     }
-    if (drag) positionDrag(now);
+    // Sürükleme: bu karede gelen en son parmak konumu bir kez işlenir (hedef kare, önizleme), sonra parçanın katmanı yer
+    // değiştirir. Tahta değiştiyse (kare yeniden çizilecekse) hedef karenin sığma bilgisi yeniden denetlenir.
+    if (drag) {
+      if (drag.inis) inisAdim(now);
+      else {
+        if (cellsDirty) { drag.sOk = null; drag.sH = null; if (!drag.bekleyen) updateDrag(); }
+        if (drag.bekleyen) suruklemeIsle();
+        positionDrag(now);
+      }
+    }
     if (previewDirty) { previewDirty = false; renderPreview(); }
     if (particles.length) updateParticles(dt);
     if (konfeti.length) konfetiGuncelle(dt);
     if (cellsDirty) { cellsDirty = false; renderCells(); }
-    const busy = (drag !== null && now - drag.t0 < 170) || now < animUntil || ghosts.length > 0 || beams.length > 0 || particles.length > 0 || konfeti.length > 0 || pops.length > 0 || anyRet();
+    // Efekt katmanı yalnızca efekt sürerken çizilir. Parçanın kalkıp büyümesi (ilk 80 ms) ve bırakınca oturması (60 ms) efekt
+    // değil: yalnızca parçanın yeri değişir, tam ekran efekt katmanı onlar için yeniden çizilmez
+    const busy = now < animUntil || ghosts.length > 0 || beams.length > 0 || particles.length > 0 || konfeti.length > 0 || pops.length > 0 || anyRet();
+    const dragBusy = drag !== null && (!!drag.inis || now - drag.t0 < KALKIS_MS + 30);
     if (fxDirty || busy || wasBusy) { fxDirty = false; renderFx(now); }
     wasBusy = busy;
     // raf katmanı efektlerden sonra: geri uçuşu biten parça aynı karede rafa çizilir
     const trayBusy = now < trayAnimUntil;
     if (trayDirty || trayBusy || trayWasBusy) { trayDirty = false; renderTray(now); }
     trayWasBusy = trayBusy;
-    if (busy || trayBusy || trayDirty || displayScore !== score || gameState === 'ending') wake();
+    if (busy || dragBusy || trayBusy || trayDirty || displayScore !== score || gameState === 'ending') wake();
     else last = 0;
   }
 
@@ -5933,20 +6359,39 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     return clamp(Math.floor((x - t.x) / L.slotW), 0, 2);
   }
 
-  function findSnap(p, cx, cy) {
+  // Hedef kare: parçanın sol üst köşesinin çevresindeki dört kareden parçanın sığdığı, en yakın ve SNAP_GIR (0,8) kareden
+  // yakın olanı. Histerezis: gösterilen hedef kare, parça ondan SNAP_CIK (0,9) kareden fazla uzaklaşmadıkça ya da sığan başka bir
+  // kare ondan SNAP_HIST (0,2) kare daha yakın olmadıkça değişmez. İki karenin tam ortasında parmak titrese de önizleme iki kare
+  // arasında gidip gelmez; değişmesi için parmağın ortayı ~0,1 kare geçmesi gerekir.
+  // Parça yeni bir karenin bölgesine geçince (taban kare değişince) dört karede sığma denetlenir; patlayacak çizgiler yalnızca
+  // hedef kare değişince hesaplanır. Aradaki her piksel harekette yalnızca dört uzaklık karşılaştırılır.
+  const SNAP_GIR = 0.8, SNAP_CIK = 0.9, SNAP_HIST = 0.2;
+  function findSnap(p, cx, cy, d) {
     const { bx, by, cs } = L;
     const fc = (cx - (p.w * cs) / 2 - bx) / cs, fr = (cy - (p.h * cs) / 2 - by) / cs;
-    let pos = null, bestD = 0.8;
-    const rs = [Math.floor(fr), Math.ceil(fr)], cl = [Math.floor(fc), Math.ceil(fc)];
-    for (const r of rs) {
-      for (const c of cl) {
-        const dd = Math.hypot(fr - r, fc - c);
-        if (dd < bestD && canPlace(p, r, c)) { bestD = dd; pos = { r, c }; }
-      }
+    const r0 = Math.floor(fr), c0 = Math.floor(fc);
+    if (!d.sOk || d.sr !== r0 || d.sc !== c0) {
+      CIZIM.sigma++;
+      d.sr = r0; d.sc = c0;
+      d.sOk = [canPlace(p, r0, c0), canPlace(p, r0, c0 + 1), canPlace(p, r0 + 1, c0), canPlace(p, r0 + 1, c0 + 1)];
     }
-    if (!pos) return null;
-    const ln = linesIfPlaced(p, pos.r, pos.c);
-    return { r: pos.r, c: pos.c, rows: ln.rows, cols: ln.cols };
+    let pos = -1, bestD = SNAP_GIR, cur = -1, curD = Infinity;
+    const hh = d.hh;
+    for (let i = 0; i < 4; i++) {
+      if (!d.sOk[i]) continue;
+      const rr = r0 + (i >> 1), cc = c0 + (i & 1), dd = Math.hypot(fr - rr, fc - cc);
+      if (hh && hh.r === rr && hh.c === cc) { cur = i; curD = dd; }   // şu an gösterilen hedef (hâlâ sığıyor)
+      if (dd < bestD) { bestD = dd; pos = i; }
+    }
+    // Histerezis: gösterilen hedef SNAP_CIK içindeyse ve başka bir kare ondan SNAP_HIST daha yakın değilse yerinde kalır
+    if (cur >= 0 && curD < SNAP_CIK && (pos < 0 || bestD > curD - SNAP_HIST)) pos = cur;
+    if (pos < 0) { d.hh = null; return null; }
+    const r = r0 + (pos >> 1), c = c0 + (pos & 1);
+    d.hh = { r, c };
+    if (d.sH && d.sH.r === r && d.sH.c === c) return d.sH;
+    CIZIM.cizgi++;
+    const ln = linesIfPlaced(p, r, c);
+    return (d.sH = { r, c, rows: ln.rows, cols: ln.cols });
   }
 
   function updateDrag() {
@@ -5954,21 +6399,26 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     // Parçanın tahta boyundaki merkezi: yatayda tutulan nokta parmağın hizasında, dikeyde parmağın üstünde
     d.tx = d.px - d.gu * cs;
     d.ty = d.py - liftCells(d, performance.now()) * cs;
-    d.preview = findSnap(p, d.tx, d.ty);
+    d.preview = findSnap(p, d.tx, d.ty, d);
     const key = d.preview ? p.uid + ':' + d.preview.r + ':' + d.preview.c : '';
     if (key !== previewKey) {
       previewKey = key;
       previewDirty = true;
-      dragEl.style.opacity = d.preview ? '0.92' : '1';
     }
   }
 
-  // Parmak/imleç yeni konumda; kaldırma, başlangıçtan en çok ne kadar uzaklaşıldığına bağlı (geri gelince inmez)
+  // Parmak/imleç yeni konumda
   function moveDrag(x, y) {
     const d = drag;
     d.px = x; d.py = y;
-    d.far = Math.max(d.far, Math.hypot(x - d.x0, y - d.y0));
     updateDrag();
+  }
+  // Karede bir kez: o ana kadar gelen en son parmak konumu
+  function suruklemeIsle() {
+    const d = drag;
+    d.bekleyen = false;
+    CIZIM.konum++;
+    moveDrag(d.yx, d.yy);
   }
 
   function overBoard(x, y) {
@@ -5976,16 +6426,22 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
 
   function endDrag(e, cancelled) {
-    if (!drag || (e && e.pointerId !== drag.pid)) return;
-    if (e && !cancelled) { const pos = pointerPos(e); moveDrag(pos.x, pos.y); }
+    if (!drag) return;
+    if (drag.inis) { if (!e) inisBitir(); return; }
+    if (e && e.pointerId !== drag.pid) return;
+    if (!cancelled && (e || drag.bekleyen)) {
+      const pos = e ? pointerPos(e) : { x: drag.yx, y: drag.yy };
+      drag.sOk = null; drag.sH = null; drag.bekleyen = false;
+      moveDrag(pos.x, pos.y);
+    }
     const d = drag;
-    drag = null;
     canvas.classList.remove('grabbing');
-    hideDragEl();
     const now = performance.now();
     if (!cancelled && d.preview && gameState === 'play' && tray[d.slot] === d.piece) {
-      commitPlace(d.piece, d.slot, d.preview.r, d.preview.c);
+      inisBasla(d, now); // parça gölge hücrelere oturur (drag oturma bitince boşalır)
     } else {
+      drag = null;
+      hideDragEl();
       const v = dragVisual(d, now);
       d.piece.ret = { x: v.x, y: v.y, cs: v.cs, t0: now, dur: 200 };
       if (!cancelled && overBoard(v.x, v.y)) Sound.bad();
@@ -5996,8 +6452,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     wake();
   }
 
+  // Herhangi bir dokunuş ya da tuş, bir önceki parçanın oturmasını hemen bitirir (joker, menü, yeni parça)
+  document.addEventListener('pointerdown', () => { if (drag && drag.inis) inisBitir(); }, true);
+  document.addEventListener('keydown', () => { if (drag && drag.inis) inisBitir(); }, true);
   canvas.addEventListener('pointerdown', e => {
     Sound.unlock(false);
+    if (drag && drag.inis) inisBitir();
     if (gameState !== 'play' || drag) return;
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     const { x, y } = pointerPos(e);
@@ -6012,7 +6472,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     p.ret = null; p.enter = null; p.hv = 0; p.don = null;
     // Parçanın neresinden tutulduğu (kare biriminde, merkeze göre; parçanın dışına taşmaz)
     const gu = clamp((x - v.x) / v.cs, -p.w / 2, p.w / 2), gv = clamp((y - v.y) / v.cs, -p.h / 2, p.h / 2);
-    drag = { piece: p, slot: i, pid: e.pointerId, type: e.pointerType || 'mouse', px: x, py: y, x0: x, y0: y, far: 0, gu, gv, scs: v.cs, t0: now, tx: v.x, ty: v.y, preview: null };
+    drag = { piece: p, slot: i, pid: e.pointerId, type: e.pointerType || 'mouse', px: x, py: y, x0: x, y0: y, gu, gv, scs: v.cs, t0: now, tx: v.x, ty: v.y, preview: null,
+      yx: x, yy: y, bekleyen: false, sx: NaN, sy: NaN, ss: NaN, sOk: null, sr: 0, sc: 0, sH: null, hh: null, inis: null };
     previewKey = '';
     updateDrag();
     prepareDragEl(p);
@@ -6027,13 +6488,17 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   });
 
   canvas.addEventListener('pointermove', e => {
-    const { x, y } = pointerPos(e);
     if (drag) {
       if (e.pointerId !== drag.pid) return;
-      moveDrag(x, y);
+      // Konum yalnızca kaydedilir: hedef kare, önizleme ve parçanın yeri bir sonraki karede (requestAnimationFrame) bir kez
+      // hesaplanır. Dokunmatik ekran saniyede 120-240 konum bildirir; ekran 60-120 kez yenilenir.
+      const d = drag;
+      if (d.inis) return; // bırakıldı, yerine oturuyor
+      d.yx = e.clientX; d.yy = e.clientY; d.bekleyen = true;
       wake();
       return;
     }
+    const { x, y } = pointerPos(e);
     if (e.pointerType === 'mouse') {
       const i = slotAt(x, y);
       const h = gameState === 'play' && i >= 0 && tray[i] ? i : -1;
@@ -6048,7 +6513,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   canvas.addEventListener('pointercancel', e => endDrag(e, true));
   canvas.addEventListener('lostpointercapture', e => { if (drag && e.pointerId === drag.pid) endDrag(e, true); });
   canvas.addEventListener('contextmenu', e => e.preventDefault());
-  document.addEventListener('touchmove', e => { if (e.target === canvas || drag) e.preventDefault(); }, { passive: false });
+  // iPhone ve iPad (Safari, WKWebView): sürüklerken sayfa kaymasın, büyüteç çıkmasın diye dokunuş kaydırması engellenir.
+  // Android'de ve diğerlerinde touch-action: none bunu zaten sağlar: orada engelleyen (pasif olmayan) dokunuş dinleyicisi
+  // yok, tarayıcı dokunuşları oyunun işlemesini beklemeden iletir.
+  const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (IOS) document.addEventListener('touchmove', e => { if (e.target === canvas || drag) e.preventDefault(); }, { passive: false });
   document.addEventListener('gesturestart', e => e.preventDefault());
   window.addEventListener('blur', () => { if (drag) endDrag(null, true); });
   document.addEventListener('visibilitychange', () => {
@@ -8437,84 +8906,148 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (blokTemaSec(acik[j])) document.querySelector('.bt[data-bt="' + acik[j] + '"]').focus();
   });
 
-  /* ================= Ana menü müziği =================
-     Menü parçası (126 BPM, 16 ölçü) ana menüde kesintisiz döner, oyuna geçince yavaşça susar. Tarayıcılar sesi ilk
-     dokunuştan önce açmaz: menüde OYNA dışında bir yere (ya da müzik düğmesine) dokununca başlar. Müziğin aç/kapası ve SES
-     kaydırıcısı (oyunun genel ses düzeyi: efektler ve müzik birlikte, ses motorunun ana kazancı) cihazda saklanır; oyunun
-     genel sesi kapalıysa müzik de çalmaz. Parça açılışta bir kez çözülüp bellekte tutulur. */
-  const MUZIK_URL = 'muzik/ana-menu.mp3';
-  const MUZIK_B64 = '';                  // Claude kopyasında parça buraya gömülür (orada dışarıdan dosya alınamaz)
-  const MUZIK_DONGU = 1344000 / 44100;   // 64 vuruş @126 BPM = 30,476 sn
-  const MUZIK_ILK = 0.006;               // parçanın kendi içindeki ilk sesin zamanı
+  /* ================= Ana menü müziği (sıcak, sakin ambiyans) =================
+     Ses dosyası yok: menü müziği de Web Audio ile çalınırken üretilir (efektler gibi). 75 BPM, 4/4 (ölçü 3,2 sn), 4 ölçülük
+     akor döngüsü:
+       bas pedi  (sine)      C3 → A2 → F2 → G2, her ölçüde bir nota (telefon hoparlöründe de duyulsun diye bir oktav üstü kısık)
+       arpej     (triangle)  Cmaj7 ve Am9 notaları, 130-523 Hz arası sıcak alt-orta bölgede, dörtlükler. F ve G ölçülerinde
+                             aynı notalar Fmaj7 ve G6 olarak tınlar
+       melodi    (triangle)  E4 G4 B4 D5 C5 arasında seyrek, nefes alan cümleler; her ölçünün son notası ölçü bitmeden söner
+                             (ölçüler arasında kısa bir boşluk)
+     Her nota 0,2 sn'de yumuşakça girer, 0,9 sn'de söner. Bütün müzik kanalı 700 Hz alçak geçiren süzgeçten (lowpass) geçer:
+     uzun süre çalsa da kulağı yoran tiz ya da keskin ses yok. Müziğin düzeyi oyun içi efektlerin ~%28'i (arka plan
+     ambiyansı); ikisini birlikte ana kazanç (SES kaydırıcısı) kısar.
+     Ses ağı: notalar → müzik kanalı (giriş/çıkışta yavaşça açılıp kısılan kazanç) → 700 Hz alçak geçiren süzgeç → ANA KAZANÇ.
+     Notalar ~1,6 sn önceden, ölçü ölçü planlanır. Tarayıcılar sesi ilk dokunuştan önce açmaz: menüde OYNA dışında bir yere (ya
+     da müzik düğmesine) dokununca başlar; oyuna geçince, uygulama arka plana geçince ya da müzik kapatılınca yavaşça susar.
+     Müziğin aç/kapası ve SES kaydırıcısı cihazda saklanır; oyunun genel sesi kapalıysa müzik de çalmaz. */
+  const MZ_BPM = 75, MZ_VURUS = 60 / MZ_BPM, MZ_OLCU = 4 * MZ_VURUS;   // vuruş 0,8 sn, ölçü 3,2 sn
+  const MZ_GIRIS = 0.2, MZ_SONUS = 0.9;   // her notanın yumuşak girişi (attack) ve uzun sönüşü (release), sn
+  const MZ_SUZGEC = 700;                  // bütün müzik kanalının alçak geçiren süzgeci (Hz)
+  const MZ_ORAN = 0.28;                   // müziğin tepe düzeyi / oyun içi efektlerin tepe düzeyi (test_muzik ölçer)
+  const MZ_DUZEY = 0.135;                 // müzik kanalının kazancı: müziğin tepesi efektlerinkinin (seç, yerleştir, patlat) %28'i
+  const MZ_ONCE = 1.6;                    // notalar kaç saniye önceden planlanır
+  const MZ_NOTA = { F2: 87.31, G2: 98.0, A2: 110.0, C3: 130.81, E3: 164.81, G3: 196.0, A3: 220.0, B3: 246.94, C4: 261.63,
+    E4: 329.63, G4: 392.0, B4: 493.88, C5: 523.25, D5: 587.33 };
+  // Akor döngüsü: ölçünün bas notası ve dört dörtlükle arpej (Cmaj7: C E G B, Am9: A C E G B)
+  const MZ_AKOR = [
+    { bas: 'C3', arp: ['E3', 'G3', 'B3', 'C4'] },   // Cmaj7
+    { bas: 'A2', arp: ['E4', 'C4', 'B3', 'A3'] },   // Am9 (B: dokuzlu)
+    { bas: 'F2', arp: ['A3', 'C4', 'E4', 'C4'] },   // Am9'un A C E'si: F üstünde Fmaj7
+    { bas: 'G2', arp: ['G3', 'B3', 'E4', 'B3'] }    // Cmaj7'nin E G B'si: G üstünde G6
+  ];
+  // Melodi cümleleri (4 ölçü): [ölçü içinde vuruş, süre (vuruş), nota]. Ölçünün son notası en geç 2,5. vuruşta bırakılır:
+  // sönüşü (0,9 sn) ölçü bitmeden biter, ölçüler arasında kısa bir nefes kalır
+  const MZ_CUMLE = [
+    [[[0, 1, 'E4'], [1.25, 1.25, 'G4']], [[0.5, 2, 'C5']], [[0, 1, 'G4'], [1.25, 1.25, 'E4']], [[0, 2, 'D5']]],
+    [[[0.5, 2, 'G4']], [[0, 1.25, 'C5'], [1.5, 1, 'B4']], [[0.5, 2, 'E4']], [[0, 1, 'B4'], [1.25, 1.25, 'D5']]],
+    [[[1, 1.5, 'E4']], [[0, 1, 'G4'], [1.25, 1.25, 'E4']], [[0.5, 2, 'C5']], [[0.5, 1, 'B4'], [1.5, 1, 'G4']]],
+    [[], [[1, 1.5, 'E4']], [[1.25, 1.25, 'G4']], [[0, 1.25, 'D5'], [1.25, 1.25, 'C5']]]
+  ];
+  const MZ_SIRA = [0, 1, 0, 2, 1, 3];     // cümlelerin sırası: 24 ölçü (~77 sn) sonra baştan
   const K_MUZIK = 'blokKahramani.muzik';
   const muzikAyar = Object.assign({ acik: true, ses: 70 }, store.get(K_MUZIK, null) || {});
   muzikAyar.ses = clamp(Math.round(Number(muzikAyar.ses) || 0), 0, 100);
-  const Muzik = { buf: null, bas: 0, yukleniyor: null, src: null, gain: null, hedef: 0 };
+  const Muzik = { calisiyor: false, ac: null, kanal: null, hedef: 0, olcu: 0, sonraki: 0, kayit: [] };
   const muzikBtn = $('muzikBtn'), muzikSes = $('muzikSes'), muzikDeger = $('muzikDeger');
   const NOTA_ACIK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5.5l11-2V16"/><circle cx="6.5" cy="18" r="2.6" fill="currentColor"/><circle cx="17.5" cy="16" r="2.6" fill="currentColor"/></svg>';
   const NOTA_KAPALI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5.5l11-2V16"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="17.5" cy="16" r="2.6"/><path d="M3.5 3.5l17 17"/></svg>';
-  const MUZIK_SEVIYE = 0.84;   // müziğin kendi düzeyi; asıl ses düzeyini ana kazanç (SES kaydırıcısı) verir
-  const muzikKazanc = () => MUZIK_SEVIYE;
+  const muzikKazanc = () => MZ_DUZEY;   // müzik kanalının düzeyi; asıl ses düzeyini ana kazanç (SES kaydırıcısı) verir
   const muzikIstenir = () => soundOn && muzikAyar.acik && muzikAyar.ses > 0 && !ovStart.hidden && !document.hidden && !duel;
 
-  function muzikCozumle(ab) {
-    const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-    const oc = new OAC(1, 44100, 44100);
-    return new Promise((res, rej) => { const p = oc.decodeAudioData(ab, res, rej); if (p && typeof p.then === 'function') p.then(res, rej); });
+  // Tek nota: osilatör (sine ya da triangle) + zarf: 0'dan MZ_GIRIS'te doğrusal giriş, tutma, MZ_SONUS'ta üstel sönüş.
+  // tutma: girişten bırakmaya kadar geçen süre (sn). Nota bitince düğümler ağdan ayrılır. kayit: planlanan notaların listesi
+  function mzNota(ac, out, t, f, tip, a, tutma, ses, kayit) {
+    const osc = ac.createOscillator(), g = ac.createGain(), birak = t + Math.max(MZ_GIRIS, tutma);
+    osc.type = tip;
+    osc.frequency.setValueAtTime(f, t);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(a, t + MZ_GIRIS);
+    g.gain.setValueAtTime(a, birak);
+    g.gain.exponentialRampToValueAtTime(0.0001, birak + MZ_SONUS);
+    osc.connect(g);
+    g.connect(out);
+    osc.start(t);
+    osc.stop(birak + MZ_SONUS + 0.05);
+    osc.onended = () => { try { osc.disconnect(); g.disconnect(); } catch (e) { /* zaten ayrık */ } };
+    if (kayit) { kayit.push({ t, f, tip, a, ses, birak, bitis: birak + MZ_SONUS }); if (kayit.length > 240) kayit.shift(); }
   }
-  function muzikYukle() {
-    if (Muzik.buf || Muzik.yukleniyor || !muzikAyar.acik) return;
-    const veri = MUZIK_B64
-      ? Promise.resolve().then(() => { const t = atob(MUZIK_B64), u = new Uint8Array(t.length); for (let i = 0; i < t.length; i++) u[i] = t.charCodeAt(i); return u.buffer; })
-      : fetch(MUZIK_URL).then(r => { if (!r.ok) throw new Error('müzik yok'); return r.arrayBuffer(); });
-    Muzik.yukleniyor = veri.then(muzikCozumle).then(buf => {
-      // Tarayıcı, sıkıştırılmış dosyanın başına sessizlik ekleyebilir: ilk sesi bulup döngüyü ona göre kur
-      const d = buf.getChannelData(0), sinir = Math.min(d.length, Math.round(buf.sampleRate * 0.3));
-      let i = 0;
-      while (i < sinir && Math.abs(d[i]) < 0.003) i++;
-      Muzik.bas = i < sinir ? Math.max(0, i / buf.sampleRate - MUZIK_ILK) : 0;
-      Muzik.buf = buf;
-      muzikGuncelle();
-    }).catch(() => { /* müzik yoksa menü sessiz */ }).then(() => { Muzik.yukleniyor = null; });
+  // Bir ölçü (n: döngüdeki sırası, t: başlangıcı): bas pedi, arpej, melodi
+  function mzOlcu(ac, out, t, n, kayit) {
+    const ak = MZ_AKOR[n % MZ_AKOR.length], cumle = MZ_CUMLE[MZ_SIRA[Math.floor(n / MZ_AKOR.length) % MZ_SIRA.length]][n % MZ_AKOR.length];
+    const f = MZ_NOTA[ak.bas];
+    // Bas pedi: ölçü boyunca; sönüşü bir sonraki basın girişiyle hafifçe örtüşür (kesintisiz)
+    mzNota(ac, out, t, f, 'sine', 0.24, MZ_OLCU - 0.55, 'bas', kayit);
+    mzNota(ac, out, t, f * 2, 'sine', 0.1, MZ_OLCU - 0.55, 'bas2', kayit);
+    // Arpej: dörtlükler, son dörtlük daha kısık
+    ak.arp.forEach((nt, k) => mzNota(ac, out, t + k * MZ_VURUS, MZ_NOTA[nt], 'triangle', k === 3 ? 0.08 : 0.11, 0.35, 'arp', kayit));
+    // Melodi: seyrek
+    for (const [v, s, nt] of cumle) mzNota(ac, out, t + v * MZ_VURUS, MZ_NOTA[nt], 'triangle', 0.15, s * MZ_VURUS, 'melodi', kayit);
+  }
+  // Müzik kanalı: giriş/çıkış kazancı → 700 Hz alçak geçiren süzgeç → out
+  function mzKanal(ac, out, kazanc) {
+    const giris = ac.createGain(), suzgec = ac.createBiquadFilter();
+    giris.gain.value = kazanc;
+    suzgec.type = 'lowpass';
+    suzgec.frequency.value = MZ_SUZGEC;
+    suzgec.Q.value = Math.SQRT1_2;
+    giris.connect(suzgec);
+    suzgec.connect(out);
+    return { giris, suzgec };
+  }
+  // Planlayıcı: MZ_ONCE saniye içinde başlayacak ölçüler planlanır, sonra 0,4 sn'de bir yeniden bakılır
+  let mzZaman = 0;
+  function mzPlanla() {
+    clearTimeout(mzZaman);
+    mzZaman = 0;
+    const ac = Sound.ac;
+    if (!Muzik.calisiyor || !ac || ac !== Muzik.ac) return;
+    // Zamanlayıcı çok geciktiyse (cihaz yavaşladı) kaçan ölçüler üst üste çalınmaz: sıradaki ölçü hemen başlar
+    if (Muzik.sonraki < ac.currentTime) Muzik.sonraki = ac.currentTime + 0.05;
+    while (Muzik.sonraki < ac.currentTime + MZ_ONCE) {
+      mzOlcu(ac, Muzik.kanal.giris, Muzik.sonraki, Muzik.olcu, Muzik.kayit);
+      Muzik.olcu++;
+      Muzik.sonraki += MZ_OLCU;
+    }
+    mzZaman = setTimeout(mzPlanla, 400);
   }
   function muzikBaslat() {
     const ac = Sound.ac;
     if (!ac || ac.state !== 'running') return;   // ilk dokunuş bekleniyor
-    if (!Muzik.buf) { muzikYukle(); return; }
     const t = ac.currentTime, k = muzikKazanc();
-    if (Muzik.src) {
-      // Ses düzeyi değişti: kaldığı değerden yeni düzeye kayar (zamanlanmış giriş iptal edilmez, sıçrama olmaz)
-      if (Math.abs(Muzik.hedef - k) > 1e-4) { Muzik.gain.gain.setTargetAtTime(k, t, 0.08); Muzik.hedef = k; }
+    if (Muzik.calisiyor) {
+      // Düzey değişti: kaldığı değerden yeni düzeye kayar (sıçrama olmaz)
+      if (Math.abs(Muzik.hedef - k) > 1e-4) { Muzik.kanal.giris.gain.setTargetAtTime(k, t, 0.08); Muzik.hedef = k; }
       return;
     }
-    const g = ac.createGain(), src = ac.createBufferSource();
-    src.buffer = Muzik.buf;
-    src.loop = true;
-    src.loopStart = Muzik.bas;
-    src.loopEnd = Math.min(Muzik.buf.duration, Muzik.bas + MUZIK_DONGU);
-    g.gain.setValueAtTime(0, t);
-    g.gain.setTargetAtTime(k, t, 0.25);                 // yumuşak giriş (~0,8 sn)
-    src.connect(g);
-    g.connect(Sound.muzikGirisi() || ac.destination);   // ana kazanç (SES kaydırıcısı) ve sıkıştırıcıdan geçer
-    src.start(t, Muzik.bas);
-    Muzik.src = src;
-    Muzik.gain = g;
+    const kanal = mzKanal(ac, Sound.muzikGirisi() || ac.destination, 0);
+    kanal.giris.gain.setValueAtTime(0, t);
+    kanal.giris.gain.setTargetAtTime(k, t, 0.25);   // yumuşak giriş (~0,8 sn)
+    Muzik.calisiyor = true;
+    Muzik.ac = ac;
+    Muzik.kanal = kanal;
     Muzik.hedef = k;
+    Muzik.olcu = 0;
+    Muzik.sonraki = t + 0.06;
+    mzPlanla();
   }
   function muzikDurdur() {
-    const src = Muzik.src, g = Muzik.gain;
-    if (!src) return;
-    Muzik.src = null;
-    Muzik.gain = null;
+    if (!Muzik.calisiyor) return;
+    const kanal = Muzik.kanal, ac = Muzik.ac;
+    Muzik.calisiyor = false;
+    Muzik.kanal = null;
+    Muzik.ac = null;
+    clearTimeout(mzZaman);
+    mzZaman = 0;
     try {
-      const ac = src.context, t = ac.currentTime;
-      g.gain.setTargetAtTime(0, t, 0.12);               // yavaşça susar (kaldığı değerden)
-      src.stop(t + 0.7);
-      src.onended = () => { try { src.disconnect(); g.disconnect(); } catch (e) { /* zaten ayrık */ } };
+      kanal.giris.gain.setTargetAtTime(0, ac.currentTime, 0.12);   // yavaşça susar (kaldığı değerden); planlanmış notalar sessiz kalır
+      setTimeout(() => { try { kanal.giris.disconnect(); kanal.suzgec.disconnect(); } catch (e) { /* zaten ayrık */ } }, 1000);
     } catch (e) { /* bağlam kapanmış */ }
   }
   function muzikGuncelle() {
-    if (Muzik.src && Muzik.src.context !== Sound.ac) { Muzik.src = null; Muzik.gain = null; } // ses bağlamı yeniden kuruldu
+    if (Muzik.calisiyor && Muzik.ac !== Sound.ac) {   // ses bağlamı yeniden kuruldu: eski kanal eski bağlamla gitti
+      Muzik.calisiyor = false; Muzik.kanal = null; Muzik.ac = null; clearTimeout(mzZaman); mzZaman = 0;
+    }
     if (muzikIstenir()) muzikBaslat(); else muzikDurdur();
   }
   function muzikCiz() {
@@ -8530,7 +9063,6 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     store.set(K_MUZIK, muzikAyar);
     Sound.sesDuzeyi(muzikAyar.ses / 100);
     muzikCiz();
-    if (muzikAyar.acik) muzikYukle();
     muzikGuncelle();
   }
   muzikBtn.addEventListener('click', () => {
@@ -8558,7 +9090,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   let resizeRaf = 0;
   function onResize() {
     cancelAnimationFrame(resizeRaf);
-    resizeRaf = requestAnimationFrame(() => { layout(); if (drag) updateDrag(); });
+    resizeRaf = requestAnimationFrame(() => { layout(); if (drag) { if (drag.inis) inisBitir(); else updateDrag(); } });
   }
   window.addEventListener('resize', onResize);
   window.addEventListener('orientationchange', onResize);
@@ -8573,8 +9105,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
         state: gameState, score, combo, comboMoves, best, moves, linesTotal, maxCombo, theme: themeIdx, themeName: THEMES[Math.max(0, themeIdx)].name, dpr: L.dpr, fxDpr: L.fxDpr,
         board: Array.from(board), pieces: tray.map(p => p && { id: p.shape.id, w: p.w, h: p.h, color: p.color, fits: p.fits, cells: p.cells })
       }),
-      setBoard: arr => { board.set(arr); pops = []; refreshFits(); cellsDirty = true; fxDirty = true; wake(); },
-      setTray: ids => { tray = ids.map((id, i) => (id ? makePiece(SHAPE_BY_ID[id], i % PALETTE.length) : null)); refreshFits(); },
+      setBoard: arr => { if (drag && drag.inis) inisBitir(); board.set(arr); pops = []; refreshFits(); cellsDirty = true; fxDirty = true; wake(); },
+      setTray: ids => { if (drag && drag.inis) inisBitir(); tray = ids.map((id, i) => (id ? makePiece(SHAPE_BY_ID[id], i % PALETTE.length) : null)); refreshFits(); },
       check: () => { if (!tray.some(p => p && p.fits)) triggerGameOver(); },
       setScore: n => { score = n; displayScore = n; istatTam = false; if (!duel && kip === 'klasik' && score > best) setBest(score); setScoreText(score); updateHud(); queueTheme(0); },
       audio: () => ({ state: Sound.ac ? Sound.ac.state : 'none', session: navigator.audioSession ? navigator.audioSession.type : 'yok',
@@ -8582,6 +9114,39 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       // Efekti ana çıkıştan (ana kazanç, sıkıştırıcı ve tavan dahil) çevrimdışı geçirip tepe ve ortalama seviyesini döndürür.
       // Oyundaki gibi ölçülür: sıkıştırıcı önce 1 sn sessizlikte oturur, ses sonra çalar. hacim: ana kazanç (varsayılan
       // 0,7); kac: aynı anda kaç kez (üst üste binen sesler)
+      // Menü müziğini ana çıkıştan (ana kazanç, sıkıştırıcı, tavan dahil) çevrimdışı üretip ölçer: tepe, ortalama (RMS),
+      // 1200 Hz üstünün gücünün payı (tiz), planlanan nota sayısı. Sıkıştırıcı önce 1 sn sessizlikte oturur.
+      renderMuzik: async (sn, hacim) => {
+        const sr = 44100, ac = new OfflineAudioContext(1, Math.round(sr * (1 + sn)), sr), y = sesZinciri(ac, hacim == null ? 0.7 : hacim);
+        const kanal = mzKanal(ac, y.ana, MZ_DUZEY), notalar = [];
+        for (let n = 0, t = 1; t < 1 + sn - 0.01; n++, t += MZ_OLCU) mzOlcu(ac, kanal.giris, t, n, notalar);
+        const d = (await ac.startRendering()).getChannelData(0).subarray(sr);
+        let peak = 0, sq = 0, adim = 0;
+        for (let i = 0; i < d.length; i++) { const v = Math.abs(d[i]); if (v > peak) peak = v; sq += v * v; if (i) adim = Math.max(adim, Math.abs(d[i] - d[i - 1])); }
+        const N = 2048, w = 2 * Math.PI / N;
+        let ust = 0, top = 0;
+        for (let p = 0; p < 12; p++) {
+          const s0 = Math.floor((d.length - N) * (p + 0.5) / 12);
+          for (let k = 2; k < 280; k++) {
+            let re = 0, im = 0;
+            for (let i = 0; i < N; i++) { const v = d[s0 + i] * (0.5 - 0.5 * Math.cos(w * i)); re += v * Math.cos(w * k * i); im -= v * Math.sin(w * k * i); }
+            const g = re * re + im * im;
+            top += g;
+            if (k * sr / N > 1200) ust += g;
+          }
+        }
+        return { peak: +peak.toFixed(4), rms: +Math.sqrt(sq / d.length).toFixed(4), tiz: top ? +(ust / top).toFixed(5) : 0, adim: +adim.toFixed(5), notalar: notalar.length };
+      },
+      // İlk n ölçünün notaları (çalmadan, yalnızca plan): ses, frekans, dalga, başlangıç, bırakma, bitiş
+      muzikPlan: n => { const ac = new OfflineAudioContext(1, 44100, 44100), out = ac.createGain(), k = []; for (let i = 0; i < n; i++) mzOlcu(ac, out, i * MZ_OLCU, i, k); return k; },
+      // Tek müzik notasının zarfı (10 ms'lik tepe değerleri): giriş ve sönüş süresini ölçmek için
+      muzikZarf: async (f, tip, tutma) => {
+        const sr = 44100, ac = new OfflineAudioContext(1, sr * 3, sr);
+        mzNota(ac, ac.destination, 0.1, f, tip, 0.5, tutma, 'deneme', null);
+        const d = (await ac.startRendering()).getChannelData(0), o = [];
+        for (let i = 0; i < d.length; i += 441) { let m = 0; for (let k = i; k < i + 441 && k < d.length; k++) m = Math.max(m, Math.abs(d[k])); o.push(+m.toFixed(5)); }
+        return o;
+      },
       renderSound: async (name, a, b, hacim, kac) => {
         const ac = new OfflineAudioContext(1, Math.round(44100 * 3), 44100), y = sesZinciri(ac, hacim == null ? 0.7 : hacim);
         for (let i = 0; i < (kac || 1); i++) SES[name](ac, y.sfx, 1 + i * 0.003, a, b);
@@ -8618,7 +9183,23 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       sesYol: () => ({ hacim: Sound.hacim, ana: Sound.yol ? +Sound.yol.ana.gain.value.toFixed(3) : null, sik: !!(Sound.yol && Sound.yol.sik),
         esik: Sound.yol ? Sound.yol.sik.threshold.value : null, oran: Sound.yol ? Sound.yol.sik.ratio.value : null, durum: Sound.ac ? Sound.ac.state : 'yok' }),
       // Tutulan nokta ve parça merkezinin parmağa göre konumu (px; parça merkezi = parmak + ox, oy)
-      grab: () => (drag ? { gu: drag.gu, gv: drag.gv, ox: drag.tx - drag.px, oy: drag.ty - drag.py, lift: drag.type !== 'mouse', gap: LIFT_GAP, ramp: LIFT_RAMP } : null),
+      grab: () => { if (drag && drag.bekleyen) suruklemeIsle(); return drag ? { gu: drag.gu, gv: drag.gv, ox: drag.tx - drag.px, oy: drag.ty - drag.py, lift: drag.type !== 'mouse', ust: kalkisUst(drag.piece), ms: KALKIS_MS, inis: !!drag.inis } : null; },
+      // Oyun hissiyatı (1.0.11): kalkış, gölge, oturma, parçacıklar, yeni üçlünün girişi ve parıltılar
+      his: () => ({ kalkisMs: KALKIS_MS, kalkisUst: KALKIS_UST, kalkisPay: KALKIS_PAY, golgeA: GOLGE_A, inisMs: INIS_MS, giris: Object.assign({}, GIRIS),
+        parilti: Object.assign({}, PARILTI), reduced: REDUCED }),
+      kalkisUstH: h => kalkisUst({ h }),
+      inis: () => (drag && drag.inis ? { t0: drag.inis.t0, ms: drag.inis.ms, r: drag.inis.r, c: drag.inis.c, x1: drag.inis.x1, y1: drag.inis.y1, idx: Array.from(drag.inis.idx) } : null),
+      pops: () => pops.map(p => ({ i: p.i, t0: p.t0 })),
+      parcacik: () => particles.map(p => ({ x: p.x, y: p.y, vx: p.vx, vy: p.vy, g: p.g, size: p.size, life: p.life, max: p.max, renk: p.color })),
+      girisOlcek: q => girisOlcek(q),
+      raf: () => tray.map((p, i) => (p ? { id: p.shape.id, w: p.w, h: p.h, enter: p.enter ? { t0: p.enter.t0, dur: p.enter.dur } : null, olcek: trayVisual(p, i, performance.now()).cs / trayCs(p),
+        tcs: trayCs(p), home: trayHome(i) } : null)),
+      parilti: () => parilti.map(s => Object.assign({ i: s.i, t0: s.t0, ms: s.ms, id: s.p.shape.id }, pariltiYeri(s))),
+      simdi: () => performance.now(),
+      kareZamani: () => last,   // son çizilen karenin zamanı (rAF)
+      cizim: () => Object.assign({ fxBos, onizlemeHedef: drag && drag.preview ? [drag.preview.r, drag.preview.c] : null, bekleyen: !!(drag && drag.bekleyen) }, CIZIM),
+      cizimSifirla: () => { for (const k in CIZIM) CIZIM[k] = 0; },
+      snapEsik: () => ({ gir: SNAP_GIR, cik: SNAP_CIK, hist: SNAP_HIST }),
       soundApi: Sound,
       themeCount: THEMES.length,
       // Parça üreticisi: verilen tahta için n kez üçlü üretir; clearInfo: patlatma fırsatları
@@ -8641,8 +9222,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       setMode: m => applyMode(m === 'light', true),
       clearInfo: arr => { const ci = clearInfoOn(Int8Array.from(arr)); return { one: ci.one.map(q => q.id), multi: ci.multi.map(q => q.id), perfect: ci.perfect.map(q => q.id), top: ci.top }; },
       // Haftalık skor tablosu
-      muzik: () => ({ ayar: Object.assign({}, muzikAyar), yuklendi: !!Muzik.buf, caliyor: !!Muzik.src, kazanc: Muzik.gain ? Muzik.gain.gain.value : 0,
-        bas: Muzik.bas, dongu: Muzik.src ? Muzik.src.loopEnd - Muzik.src.loopStart : 0, sure: Muzik.buf ? Muzik.buf.duration : 0, ac: Sound.ac ? Sound.ac.state : 'yok' }),
+      muzik: () => ({ ayar: Object.assign({}, muzikAyar), caliyor: Muzik.calisiyor, kazanc: Muzik.kanal ? Muzik.kanal.giris.gain.value : 0, hedef: Muzik.hedef,
+        suzgec: Muzik.kanal ? { tur: Muzik.kanal.suzgec.type, f: Muzik.kanal.suzgec.frequency.value, q: +Muzik.kanal.suzgec.Q.value.toFixed(3) } : null,
+        bagli: !!(Muzik.kanal && Sound.yol), bpm: MZ_BPM, olcuSn: MZ_OLCU, giris: MZ_GIRIS, sonus: MZ_SONUS, oran: MZ_ORAN, duzey: MZ_DUZEY,
+        olcu: Muzik.olcu, simdi: Sound.ac ? Sound.ac.currentTime : 0, notalar: Muzik.kayit.slice(), ac: Sound.ac ? Sound.ac.state : 'yok' }),
+      muzikNotaSil: () => { Muzik.kayit.length = 0; },
       skor: () => ({ api: SKOR_API, oyuncu: Object.assign({}, oyuncu), tablo: Skor.tablo, durum: Skor.durum, sonuc: Skor.sonuc, bekleyen: store.get(K_BEKLEYEN, null), gonderiyor: Skor.gonderiyor, banli: banli() }),
       skorGonder: (p, m, n) => skorGonder(p, m, n || 'bitti'),
       tabloYukle: () => tabloYukle(true),
@@ -8786,6 +9370,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (AppEk && typeof AppEk.addListener === 'function') {
       try {
         AppEk.addListener('backButton', () => {
+          if (window.HBIntro && HBIntro.acik()) { HBIntro.gec(); return; }   // açılış sürüyorsa geçer
           if (!ovReklam.hidden || AdManager.acik()) return; // reklam penceresi kendiliğinden kapanır
           if (!ovSatin.hidden) Satin.kapat();
           else if (!ovGorev.hidden) gorevKapat();
@@ -8804,7 +9389,94 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
           } else anaMenuyeDon();
         });
       } catch (e) { /* eklenti yok */ }
+      // Sitenin bağlantısı uygulamayı açtı (Android App Links): uygulama açıkken, arka plandayken ya da bağlantıyla açılışta
+      try { AppEk.addListener('appUrlOpen', e => uygulamaBaglantisi(e && e.url)); } catch (e) { /* eklenti yok */ }
     }
+  }
+
+  /* ================= Uygulama: sitenin bağlantıları (Android App Links) =================
+     Sitenin ana sayfasına giden düello (?duel=) ve meydan okuma (?challenge=) bağlantıları Android'de uygulama yüklüyse
+     tarayıcı yerine doğrudan uygulamayı açar (site: /.well-known/assetlinks.json, uygulama: autoVerify'lı intent-filter).
+     - Uygulama bağlantıyla açıldıysa (soğuk açılış): ilk ekran bağlantının ekranıdır (düello daveti ya da meydan okuma
+       sorusu); takma ad sorusu sonraki açılışa kalır (bağlantının sitede açıldığı eski hâldeki gibi).
+     - Uygulama açıkken ya da arka plandayken gelen bağlantı: açık pencereler kapanır, davet ya da meydan okuma sorusu açılır;
+       tek kişilik oyun kaldığı yerde bekler (ana menüde DEVAM ET). Süren düello, günlük bulmaca ya da meydan okuma kesilmez:
+       oyuncuya bitince bağlantıya yeniden dokunması söylenir. Reklam ya da izin penceresi açıksa kapanınca açılır.
+     - Sitenin ana sayfası (paylaşılan site bağlantısı) yalnızca uygulamayı öne getirir. */
+  const SITE_HOST = new URL(PAYLAS_ADRES).hostname;
+  function siteBaglantisiCoz(url) {
+    let u;
+    try { u = new URL(String(url || '')); } catch (e) { return {}; }
+    if (!/^https?:$/.test(u.protocol) || u.hostname !== SITE_HOST || !/^\/(index\.html)?$/.test(u.pathname)) return {};
+    if (/[?&]duel=/.test(u.search)) { const d = duelloCoz(u.href); return d ? { d } : { hata: 'duelloGecersiz' }; }
+    if (/[?&]challenge=/.test(u.search)) { const m = meydanCoz(u.href); return m ? { m } : { hata: 'meydanGecersiz' }; }
+    return {};
+  }
+  // Açılış: Android bağlantıyı hem açılış adresi (getLaunchUrl) hem olay (appUrlOpen) olarak bildirir; ilk ekran ikisinden
+  // hangisi önce gelirse onunla kurulur, aynı bağlantı ikinci kez açılmaz. Sayfa yeniden yüklenirse (aynı oturum) açılış
+  // bağlantısı yeniden açılmaz.
+  let acilisBekliyor = UYGULAMA, acilisOlayAdresi = '', acilisTekrar = '', acilisZaman = 0;
+  const K_ACILIS = 'blokKahramani.acilisBaglantisi';
+  function acilisBaglantisi() {
+    return new Promise(res => {
+      let bitti = false;
+      const bitir = url => {
+        if (bitti) return;
+        bitti = true;
+        acilisBekliyor = false;
+        let u = String(url || acilisOlayAdresi || '');
+        try {
+          if (u && sessionStorage.getItem(K_ACILIS) === u) u = '';
+          else if (u) sessionStorage.setItem(K_ACILIS, u);
+        } catch (e) { /* depolama yok */ }
+        if (u && !acilisOlayAdresi) { acilisTekrar = u; acilisZaman = Date.now(); }   // olay birazdan gelecek: atlanır
+        const b = u ? siteBaglantisiCoz(u) : {};
+        if (b.hata) setTimeout(() => toast(yaz(b.hata)), 500);
+        res(b);
+      };
+      setTimeout(() => bitir(''), 800);
+      const A = eklenti('App');
+      try {
+        if (A && typeof A.getLaunchUrl === 'function') Promise.resolve(A.getLaunchUrl()).then(r => bitir(r && r.url), () => bitir(''));
+        else bitir('');
+      } catch (e) { bitir(''); }
+    });
+  }
+  function uygulamaBaglantisi(url) {
+    if (!url) return;
+    url = String(url);
+    if (acilisBekliyor) { acilisOlayAdresi = url; return; }   // ilk ekran bu bağlantıyla kurulacak
+    if (acilisTekrar && url === acilisTekrar && Date.now() - acilisZaman < 3000) { acilisTekrar = ''; return; }   // açılıştaki bağlantının olayı
+    acilisTekrar = '';
+    const b = siteBaglantisiCoz(url);
+    if (b.hata) { toast(yaz(b.hata)); return; }
+    if (b.d || b.m) baglantiyaGec(b, 0);
+  }
+  // Uygulama açıkken gelen bağlantı: açık pencereler kapanır (geri tuşu gibi, hepsi birden), bağlantının ekranı açılır
+  function baglantiyaGec(b, deneme) {
+    if (AdManager.acik() || !ovReklam.hidden || AdManager.izinSuruyor()) {
+      if (deneme < 120) setTimeout(() => baglantiyaGec(b, deneme + 1), 500);   // reklam ya da izin penceresi kapanınca
+      return;
+    }
+    if (duel && duel.phase !== 'result') { toast(yaz('baglantiDuelloSuruyor'), 4500); return; }
+    if (!duel && kip !== 'klasik' && gameState === 'play' && moves > 0) { toast(yaz('baglantiOyunSuruyor'), 4500); return; }
+    if (drag) endDrag(null, true);
+    if (jokerMod) jokerModBitir();
+    if (!ovSatin.hidden) Satin.kapat();
+    if (!ovGorev.hidden) gorevKapat();
+    if (!ovRapor.hidden) raporKapat();
+    if (!ovBoard.hidden) tabloKapat();
+    if (!ovConfirm.hidden) closeConfirm();
+    if (!ovNick.hidden) adKapat();
+    if (!ovMeydan.hidden) { meydanBekleyen = null; ovMeydan.hidden = true; }
+    if (!ovGunluk.hidden) { ovGunluk.hidden = true; }
+    if (duel) exitDuel();                               // biten düellonun sonuç ekranı
+    else if (!ovDuel.hidden) { duelDavet = null; closeDuelPanel(); }
+    if (kip !== 'klasik') kipCik();                     // hamle yapılmamış günlük bulmaca ya da meydan okuma
+    else if (gameState !== 'play') newGame();           // biten oyunun yerine yeni oyun (oyun sonundan ana menüye dönüş gibi)
+    ovOver.hidden = true;
+    setModal();
+    if (b.d) duelloBaglantiAc(b.d); else meydanSor(b.m);
   }
 
   /* ================= Başlat ================= */
@@ -8818,7 +9490,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (booted) return;
     booted = true;
     setSound(soundOn, false);
-    AdManager.initBannerAd(); // uygulamada: izin penceresi (gerekirse), reklamlar ve banner; sitede bir şey yapmaz
+    (window.HBIntro ? HBIntro.sonra : f => f())(() => AdManager.initBannerAd()); // açılış bitince; uygulamada: izin penceresi (gerekirse), reklamlar ve banner; sitede bir şey yapmaz
     layout();
     // Yazı tipleri yüklenince alt bilgi genişliği değişir: yeniden sığdır
     if (document.fonts) {
@@ -8837,17 +9509,25 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     // Düello ya da meydan okuma bağlantısıyla açıldıysa önce o gelir (takma ad sorusu sonraki açılışa kalır).
     // İlk girişte takma ad sorulur (geçilebilir); sonra başlangıç ekranı ve haftalık tablo.
     // Takma adı olup Kullanım Koşulları'nı henüz onaylamamış oyuncudan bir kez onay istenir (onaylamazsa puanı tabloya gitmez)
+    // Uygulamada bağlantıyla açılış (Android App Links): ilk ekran, Android'in bildirdiği açılış bağlantısıyla kurulur
+    const ilkEkran = (dl, md) => {
+      if (dl) duelloBaglantiAc(dl);
+      else if (md) meydanSor(md);
+      else if (SKOR_API && !oyuncu.ad && !oyuncu.atla && !banli()) adSor(() => showStart(false));
+      else if (SKOR_API && oyuncu.ad && !kosulTamam() && !banli()) adSor(() => showStart(false), () => yaz('kosulEklendi'));
+      else showStart(false);
+    };
     const dl = duelloAdrestenAl(), md = meydanAdrestenAl();
-    if (dl) duelloBaglantiAc(dl);
-    else if (md) meydanSor(md);
-    else if (SKOR_API && !oyuncu.ad && !oyuncu.atla && !banli()) adSor(() => showStart(false));
-    else if (SKOR_API && oyuncu.ad && !kosulTamam() && !banli()) adSor(() => showStart(false), () => yaz('kosulEklendi'));
-    else showStart(false);
+    if (!UYGULAMA) ilkEkran(dl, md);
     if (SKOR_API) { bekleyenGonder('acilis'); tabloYukle(true); }
     // Uzaktan ayar (kayıtlısı hemen, yenisi sunucudan); uygulamada reklamsız oyunun fiyatı, satın alımlar ve açılış penceresi
-    Satin.basla(uzakAyarYukle());
-    muzikYukle();
+    // (açılış penceresi ilk ekranı bekler)
+    const ayarSozu = uzakAyarYukle();
+    if (UYGULAMA) acilisBaglantisi().then(b => { ilkEkran(b.d || dl, b.m || md); Satin.basla(ayarSozu); });
+    else Satin.basla(ayarSozu);
     wake();
+    // Açılış: oyun hazır, el yazısı şimdi başlar (ana iş parçacığı boşken ilk karede takılmaz)
+    if (window.HBIntro) HBIntro.basla();
   }
   if (hot && typeof hot.ready === 'function') {
     try { hot.ready(boot); } catch (e) { boot(); }

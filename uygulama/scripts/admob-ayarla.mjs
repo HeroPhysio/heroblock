@@ -3,10 +3,11 @@
    "npx cap copy" ve "npx cap sync" bitince kendiliğinden çalışır (package.json › "capacitor:copy:after" ve
    "capacitor:sync:after"; kimlik yanlışsa "npx cap sync" hata verip durur). Elle: npm run admob
      • Oyunun okuduğu kopya: android/app/src/main/assets/public/admob.config.json ve ios/App/App/public/admob.config.json
-       (oyun reklam birimi kimliklerini buradan alır; dosya yoksa Google'ın test kimliklerini kullanır)
+       (her kopyada yalnızca o platformun kimlikleri; oyun reklam birimi kimliklerini buradan alır, dosya yoksa reklam istemez)
      • iOS uygulama kimliği: ios/App/App/Info.plist › GADApplicationIdentifier
    Android uygulama kimliğini (AndroidManifest › com.google.android.gms.ads.APPLICATION_ID) android/app/build.gradle her
-   derlemede doğrudan bu dosyadan okur. Biçimi yanlış bir kimlik varsa işlem durur (yanlış kimlikle paket çıkmasın). */
+   derlemede doğrudan bu dosyadan okur; Android derlemesi Google'ın test kimliklerini de kabul etmez (Android paketine yalnızca
+   gerçek kimlikler girer). Biçimi yanlış bir kimlik varsa işlem durur (yanlış kimlikle paket çıkmasın). */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -46,7 +47,7 @@ for (const p of PLATFORMLAR) {
   const appId = String(a.appId ?? '').trim();
   const u = UYGULAMA.exec(appId);
   if (!u) dur(`${p}.appId biçimi yanlış: "${appId}" (ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY olmalı; '~' işaretine dikkat)`);
-  oyun[p] = {};
+  oyun[p] = { appId };
   let test = u[1] === GOOGLE_TEST ? 1 : 0;
   for (const f of BIRIMLER) {
     const v = String(a[f] ?? '').trim();
@@ -56,7 +57,6 @@ for (const p of PLATFORMLAR) {
     if (m[1] === GOOGLE_TEST) test++;
     oyun[p][f] = v;
   }
-  oyun[p].appId = appId;
   ozet.push(`${p}: ${test === 4 ? 'Google TEST kimlikleri (gerçek reklam çıkmaz)' : test === 0 ? 'GERÇEK kimlikler' : 'karışık (bazı kimlikler hâlâ test)'}`);
 }
 const testDevices = ayar.testDevices ?? [];
@@ -65,13 +65,15 @@ if (!Array.isArray(testDevices) || testDevices.some(d => typeof d !== 'string' |
 }
 oyun.testDevices = testDevices.map(d => d.trim());
 
-// Oyunun okuduğu kopya: yalnızca kopyalanan platform (elle çalıştırılınca ikisi de, klasörü varsa)
+// Oyunun okuduğu kopya: yalnızca kopyalanan platform (elle çalıştırılınca ikisi de, klasörü varsa). Her kopyada yalnızca o
+// platformun kimlikleri: Android paketine iOS'un (App Store uygulaması açılana kadar Google test) kimlikleri girmez.
+// Android kopyası android/app/build.gradle'ın her derlemede yazdığıyla bayt bayt aynıdır.
 const platform = process.env.CAPACITOR_PLATFORM_NAME;
 const yazildi = [];
 for (const p of PLATFORMLAR) {
   if (platform && platform !== p) continue;
   if (!existsSync(HEDEF[p])) continue;
-  writeFileSync(join(HEDEF[p], 'admob.config.json'), JSON.stringify(oyun) + '\n');
+  writeFileSync(join(HEDEF[p], 'admob.config.json'), JSON.stringify({ [p]: oyun[p], testDevices: oyun.testDevices }) + '\n');
   yazildi.push(p);
 }
 
