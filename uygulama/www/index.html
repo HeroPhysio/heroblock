@@ -5650,8 +5650,14 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const SES_PENTA = [523.25, 587.33, 659.25, 783.99, 880, 1046.5];   // do majör pentatonik: C5 D5 E5 G5 A5 C6
   // Kombo adımının notası: 1 → 523 Hz, 2 → 587 Hz ... 6 ve üstü → 1046 Hz
   const sesKok = kombo => SES_PENTA[Math.min(Math.max(Math.floor(kombo) || 1, 1), SES_PENTA.length) - 1];
-  // Android tablet (kısa kenarı en az 600 dp): ses tamponu ~50 ms. Telefonda cihazın en küçük tamponu ('interactive') kalır
-  const SES_TABLET = /Android/i.test(navigator.userAgent) && Math.min(screen.width || 0, screen.height || 0) >= 600;
+  // Android tablet: ses tamponu ~50 ms. Tablet ayrımı tarayıcı kimliğine (User-Agent) değil, ekranın kısa kenarına göre yapılır
+  // (en az 600 dp; WebView'ın kimliği tableti telefon gibi gösterebilir). Android olduğu Capacitor'dan (uygulamada "android")
+  // ya da kimlikteki "Android"den anlaşılır. Telefonda cihazın en küçük tamponu ('interactive') kalır
+  const SES_ANDROID = (() => {
+    try { if (window.Capacitor && typeof window.Capacitor.getPlatform === 'function' && window.Capacitor.getPlatform() === 'android') return true; } catch (e) { /* yok */ }
+    return /Android/i.test(navigator.userAgent);
+  })();
+  const SES_TABLET = SES_ANDROID && Math.min(window.screen.width || 0, window.screen.height || 0) >= 600;
   const SES_TAMPON = SES_TABLET ? 0.05 : 'interactive';
   const SES_EN_AZ_GIRIS = 0.003, SES_GURULTU_GIRIS = 0.0015;   // nota ve gürültü katmanı girişleri (sn)
   // Çalınan efektin sesleri (çok ses sınırı için): efekt tarifi çalışırken SoundEngine.cal doldurur; testte (çevrimdışı) boş
