@@ -3,7 +3,7 @@
 **Hero Uygulama Yazılım Teknolojileri Limited Şirketi** uygulamasıdır.
 Kurucu: Baran Yavuz · İletişim: [iletisim@herouygulama.com.tr](mailto:iletisim@herouygulama.com.tr) · Web: [herouygulama.com.tr](https://herouygulama.com.tr)
 
-8x8 tahtada oynanan blok bulmaca oyunu. Oyun Google Play (ve ileride App Store) uygulamasında oynanır.
+8x8 tahtada oynanan blok bulmaca oyunu. Oyun Google Play (ve yakında App Store) uygulamasında oynanır.
 
 ## Site: https://heroblock.herouygulama.com.tr/
 
@@ -11,7 +11,7 @@ Bu deponun kökü GitHub Pages ile yayınlanan **tanıtım ve indirme sayfasıd�
 
 | Dosya | Ne |
 |---|---|
-| `index.html` | Tanıtım sayfası: öne çıkanlar, ekran görüntüleri, Google Play düğmesi |
+| `index.html` | Tanıtım sayfası: öne çıkanlar, ekran görüntüleri, Google Play ve App Store düğmeleri |
 | `gizlilik.html` | [Gizlilik Politikası ve KVKK Aydınlatma Metni](https://heroblock.herouygulama.com.tr/gizlilik.html) (mağazalarda kayıtlı adres) |
 | `kosullar.html` | [Kullanım Koşulları](https://heroblock.herouygulama.com.tr/kosullar.html) (mağazalarda kayıtlı adres) |
 | `destek.html` | [Destek](https://heroblock.herouygulama.com.tr/destek.html) |
@@ -23,9 +23,12 @@ Bu deponun kökü GitHub Pages ile yayınlanan **tanıtım ve indirme sayfasıd�
 | `app-ads.txt` | Google AdMob yetkili satıcılar dosyası (app-ads.txt): uygulamanın reklam yayıncı kimliği (`pub-1035107027510605`); AdMob mağazadaki geliştirici sitesinin kökünde arar |
 | `fonts/` | Russo One ve Rajdhani (SIL Open Font License) |
 
-**Google Play bağlantısı:** uygulama yayınlanınca mağaza adresi `index.html`'in başındaki `PLAY_URL` satırına yazılır:
-`const PLAY_URL = 'https://play.google.com/store/apps/details?id=tr.com.herouygulama.heroblock';`
-Boş kaldıkça indirme düğmeleri "YAKINDA Google Play'de" yazar ve tıklanmaz.
+**Mağaza bağlantıları:** mağaza adresleri `index.html`'in başındaki iki satırdadır:
+`const PLAY_URL = 'https://play.google.com/store/apps/details?id=tr.com.herouygulama.heroblock';` (Google Play, yayında) ve
+`const APPSTORE_URL = '';` (App Store, yayınlanınca yazılacak).
+Adresi boş mağazanın indirme düğmeleri "YAKINDA" yazar ve tıklanmaz; adres yazılınca düğmeler "HEMEN İNDİR" olur ve
+mağazaya gider. Adres elle yazılırsa sayfanın açıklama satırlarındaki (`description`, `og:description`) mağaza cümlesi de
+güncellenir.
 
 Uygulamadan paylaşılan düello (`?duel=`) ve meydan okuma (`?challenge=`) bağlantıları bu sayfayı açar; sayfa ziyaretçiye
 bunların uygulamada oynandığını söyler. Android'de uygulama yüklüyse bağlantılar tarayıcı yerine doğrudan uygulamada açılır

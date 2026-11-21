@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050817">
 <meta name="color-scheme" content="dark">
 <title>Hero Block · Blok bulmaca oyunu</title>
-<meta name="description" content="Hero Block: parçaları sürükle, satır ve sütunları patlat! Kombolar, günlük bulmaca, günlük görevler, seviye ve rütbeler, arkadaşınla düello ve 17 tema. Yakında Google Play'de.">
+<meta name="description" content="Hero Block: parçaları sürükle, satır ve sütunları patlat! Kombolar, günlük bulmaca, günlük görevler, seviye ve rütbeler, arkadaşınla düello ve 17 tema. Google Play'de ücretsiz, yakında App Store'da.">
 <link rel="canonical" href="https://heroblock.herouygulama.com.tr/">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hero Block">
 <meta property="og:title" content="Hero Block · Blok bulmaca oyunu">
-<meta property="og:description" content="Parçaları sürükle, satır ve sütunları patlat, komboyu sürdür. Hero Block yakında Google Play'de.">
+<meta property="og:description" content="Parçaları sürükle, satır ve sütunları patlat, komboyu sürdür. Hero Block Google Play'de, yakında App Store'da.">
 <meta property="og:url" content="https://heroblock.herouygulama.com.tr/">
 <meta property="og:image" content="https://heroblock.herouygulama.com.tr/og.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -23,16 +23,16 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="bk-build" content="3818c8b5d9">
+<meta name="bk-build" content="b0f530882a">
 <script>
-  /* ======================= GOOGLE PLAY BAĞLANTISI =======================
-     Hero Block Google Play'de yayınlanınca mağaza adresini aşağıdaki tırnakların arasına yapıştır:
-
-       const PLAY_URL = 'https://play.google.com/store/apps/details?id=tr.com.herouygulama.heroblock';
-
-     Boş kaldıkça sayfadaki bütün indirme düğmeleri "YAKINDA GOOGLE PLAY'DE" yazar ve tıklanmaz;
-     adres yazılınca hepsi "HEMEN İNDİR · Google Play'den" olur ve mağazaya gider. */
-  const PLAY_URL = '';
+  /* ======================= MAĞAZA BAĞLANTILARI =======================
+     Hero Block'un mağaza adresleri. Adresi boş mağazanın indirme düğmeleri "YAKINDA" yazar ve tıklanmaz;
+     adres yazılınca o mağazanın düğmeleri "HEMEN İNDİR" olur ve mağazaya gider.
+     App Store'da yayınlanınca adresi APPSTORE_URL satırındaki tırnakların arasına yapıştır, ör.
+       https://apps.apple.com/tr/app/hero-block/id…
+     Elle yazarsan yukarıdaki description ve og:description satırlarındaki "yakında App Store'da" ifadesini de düzelt. */
+  const PLAY_URL = 'https://play.google.com/store/apps/details?id=tr.com.herouygulama.heroblock';
+  const APPSTORE_URL = '';
 </script>
 <script type="application/ld+json">
 {
@@ -132,7 +132,9 @@
   }
   .bolum-alt { margin: 0 auto 34px; max-width: 620px; text-align: center; color: var(--muted); font: 600 18px/1.4 var(--ui); letter-spacing: .02em; text-wrap: balance; }
 
-  /* ---------- Google Play düğmesi ---------- */
+  /* ---------- Mağaza düğmeleri (Google Play, App Store) ---------- */
+  .magaza-satir { display: flex; flex-wrap: wrap; gap: 12px 14px; align-items: center; justify-content: center; }
+  .magaza-satir .play-btn { min-width: 246px; justify-content: center; }   /* iki mağazanın düğmesi aynı genişlikte */
   .play-btn {
     display: inline-flex; align-items: center; gap: 12px;
     min-height: 60px; padding: 10px 26px 10px 20px; border-radius: 16px;
@@ -231,7 +233,8 @@
     .hero-in { grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); }
     .hero-metin { text-align: left; }
     .giris { margin-left: 0; }
-    .cta-satir, .kunye { justify-content: flex-start; }
+    .cta-satir, .cta-satir .magaza-satir, .kunye { justify-content: flex-start; }
+    .cta-satir .ikincil { display: none; }   /* geniş ekranda üst çubukta ÖZELLİKLER var; iki mağaza düğmesi tek satırda kalır */
     .davet { margin-left: 0; }
     .hero-gorsel { min-height: 600px; align-items: center; }
     .telefon { width: 290px; position: relative; z-index: 2; translate: 36px 0; }
@@ -365,10 +368,16 @@
         <p class="slogan">Parçaları sürükle, satır ve sütunları patlat!</p>
         <p class="giris">Öğrenmesi kolay, bırakması zor bir blok bulmaca. Komboyu sürdür, tahtayı tamamen temizle, günlük bulmacayı çöz ve Çaylak'tan Efsane'ye yüksel.</p>
         <div class="cta-satir">
-          <a class="play-btn" data-play aria-disabled="true">
-            <svg class="play-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.6v14.8a1.1 1.1 0 0 0 1.66.94l12.3-7.4a1.1 1.1 0 0 0 0-1.88L8.66 3.66A1.1 1.1 0 0 0 7 4.6z"/></svg>
-            <span class="play-yazi"><small data-play-ust>YAKINDA</small><b data-play-alt>Google Play'de</b></span>
-          </a>
+          <div class="magaza-satir">
+            <a class="play-btn hazir" data-magaza="play" href="https://play.google.com/store/apps/details?id=tr.com.herouygulama.heroblock" rel="noopener" aria-label="Hero Block'u Google Play'den indir">
+              <svg class="play-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.6v14.8a1.1 1.1 0 0 0 1.66.94l12.3-7.4a1.1 1.1 0 0 0 0-1.88L8.66 3.66A1.1 1.1 0 0 0 7 4.6z"/></svg>
+              <span class="play-yazi"><small data-ust>HEMEN İNDİR</small><b data-alt>Google Play'den</b></span>
+            </a>
+            <a class="play-btn" data-magaza="appstore" aria-disabled="true" aria-label="Hero Block yakında App Store'da">
+              <svg class="play-ikon" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M8.6 2h6.8A2.6 2.6 0 0 1 18 4.6v14.8a2.6 2.6 0 0 1-2.6 2.6H8.6A2.6 2.6 0 0 1 6 19.4V4.6A2.6 2.6 0 0 1 8.6 2zM7.9 4.4V18h8.2V4.4H7.9zm2.95 15a.55.55 0 0 0 0 1.1h2.3a.55.55 0 0 0 0-1.1h-2.3z"/></svg>
+              <span class="play-yazi"><small data-ust>YAKINDA</small><b data-alt>App Store'da</b></span>
+            </a>
+          </div>
           <a class="ikincil" href="#ozellikler">Özellikler</a>
         </div>
         <ul class="kunye" aria-label="Kısaca">
@@ -529,12 +538,18 @@
   <section class="bolum son-cta" aria-labelledby="sonBaslik">
     <div class="wrap son-cta-in">
       <img src="icon-512.png" alt="Hero Block simgesi" width="96" height="96" loading="lazy" decoding="async">
-      <h2 id="sonBaslik" data-play-baslik>Hero Block yakında Google Play'de</h2>
-      <p>Telefonuna gelince ilk sen oyna. Soruların ve önerilerin için <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a></p>
-      <a class="play-btn" data-play aria-disabled="true">
-        <svg class="play-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.6v14.8a1.1 1.1 0 0 0 1.66.94l12.3-7.4a1.1 1.1 0 0 0 0-1.88L8.66 3.66A1.1 1.1 0 0 0 7 4.6z"/></svg>
-        <span class="play-yazi"><small data-play-ust>YAKINDA</small><b data-play-alt>Google Play'de</b></span>
-      </a>
+      <h2 id="sonBaslik" data-magaza-baslik>Hero Block Google Play'de</h2>
+      <p><span data-son-metin>Ücretsiz indir, hemen oyna. iPhone sürümü yakında App Store'da.</span> Soruların ve önerilerin için <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a></p>
+      <div class="magaza-satir">
+        <a class="play-btn hazir" data-magaza="play" href="https://play.google.com/store/apps/details?id=tr.com.herouygulama.heroblock" rel="noopener" aria-label="Hero Block'u Google Play'den indir">
+          <svg class="play-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.6v14.8a1.1 1.1 0 0 0 1.66.94l12.3-7.4a1.1 1.1 0 0 0 0-1.88L8.66 3.66A1.1 1.1 0 0 0 7 4.6z"/></svg>
+          <span class="play-yazi"><small data-ust>HEMEN İNDİR</small><b data-alt>Google Play'den</b></span>
+        </a>
+        <a class="play-btn" data-magaza="appstore" aria-disabled="true" aria-label="Hero Block yakında App Store'da">
+          <svg class="play-ikon" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M8.6 2h6.8A2.6 2.6 0 0 1 18 4.6v14.8a2.6 2.6 0 0 1-2.6 2.6H8.6A2.6 2.6 0 0 1 6 19.4V4.6A2.6 2.6 0 0 1 8.6 2zM7.9 4.4V18h8.2V4.4H7.9zm2.95 15a.55.55 0 0 0 0 1.1h2.3a.55.55 0 0 0 0-1.1h-2.3z"/></svg>
+          <span class="play-yazi"><small data-ust>YAKINDA</small><b data-alt>App Store'da</b></span>
+        </a>
+      </div>
     </div>
   </section>
 </main>
@@ -550,44 +565,70 @@
     </nav>
     <p>Hero Uygulama Yazılım Teknolojileri Limited Şirketi</p>
     <p>Kurucu: Baran Yavuz · <a href="mailto:iletisim@herouygulama.com.tr">iletisim@herouygulama.com.tr</a> · <a href="https://herouygulama.com.tr" target="_blank" rel="noopener">herouygulama.com.tr</a></p>
-    <p class="marka">© <span data-yil>2026</span> Hero Uygulama Yazılım Teknolojileri Ltd Şti. Google Play, Google LLC'nin ticari markasıdır.</p>
+    <p class="marka">© <span data-yil>2026</span> Hero Uygulama Yazılım Teknolojileri Ltd Şti. Google Play, Google LLC'nin ticari markasıdır. App Store, Apple Inc.'in hizmet markasıdır.</p>
   </div>
 </footer>
 
 <script>
 (() => {
   'use strict';
-  const adres = (typeof PLAY_URL === 'string' ? PLAY_URL : '').trim();
-  const hazir = /^https:\/\/\S+$/.test(adres);
+  // Mağaza adresleri (sayfanın başındaki PLAY_URL ve APPSTORE_URL satırları); geçerli bir https adresi değilse boş sayılır
+  const temiz = u => { u = (typeof u === 'string' ? u : '').trim(); return /^https:\/\/\S+$/.test(u) ? u : ''; };
+  const play = temiz(typeof PLAY_URL === 'undefined' ? '' : PLAY_URL);
+  const appstore = temiz(typeof APPSTORE_URL === 'undefined' ? '' : APPSTORE_URL);
+  const MAGAZA = {
+    play: { adres: play, de: "Google Play'de", den: "Google Play'den" },
+    appstore: { adres: appstore, de: "App Store'da", den: "App Store'dan" },
+  };
 
-  // İndirme düğmeleri: adres yazılınca mağazaya giden bağlantı olur
-  if (hazir) {
-    document.querySelectorAll('[data-play]').forEach(a => {
-      a.href = adres;
+  // İndirme düğmeleri: adresi yazılan mağazanınkiler mağazaya gider, adresi boş olanınkiler "YAKINDA" yazar ve tıklanmaz.
+  // Derleme sayfayı zaten bu durumla yazar; burada adres elle değiştirilmiş olsa da düğmeler aynı duruma getirilir.
+  document.querySelectorAll('[data-magaza]').forEach(a => {
+    const m = MAGAZA[a.getAttribute('data-magaza')];
+    if (!m) return;
+    const ust = a.querySelector('[data-ust]'), alt = a.querySelector('[data-alt]');
+    if (m.adres) {
+      a.href = m.adres;
       a.rel = 'noopener';
       a.removeAttribute('aria-disabled');
       a.classList.add('hazir');
-      a.setAttribute('aria-label', "Hero Block'u Google Play'den indir");
-      a.querySelector('[data-play-ust]').textContent = 'HEMEN İNDİR';
-      a.querySelector('[data-play-alt]').textContent = "Google Play'den";
-    });
-    document.querySelectorAll('[data-play-baslik]').forEach(h => { h.textContent = "Hero Block Google Play'de"; });
-  } else {
-    document.querySelectorAll('[data-play]').forEach(a => {
-      a.setAttribute('aria-label', "Hero Block yakında Google Play'de");
+      a.setAttribute('aria-label', "Hero Block'u " + m.den + ' indir');
+      ust.textContent = 'HEMEN İNDİR';
+      alt.textContent = m.den;
+    } else {
+      a.removeAttribute('href');
+      a.removeAttribute('rel');
+      a.setAttribute('aria-disabled', 'true');
+      a.classList.remove('hazir');
+      a.setAttribute('aria-label', 'Hero Block yakında ' + m.de);
+      ust.textContent = 'YAKINDA';
+      alt.textContent = m.de;
       a.addEventListener('click', e => e.preventDefault());
-    });
-  }
+    }
+  });
+  const baslik = play && appstore ? "Hero Block Google Play'de ve App Store'da"
+    : play ? "Hero Block Google Play'de"
+    : appstore ? "Hero Block App Store'da"
+    : "Hero Block yakında Google Play'de ve App Store'da";
+  const metin = play && appstore ? 'Ücretsiz indir, hemen oyna.'
+    : play ? "Ücretsiz indir, hemen oyna. iPhone sürümü yakında App Store'da."
+    : appstore ? "Ücretsiz indir, hemen oyna. Android sürümü yakında Google Play'de."
+    : 'Telefonuna gelince ilk sen oyna.';
+  document.querySelectorAll('[data-magaza-baslik]').forEach(h => { h.textContent = baslik; });
+  document.querySelectorAll('[data-son-metin]').forEach(s => { s.textContent = metin; });
 
-  // Uygulamadan paylaşılan düello ya da meydan okuma bağlantısıyla gelen: oyun artık uygulamada
+  // Uygulamadan paylaşılan düello ya da meydan okuma bağlantısıyla gelen: oyun uygulamada. iPhone ve iPad'de App Store,
+  // diğerlerinde Google Play önerilir (bağlantıyı uygulamada yeniden açmak yalnızca Android'de var: App Links)
   const q = new URLSearchParams(location.search);
   const tur = q.has('duel') ? 'duel' : (q.has('challenge') ? 'challenge' : '');
   if (tur) {
     const ad = tur === 'duel' ? 'Düellolar' : 'Meydan okumalar';
+    const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const not = ios
+      ? (appstore ? "Uygulamayı App Store'dan yükle." : "Uygulama yakında App Store'da.")
+      : (play ? "Uygulamayı Google Play'den yükle, sonra bu bağlantıya yeniden dokun." : "Uygulama yakında Google Play'de.");
     document.getElementById('davetBaslik').textContent = tur === 'duel' ? 'Düello daveti aldın!' : 'Sana meydan okundu!';
-    document.getElementById('davetMetin').textContent = hazir
-      ? ad + " Hero Block uygulamasında oynanır. Uygulamayı Google Play'den yükle, sonra bu bağlantıya yeniden dokun."
-      : ad + " Hero Block uygulamasında oynanır. Uygulama yakında Google Play'de.";
+    document.getElementById('davetMetin').textContent = ad + ' Hero Block uygulamasında oynanır. ' + not;
     document.getElementById('davet').hidden = false;
   }
 
