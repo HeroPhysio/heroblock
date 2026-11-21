@@ -105,6 +105,15 @@ jobs:
           done
           test -f $P/public/index.html
           test -f $P/public/admob.config.json && cat $P/public/admob.config.json
+          # Ses: arka planda ses izni yok ve oturum "ambient" (müzik uygulamasını durdurmaz, kilit ekranında medya kartı çıkmaz)
+          if /usr/libexec/PlistBuddy -c "Print :UIBackgroundModes" $P/Info.plist 2>/dev/null | grep -q audio; then
+            echo "::error::Info.plist › UIBackgroundModes içinde 'audio' var: kaldırılmalı (oyun arka planda ses çalmaz)"; exit 1
+          fi
+          grep -q 'setCategory(.ambient' $P/AppDelegate.swift || { echo "::error::AppDelegate ses oturumunu .ambient yapmıyor"; exit 1; }
+          if grep -q "audioSession.type = 'playback'" $P/public/index.html; then
+            echo "::error::Oyun ses oturumunu playback'e alıyor: kilit ekranında medya kartı çıkar"; exit 1
+          fi
+          echo "Ses oturumu: ambient, arka plan sesi yok"
 
       - name: App Store Connect API anahtarını hazırla
         if: inputs.yukle

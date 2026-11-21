@@ -5633,8 +5633,16 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
        bad       sığmayan parça: alçak, yumuşak "pof"
      Mobil kilit: tarayıcılar sesi ancak dokunuşla açar. İlk dokunuşta (pointerdown / touchstart) bağlam kurulur ve
      uyandırılır; iPhone'un istediği parmak kalkışında (touchend / click) yeniden denenir.
-     iPhone notları: Safari, Web Audio seslerini telefon sessiz moddayken kısar. Ses oturumu "playback"e alınınca (iOS 16.4+)
-     sessiz modda da çalar; eski sürümlerde sessiz bir <audio> döngüsü aynı işi görür.
+     iPhone ve iPad: ses oturumu "ambient" (iOS 16.4+ navigator.audioSession; uygulamada AVAudioSession de .ambient). Oyun
+     sesleri başka uygulamanın müziğiyle (Spotify, Apple Music) karışır, onu durdurmaz; kilit ekranında ve Denetim
+     Merkezi'nde medya kartı çıkmaz. Telefon sessiz moddayken (zil anahtarı) oyun sesleri de susar. <audio> öğesi hiç
+     kullanılmaz: bir <audio> çalmak ses oturumunu "playback"e alır (müzik durur, medya kartı çıkar).
+     Android tablet: ses tamponu ~50 ms (telefonda cihazın en küçük tamponu kalır, gecikme artmaz). Büyük ve 120 Hz ekranda
+     patlama efektleri işlemciyi yorarken küçük tampon zamanında dolmuyor, ses cızırdıyordu. Sesler tamponun dörtte biri
+     kadar ileriye planlanır (4-15 ms): büyük tamponda geç başlayıp girişini atlamaz.
+     Çok ses sınırı: aynı anda en çok SES_SINIR ses (osilatör ya da gürültü) çalar; aşılırsa en eski efekt 15 ms'de kısılıp
+     durdurulur (kesilme tıkı olmaz). Notalar doğrusal girişle (en az 3 ms), gürültü katmanları 1,5 ms'lik girişle başlar:
+     ani sıçrama (tablet hoparlöründe tık / patlama) olmaz.
      Uzun oyunda iPhone sesi kesebilir (bildirim, arama, ses yolu değişimi): bekçi bunu fark eder (bağlam durmuş ya da zamanı
      ilerlemiyor), iki kez kendiliğinden açmayı dener, olmazsa "SES DURDU" düğmesi çıkar; ona dokununca ses bağlamı baştan
      kurulur. Sürükleme sırasında sesi açmaya çalışılmaz (iPhone'da takılma yapar). Bağlam bir kez çalıştıktan sonra durursa
@@ -5642,6 +5650,17 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   const SES_PENTA = [523.25, 587.33, 659.25, 783.99, 880, 1046.5];   // do majör pentatonik: C5 D5 E5 G5 A5 C6
   // Kombo adımının notası: 1 → 523 Hz, 2 → 587 Hz ... 6 ve üstü → 1046 Hz
   const sesKok = kombo => SES_PENTA[Math.min(Math.max(Math.floor(kombo) || 1, 1), SES_PENTA.length) - 1];
+  // Android tablet (kısa kenarı en az 600 dp): ses tamponu ~50 ms. Telefonda cihazın en küçük tamponu ('interactive') kalır
+  const SES_TABLET = /Android/i.test(navigator.userAgent) && Math.min(screen.width || 0, screen.height || 0) >= 600;
+  const SES_TAMPON = SES_TABLET ? 0.05 : 'interactive';
+  const SES_EN_AZ_GIRIS = 0.003, SES_GURULTU_GIRIS = 0.0015;   // nota ve gürültü katmanı girişleri (sn)
+  // Çalınan efektin sesleri (çok ses sınırı için): efekt tarifi çalışırken SoundEngine.cal doldurur; testte (çevrimdışı) boş
+  let sesGrup = null;
+  function sesKaydet(kaynak, bitis) {
+    if (!sesGrup) return;
+    sesGrup.kaynak.push(kaynak);
+    if (bitis > sesGrup.bitis) sesGrup.bitis = bitis;
+  }
 
   // Tek ses: osilatör (isteğe bağlı frekans kayması) + zarf (hızlı giriş, üstel sönüş) + isteğe bağlı alçak geçiren süzgeç.
   // o: { t, f, f2, kay, a (tepe), giris, sure, dalga, det (cent), suzgec (Hz) }. Ses bitince düğümler ağdan ayrılır
@@ -5651,9 +5670,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     osc.frequency.setValueAtTime(o.f, t);
     if (o.f2) osc.frequency.exponentialRampToValueAtTime(o.f2, t + o.kay);
     if (o.det) osc.detune.setValueAtTime(o.det, t);
-    const giris = o.giris || 0.004, son = t + giris + o.sure;
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(Math.max(o.a, 0.0002), t + giris);
+    // Giriş doğrusal ve en az 3 ms (üstel giriş son milisaniyede birden yükseliyordu: tık); sönüş üstel
+    const giris = Math.max(o.giris || 0.004, SES_EN_AZ_GIRIS), son = t + giris + o.sure;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(Math.max(o.a, 0.0002), t + giris);
     g.gain.exponentialRampToValueAtTime(0.0001, son);
     osc.connect(g);
     let uc = g;
@@ -5668,6 +5688,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     osc.start(t);
     osc.stop(son + 0.02);
     osc.onended = () => { try { osc.disconnect(); g.disconnect(); if (uc !== g) uc.disconnect(); } catch (e) { /* zaten ayrık */ } };
+    sesKaydet(osc, son + 0.02);
   }
   // Kısa süzülmüş gürültü (tahta çıtı, patlama tısı). Gürültü kaydı bağlam başına bir kez çizilir (sabit tohum)
   const sesGurultuler = new WeakMap();
@@ -5684,14 +5705,17 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     bp.type = 'bandpass';
     bp.frequency.value = f;
     bp.Q.value = q;
-    g.gain.setValueAtTime(a, t);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + sure);
+    // 1,5 ms'lik giriş: "çıt" keskin kalır, ama ani sıçrama (tablet hoparlöründe patlama) olmaz
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(a, t + SES_GURULTU_GIRIS);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(sure, SES_GURULTU_GIRIS + 0.004));
     src.connect(bp);
     bp.connect(g);
     g.connect(out);
     src.start(t);
     src.stop(t + sure + 0.02);
     src.onended = () => { try { src.disconnect(); bp.disconnect(); g.disconnect(); } catch (e) { /* zaten ayrık */ } };
+    sesKaydet(src, t + sure + 0.02);
   }
 
   // Efekt tarifleri: (bağlam, çıkış, başlama zamanı, ...). Hem oyunda (canlı) hem testte (çevrimdışı bağlam) aynı tarif çalışır
@@ -5789,7 +5813,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
 
   const SoundEngine = {
-    ac: null, yol: null, hacim: 0.7, resumeT: -1e9, ran: false, silentEl: null,
+    ac: null, yol: null, hacim: 0.7, resumeT: -1e9, ran: false,
+    ileri: 0.004,      // seslerin şimdiden ne kadar ileriye planlandığı (sn): tamponun dörtte biri, 4-15 ms
+    SES_SINIR: 36,     // aynı anda en çok kaç ses (osilatör / gürültü); tam temizlik anı ~31
+    gruplar: [],       // çalan efektler: { cikis (kazanç), kaynak (sesler), bitis, susuyor }
     dead: false, stall: 0, lastT: -1, autoTries: 0, kayit: [],
     /* Android'de telefonun ses yükselticisi kısa bir sessizlikte uykuya geçiyor (ör. Samsung). Bağlam "çalışıyor"
        görünse de her ses önce onun uyanmasını bekliyor, bu yüzden hamle sesleri geç geliyordu. Duyulmayacak kadar
@@ -5817,18 +5844,23 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       this.uyanik = null;
       if (s) { try { s.stop(); s.disconnect(); } catch (e) { /* bağlam kapanmış */ } }
     },
+    // iPhone / iPad: ses oturumu "ambient": başka uygulamanın müziği durmaz, kilit ekranında medya kartı çıkmaz
     session() {
       try {
-        if (navigator.audioSession && navigator.audioSession.type !== 'playback') navigator.audioSession.type = 'playback';
+        if (navigator.audioSession && navigator.audioSession.type !== 'ambient') navigator.audioSession.type = 'ambient';
       } catch (e) { /* desteklenmiyor */ }
     },
     ensure() {
       if (this.ac) return true;
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return false;
-      try { this.ac = new AC({ latencyHint: 'interactive' }); } catch (e) {
+      try { this.ac = new AC({ latencyHint: SES_TAMPON }); } catch (e) {
         try { this.ac = new AC(); } catch (e2) { return false; }
       }
+      // Planlama payı: tamponun dörtte biri (en az 4, en çok 15 ms). Büyük tamponda ses işleme bir seferde ~50 ms ilerler;
+      // pay az kalırsa ses geç başlar ve girişini atlar (tık)
+      this.ileri = Math.min(0.015, Math.max(0.004, (Number(this.ac.baseLatency) || 0) / 4));
+      this.gruplar = [];
       try { this.yol = sesZinciri(this.ac, this.hacim); } catch (e) { this.yol = null; }
       this.ac.onstatechange = () => {
         if (this.ac.state === 'running') this.ran = true;
@@ -5846,36 +5878,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     },
     // Menü müziğinin bağlanacağı yer (ana kazanç)
     muzikGirisi() { return this.yol ? this.yol.ana : null; },
-    // Eski iOS: sessiz bir sesin döngüde çalınması, sessiz moddayken de Web Audio'nun duyulmasını sağlar
-    silentLoop() {
-      if (this.silentEl || navigator.audioSession || !/iP(hone|ad|od)|Macintosh/.test(navigator.userAgent) || !('ontouchend' in document)) return;
-      try {
-        const rate = 8000, n = 800, buf = new Uint8Array(44 + n);
-        const w32 = (o, v) => { buf[o] = v & 255; buf[o + 1] = (v >> 8) & 255; buf[o + 2] = (v >> 16) & 255; buf[o + 3] = (v >> 24) & 255; };
-        const w16 = (o, v) => { buf[o] = v & 255; buf[o + 1] = (v >> 8) & 255; };
-        [82, 73, 70, 70].forEach((c, i) => { buf[i] = c; }); w32(4, 36 + n);
-        [87, 65, 86, 69, 102, 109, 116, 32].forEach((c, i) => { buf[8 + i] = c; });
-        w32(16, 16); w16(20, 1); w16(22, 1); w32(24, rate); w32(28, rate); w16(32, 1); w16(34, 8);
-        [100, 97, 116, 97].forEach((c, i) => { buf[36 + i] = c; }); w32(40, n);
-        buf.fill(128, 44);
-        let bin = '';
-        for (let i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
-        const el = document.createElement('audio');
-        el.src = 'data:audio/wav;base64,' + btoa(bin);
-        el.loop = true;
-        el.setAttribute('playsinline', '');
-        el.setAttribute('x-webkit-airplay', 'deny');
-        el.preload = 'auto';
-        this.silentEl = el;
-        const p = el.play();
-        if (p && p.catch) p.catch(() => { this.silentEl = null; });
-      } catch (e) { this.silentEl = null; }
-    },
     // Ses bağlamını baştan kurar: eskisi kapatılır (müzik yeni bağlamda yeniden başlar)
     rebuild() {
       const old = this.ac;
       this.uyut();
-      this.ac = null; this.yol = null; this.ran = false;
+      this.ac = null; this.yol = null; this.ran = false; this.gruplar = [];
       this.dead = false; this.stall = 0; this.lastT = -1; this.autoTries = 0;
       if (old) {
         try { old.onstatechange = null; const p = old.close(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* zaten kapalı */ }
@@ -5903,13 +5910,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
           s.start(0);
         } catch (e) { /* ses desteklenmiyor */ }
       }
-      this.silentLoop();
-      if (this.silentEl && this.silentEl.paused && !document.hidden) { const p = this.silentEl.play(); if (p && p.catch) p.catch(() => {}); }
     },
-    // Sayfa gizlenince ya da ses kapatılınca: sessiz döngü durur; ses kapalıysa ses oturumu da bırakılır (müzik uygulaması sürebilsin)
+    // Sayfa gizlenince ya da ses kapatılınca: uyanık tutma sesi durur; ses kapalıysa bağlam da askıya alınır
     pause() {
       this.uyut();
-      if (this.silentEl && !this.silentEl.paused) this.silentEl.pause();
       if (!soundOn && this.ac && this.ac.state === 'running') { const p = this.ac.suspend(); if (p && p.catch) p.catch(() => {}); }
     },
     // Çalınabilir mi: bağlam çalışıyorsa evet. Bağlam henüz hiç çalışmadıysa (ilk dokunuş) az önce açılması
@@ -5937,11 +5941,48 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (this.stall >= 2 && !this.dead) { this.dead = true; showNotice(); }
     },
     // Efekti çal (anında üretilir). gecikme: saniye (ör. tam temizlik arpeji patlamanın hemen ardından)
+    // Her efekt kendi grup kazancından geçer (çok ses sınırında efekt bir bütün olarak kısılır)
     cal(ad, a, b, gecikme) {
       this.kayit.push({ ad, a, b, gecikme: gecikme || 0 });
       if (this.kayit.length > 60) this.kayit.shift();
       if (!this.ok() || !SES[ad]) return;
-      try { SES[ad](this.ac, this.yol.sfx, this.ac.currentTime + 0.004 + (gecikme || 0), a, b); } catch (e) { /* ses çalınamadı */ }
+      const ac = this.ac, simdi = ac.currentTime;
+      this.gruplar = this.gruplar.filter(g => {
+        if (g.bitis > simdi) return true;
+        try { g.cikis.disconnect(); } catch (e) { /* zaten ayrık */ }
+        return false;
+      });
+      let grup = null;
+      try {
+        grup = { cikis: ac.createGain(), kaynak: [], bitis: 0, susuyor: false };
+        grup.cikis.connect(this.yol.sfx);
+        sesGrup = grup;
+        SES[ad](ac, grup.cikis, simdi + this.ileri + (gecikme || 0), a, b);
+      } catch (e) { /* ses çalınamadı */ } finally { sesGrup = null; }
+      if (!grup) return;
+      if (grup.kaynak.length) { this.gruplar.push(grup); this.sinirla(simdi); }
+      else { try { grup.cikis.disconnect(); } catch (e) { /* zaten ayrık */ } }
+    },
+    // Çok ses sınırı: çalan ya da başlamayı bekleyen ses sayısı SES_SINIR'ı aşarsa en eski efektler (yenisi hariç) 15 ms'de
+    // kısılır ve durdurulur. Kesip atmak yerine kısmak: kesilme tıkı olmaz
+    sinirla(simdi) {
+      const yeni = this.gruplar[this.gruplar.length - 1];
+      let toplam = 0;
+      for (const g of this.gruplar) if (!g.susuyor) toplam += g.kaynak.length;
+      for (const g of this.gruplar) {
+        if (toplam <= this.SES_SINIR) break;
+        if (g.susuyor || g === yeni) continue;
+        g.susuyor = true;
+        toplam -= g.kaynak.length;
+        try { g.cikis.gain.setValueAtTime(1, simdi); g.cikis.gain.linearRampToValueAtTime(0, simdi + 0.015); } catch (e) { /* bağlam kapanmış */ }
+        for (const s of g.kaynak) { try { s.stop(simdi + 0.02); } catch (e) { /* zaten durmuş */ } }
+        g.bitis = Math.min(g.bitis, simdi + 0.03);
+      }
+    },
+    // Şu an çalan ya da başlamayı bekleyen ses sayısı (kısılmakta olanlar hariç)
+    sesSayisi() {
+      const t = this.ac ? this.ac.currentTime : 0;
+      return this.gruplar.reduce((s, g) => s + (g.susuyor || g.bitis <= t ? 0 : g.kaynak.length), 0);
     },
     pick(k) { this.cal('pick', k); },
     place(kare, gecikme) { this.cal('place', kare, undefined, gecikme); },
@@ -5960,6 +6001,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
   };
   const Sound = SoundEngine;   // oyunun geri kalanı Sound adıyla çağırır
+  Sound.session();
 
   /* ================= Çizim ================= */
   // Hazır blok resmini kopyalar; tam boyutta piksele hizalanır (daha hızlı ve keskin)
@@ -9120,6 +9162,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       check: () => { if (!tray.some(p => p && p.fits)) triggerGameOver(); },
       setScore: n => { score = n; displayScore = n; istatTam = false; if (!duel && kip === 'klasik' && score > best) setBest(score); setScoreText(score); updateHud(); queueTheme(0); },
       audio: () => ({ state: Sound.ac ? Sound.ac.state : 'none', session: navigator.audioSession ? navigator.audioSession.type : 'yok',
+        tablet: SES_TABLET, tamponIpucu: SES_TAMPON, ornekleme: Sound.ac ? Sound.ac.sampleRate : 0,
+        tampon: Sound.ac ? Number(Sound.ac.baseLatency) || 0 : 0, ileri: Sound.ileri, sesSayisi: Sound.sesSayisi(), sinir: Sound.SES_SINIR,
+        audioOgesi: document.querySelectorAll('audio').length,
         uyanik: !!(Sound.uyanik && Sound.uyanik.context === Sound.ac), uyanikTepe: Sound.uyanik ? Math.max.apply(null, Array.from(Sound.uyanik.buffer.getChannelData(0).subarray(0, 4096), Math.abs)) : 0 }),
       // Efekti ana çıkıştan (ana kazanç, sıkıştırıcı ve tavan dahil) çevrimdışı geçirip tepe ve ortalama seviyesini döndürür.
       // Oyundaki gibi ölçülür: sıkıştırıcı önce 1 sn sessizlikte oturur, ses sonra çalar. hacim: ana kazanç (varsayılan
@@ -9176,6 +9221,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
           for (let i = bas; i < bas + n; i++) { const s0 = d[i] + c * s1 - s2; s2 = s1; s1 = s0; } return s1 * s1 + s2 * s2 - c * s1 * s2; };
         const g = adaylar.map(guc), en = g.indexOf(Math.max.apply(null, g));
         return { f: adaylar[en], guc: g.map(x => +x.toFixed(2)) };
+      },
+      // Efektin ilk ms milisaniyesi (48 kHz, ana zincirsiz, 50 ms'de başlar): giriş tıkı ölçümü için
+      sesOrnek: async (name, a, b, ms) => {
+        const sr = 48000, ac = new OfflineAudioContext(1, Math.round(sr * 1.2), sr);
+        SES[name](ac, ac.destination, 0.05, a, b);
+        const d = (await ac.startRendering()).getChannelData(0);
+        return Array.from(d.subarray(Math.round(sr * 0.05), Math.round(sr * (0.05 + (ms || 20) / 1000))));
       },
       sounds: () => Object.keys(SES),
       // Seviye ve günlük görevler

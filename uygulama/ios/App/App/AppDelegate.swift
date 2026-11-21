@@ -1,4 +1,5 @@
 import UIKit
+import AVFoundation
 import Capacitor
 
 @UIApplicationMain
@@ -7,8 +8,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        sesOturumunuAyarla()
         return true
+    }
+
+    // Oyun sesleri "ambient" ses oturumunda çalar: başka uygulamanın müziği (Spotify, Apple Music) durmaz, oyunun sesleri
+    // onunla karışır; kilit ekranında ve Denetim Merkezi'nde medya kartı çıkmaz. Telefon sessiz moddayken oyun sesleri de
+    // susar (Apple'ın oyunlar için beklediği davranış). Oyun da aynı oturumu ister (navigator.audioSession.type = "ambient").
+    // Arka planda ses çalınmaz: Info.plist'te UIBackgroundModes / audio yok (iOS derlemesi bunu denetler).
+    private func sesOturumunuAyarla() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default, options: [])
+        } catch {
+            // Ayarlanamazsa oyun yine çalışır; ses oturumunu WebKit'in varsayılanı belirler
+        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -27,6 +40,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        // Başka bir şey (ör. sesli bir reklam) ses oturumunu değiştirdiyse oyuna dönünce yeniden "ambient"
+        sesOturumunuAyarla()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
