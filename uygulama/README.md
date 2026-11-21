@@ -132,6 +132,7 @@ Sitenin kökünde `app-ads.txt` yayında: `google.com, pub-1035107027510605, DIR
 Uygulama, `@capgo/native-purchases` (8.9.16; Google Play Billing 9, iOS StoreKit 2) eklentisiyle **tek seferlik** bir ürün satar: **REKLAMSIZ OYUN**. Satın alan oyuncuda şerit ve oyun arası reklam çıkmaz; ödüllü reklamlar (joker hakkı, ikinci şans) isteğe bağlı kalır. Sitede satın alma yoktur.
 
 - **Ana menüde REKLAMLARI KALDIR** düğmesi (mağazanın fiyatıyla) ve **oyun her açıldığında** (ve uygulamaya 30 dakikadan uzun aradan sonra dönülünce) bir kez küçük bir pencere: başlık, açıklama, **SATIN AL ₺100,00**, **ŞİMDİ DEĞİL**, **SATIN ALIMI GERİ YÜKLE**. Pencere ana menü açıkken çıkar; takma ad, izin (UMP) ya da başka bir pencere varken bekler, oyuncu o arada oyuna başladıysa çıkmaz.
+- **Düğme her zaman görünür:** REKLAMLARI KALDIR, mağaza ürünü göndermese de (internet yok, ürün mağazada henüz hazır değil) fiyatsız durur. Pencere ürünün durumunu yazar (**Fiyat mağazadan alınıyor…** / **şu an mağazadan yüklenemedi**); **SATIN AL** ürünü hemen yeniden ister, fiyat gelince ödeme ekranı açılır; **SATIN ALIMI GERİ YÜKLE** her zaman çalışır. Açılış penceresi ise yalnızca ürün (fiyat) gelince çıkar. Düğmenin görünmediği durumlar: satış panelden kapalı, oyuncu zaten satın almış, sitede (tarayıcı).
 - **Fiyat mağazada belirlenir** (Google, uygulama içi ödemede fiyatın mağazadan gelmesini şart koşar). Oyun fiyatı mağazadan okur ve oyuncunun para biriminde gösterir; kodda fiyat yoktur.
 - **Yönetim paneli** (skor sunucusu sürüm 6 › Uzaktan ayar › **REKLAMSIZ PAKET**): satışı aç / kapat, açılış penceresini aç / kapat, ürün kimliği (`reklamsiz` ile başlar), Türkçe / İngilizce ad ve açıklama. Uygulama bunları açılışta `?a=config` adresinden okur (birkaç dakikada yayılır).
 - **Fiyatı değiştirmek:** Play Console › Para kazanma › Ürünler › Uygulama içi ürünler › `reklamsiz` › fiyatı düzenle. Ya da farklı fiyatlı ikinci bir ürün aç (ör. `reklamsiz_150`) ve kimliğini panele yaz: `reklamsiz` ile başlayan **herhangi bir** ürünü almış oyuncu reklamsızdır, eski fiyattan alanlar etkilenmez.
@@ -146,7 +147,13 @@ Uygulama, `@capgo/native-purchases` (8.9.16; Google Play Billing 9, iOS StoreKit
 
 ### App Store Connect (iOS)
 
-Uygulama › **Uygulama İçi Satın Almalar** › **Tüketilmeyen** (Non-Consumable): ürün kimliği **`reklamsiz`**, fiyat 100 TRY'ye en yakın basamak, görünen ad ve açıklama (mağaza metinleri dosyasında). İlk ürün, uygulamanın bir sürümüyle birlikte incelemeye gönderilir. iOS'ta **SATIN ALIMI GERİ YÜKLE** zorunludur, pencerede var.
+Uygulama › **Uygulama İçi Satın Almalar** › **Tüketilmeyen** (Non-Consumable): ürün kimliği **`reklamsiz`**, fiyat 100 TRY'ye en yakın basamak, görünen ad ve açıklama (mağaza metinleri dosyasında). İlk ürün, uygulamanın bir sürümüyle birlikte incelemeye gönderilir (sürüm sayfası › **Uygulama İçi Satın Almalar ve Abonelikler** bölümünde ürünü seç). iOS'ta **SATIN ALIMI GERİ YÜKLE** zorunludur, pencerede var.
+
+StoreKit ürünü (TestFlight'ta ve App Review'da da) ancak şunlar tamamsa döndürür; biri eksikse pencere "şu an mağazadan yüklenemedi" yazar (Apple TN3186):
+- Ürün kimliği tam olarak `reklamsiz`, fiyatı ve en az bir dil için görünen adı / açıklaması girilmiş (durum: **Gönderilmeye Hazır**, "Eksik Meta Veri" değil).
+- **İş › Sözleşmeler:** Ücretli Uygulamalar sözleşmesi **Etkin**; banka hesabı ve vergi formları da **Etkin**.
+- Uygulamanın paket kimliği `tr.com.herouygulama.heroblock` ve bu kimlikte In-App Purchase yeteneği açık (açık kimliklerde varsayılan olarak açıktır).
+- Ürün ayarındaki değişikliklerin deneme ortamına yansıması 1 saati bulabilir.
 
 ## Mağaza bağlantıları
 

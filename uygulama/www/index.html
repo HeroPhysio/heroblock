@@ -2494,6 +2494,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     satinGeriYuklendi: 'Satın alımın geri yüklendi. Reklamlar kaldırıldı.',
     satinBulunamadi: 'Bu hesapta reklamsız oyun satın alımı bulunamadı.',
     satinMagazaYok: 'Mağazaya ulaşılamadı. İnternet bağlantını kontrol edip yeniden dene.',
+    satinYukleniyor: 'Fiyat mağazadan alınıyor…',
+    satinUrunYok: 'Reklamsız oyun şu an mağazadan yüklenemedi. Biraz sonra SATIN AL\'a yeniden dokun. Daha önce satın aldıysan SATIN ALIMI GERİ YÜKLE\'ye dokun.',
     // Seviye (XP), rütbe ve günlük görevler
     rCaylak: 'ÇAYLAK',
     rStratejist: 'STRATEJİST',
@@ -2825,6 +2827,8 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     satinGeriYuklendi: 'Your purchase was restored. Ads are removed.',
     satinBulunamadi: 'No ad-free purchase was found on this account.',
     satinMagazaYok: 'Could not reach the store. Check your internet connection and try again.',
+    satinYukleniyor: 'Getting the price from the store…',
+    satinUrunYok: 'Ad-free play could not be loaded from the store right now. Tap BUY again in a moment. If you bought it before, tap RESTORE PURCHASE.',
     rCaylak: 'ROOKIE',
     rStratejist: 'STRATEGIST',
     rBlokUstasi: 'BLOCK MASTER',
@@ -7655,6 +7659,10 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
      iade edilen satın alma geri alınır, sonradan tamamlanan (bekleyen) ödeme onaylanıp reklamlar kalkar.
      Açılış penceresi: her açılışta (ve uygulamaya 30 dakikadan uzun aradan sonra dönünce) bir kez, ana menü açıkken. Başka pencere,
      reklam ya da Google'ın izin penceresi varken beklenir; oyuncu o arada oyuna başladıysa çıkmaz (oyunun ortasına girmez).
+     Açılış penceresi yalnızca ürün (fiyatı) mağazadan gelince çıkar.
+     REKLAMLARI KALDIR düğmesi uygulamada her zaman görünür: mağaza ürünü göndermese de (internet yok, ürün mağazada henüz
+     yok ya da hazır değil) fiyatsız durur; pencere ürünün durumunu yazar ve SATIN AL ürünü hemen yeniden ister (gelirse ödeme
+     ekranı açılır). Düğmenin görünmediği durumlar: satış panelden kapalı, oyuncu zaten satın almış, sitede (eklenti yok).
      Sitede (tarayıcıda) satın alma yok: düğme ve pencere görünmez. */
   const K_REKLAMSIZ = 'blokKahramani.reklamsiz';
   const SATIS_DONUS = 30 * 60000;   // uygulamaya bu kadar aradan sonra dönünce açılış penceresi yeniden çıkar
@@ -7719,6 +7727,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       }).catch(() => {
         if (D.urunSoz === p) D.urunSoz = null;
         if (D.ayar.urun === id && !D.urun && !D.sahip) D.urunT = setTimeout(urunYukle, Math.min(600000, 15000 * Math.pow(2, D.urunDeneme++)));
+        ciz();
         return null;
       });
       D.urunSoz = p;
@@ -7765,11 +7774,12 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       return true;
     }
 
-    // Ana menüdeki REKLAMLARI KALDIR düğmesi (mağaza fiyatıyla) ve açık pencerenin yazıları
+    // Ana menüdeki REKLAMLARI KALDIR düğmesi ve açık pencerenin yazıları. Düğme, ürün mağazadan gelmese de görünür (fiyatsız):
+    // oyuncu da App Store incelemesi de satın almayı her zaman bulur
     function ciz() {
-      const sat = !!(NP && D.ayar.acik && !D.sahip && D.urun);
+      const sat = !!(NP && D.ayar.acik && !D.sahip);
       $('btnReklamsiz').hidden = !sat;
-      $('rsFiyat').textContent = sat ? D.urun.fiyat : '';
+      $('rsFiyat').textContent = sat && D.urun ? D.urun.fiyat : '';
       if (!ovSatin.hidden) yazilar();
     }
     function yazilar() {
@@ -7778,10 +7788,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       $('stnAciklama').textContent = D.ayar.aciklama[d] || yaz('satinVarsayilanAciklama');
       $('stnFiyat').textContent = D.urun ? D.urun.fiyat : '';
       $('stnNot').textContent = yaz(ios ? 'satinNotIos' : 'satinNotAndroid');
+      const durum = D.durum || (D.urun ? '' : D.urunSoz ? 'satinYukleniyor' : 'satinUrunYok');
       const el = $('stnDurum');
-      el.textContent = D.durum ? yaz(D.durum) : '';
-      el.hidden = !D.durum;
-      $('stnAl').disabled = D.mesgul || !D.urun;
+      el.textContent = durum ? yaz(durum) : '';
+      el.hidden = !durum;
+      $('stnAl').disabled = D.mesgul;
       $('stnGeri').disabled = D.mesgul;
     }
     function durumYaz(anahtar) {
@@ -7792,11 +7803,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     function ac() {
       if (!NP || D.sahip || !D.ayar.acik || !ovSatin.hidden) return false;
       D.durum = '';
+      if (!D.urun) urunYeniden();
       yazilar();
       ovSatin.hidden = false;
       setModal();
       focusDialog('stnAl', 'stnCard');
-      if (!D.urun) urunYukle();
       return true;
     }
     function kapat() {
@@ -7817,7 +7828,18 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     // SATIN AL: mağazanın ödeme penceresi. Vazgeçince sessizce geri döner; bekleyen ödemede (ör. nakit) onaylanınca reklamlar kalkar
     function satinAl() {
       if (!NP || D.mesgul || D.sahip) return;
-      if (!D.urun) { durumYaz('satinMagazaYok'); urunYeniden(); return; }
+      if (!D.urun) {
+        D.mesgul = true;
+        D.durum = '';
+        urunYeniden();
+        yazilar();
+        Promise.resolve(D.urunSoz).then(() => {
+          D.mesgul = false;
+          if (D.urun && !D.sahip && !ovSatin.hidden) satinAl();
+          else yazilar();
+        });
+        return;
+      }
       D.mesgul = true;
       durumYaz('satinAciliyor');
       yap('purchaseProduct', { productIdentifier: D.urun.id, productType: 'inapp' }).then(t => {
@@ -7899,6 +7921,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       // Açılışta (boot): ayarSozu uzaktan ayarın sunucudan okunması (açılış penceresi yeni ayarı bekler, en çok 8 sn)
       basla(ayarSozu) {
         if (!NP) return;
+        ciz();
         const geldi = () => { D.ayarGeldi = true; };
         Promise.resolve(ayarSozu).then(geldi, geldi);
         setTimeout(geldi, 8000);
