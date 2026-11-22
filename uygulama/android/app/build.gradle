@@ -58,10 +58,10 @@ android {
         applicationId "tr.com.herouygulama.heroblock"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        // Sürüm: Google Play'e her yüklemede sürüm kodu bir öncekinden büyük olmalı (1.0.11 = 12, 1.1 = 13). Bulut derlemesi
-        // (GitHub Actions) ya da komut satırı -PhbSurumKodu=… -PhbSurum=… ile başka bir değer verebilir
-        versionCode((project.findProperty('hbSurumKodu') ?: '13') as Integer)
-        versionName((project.findProperty('hbSurum') ?: '1.1') as String)
+        // Sürüm: Google Play'e her yüklemede sürüm kodu bir öncekinden büyük olmalı (1.0.11 = 12, 1.1 = 13, 1.2 = 14). Bulut
+        // derlemesi (GitHub Actions) ya da komut satırı -PhbSurumKodu=… -PhbSurum=… ile başka bir değer verebilir
+        versionCode((project.findProperty('hbSurumKodu') ?: '14') as Integer)
+        versionName((project.findProperty('hbSurum') ?: '1.2') as String)
         // Google AdMob Android uygulama kimliği (yukarıda admob.config.json'dan okunur)
         manifestPlaceholders = [admobAppId: admobAppId]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -106,6 +106,11 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+    // "Hesabını Koru (Google ile Bağla)": Android Credential Manager ile Google'da oturum açma (HBGooglePlugin). Oyun düğmeyi
+    // yalnızca skor sunucusu Google istemci kimliğini bildirdiğinde gösterir
+    implementation "androidx.credentials:credentials:1.3.0"
+    implementation "androidx.credentials:credentials-play-services-auth:1.3.0"
+    implementation "com.google.android.libraries.identity.googleid:googleid:1.1.1"
 }
 
 apply from: 'capacitor.build.gradle'

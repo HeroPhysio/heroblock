@@ -19,7 +19,7 @@ Bu deponun kökü GitHub Pages ile yayınlanan **tanıtım ve indirme sayfasıd�
 | `img/` | Ekran görüntüleri (WebP ve JPEG) |
 | `og.jpg` | Bağlantı paylaşılınca görünen önizleme görseli (1200x630) |
 | `sw.js` | Sitenin eski hâlinin tarayıcıya kaydettiği çevrimdışı oyun kopyasını siler ve kendini kaldırır |
-| `.well-known/assetlinks.json` | Android App Links: sitenin bağlantılarını Hero Block uygulamasına bağlar (paket adı ve imza sertifikalarının SHA-256 parmak izleri) |
+| `.well-known/assetlinks.json` | Android App Links (uygulamanın 1.0.11–1.1 sürümleri için): sitenin bağlantılarını Hero Block uygulamasına bağlar (paket adı ve imza sertifikalarının SHA-256 parmak izleri) |
 | `app-ads.txt` | Google AdMob yetkili satıcılar dosyası (app-ads.txt): uygulamanın reklam yayıncı kimliği (`pub-1035107027510605`); AdMob mağazadaki geliştirici sitesinin kökünde arar |
 | `fonts/` | Russo One ve Rajdhani (SIL Open Font License) |
 
@@ -30,9 +30,9 @@ Adresi boş mağazanın indirme düğmeleri "YAKINDA" yazar ve tıklanmaz; adres
 mağazaya gider. Adres elle yazılırsa sayfanın açıklama satırlarındaki (`description`, `og:description`) mağaza cümlesi de
 güncellenir.
 
-Uygulamadan paylaşılan düello (`?duel=`) ve meydan okuma (`?challenge=`) bağlantıları bu sayfayı açar; sayfa ziyaretçiye
-bunların uygulamada oynandığını söyler. Android'de uygulama yüklüyse bağlantılar tarayıcı yerine doğrudan uygulamada açılır
-(`.well-known/assetlinks.json`; uygulamanın 1.0.11 sürümünden başlayarak).
+Uygulamanın eski sürümlerinin paylaştığı düello (`?duel=`) ve meydan okuma (`?challenge=`) bağlantıları bu sayfayı açar;
+sayfa ziyaretçiye düelloların artık uygulamada gerçek zamanlı oynandığını söyler. 1.0.11–1.1 sürümü yüklü Android cihazlarda bu
+bağlantılar tarayıcı yerine uygulamada açılır (`.well-known/assetlinks.json`); 1.2'de App Links kaldırıldı.
 
 ## Uygulama: `uygulama/`
 

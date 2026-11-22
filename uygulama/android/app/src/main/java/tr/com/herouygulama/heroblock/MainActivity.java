@@ -16,12 +16,14 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // Uygulama son kullanılanlardan ya da sistem kapattıktan sonra yeniden açılınca Android ilk açılıştaki bağlantıyı
-        // (ör. eski bir düello daveti) yeniden verir: o bağlantı ilk açılışta açıldı, ikinci kez açılmasın
+        // yeniden verir: o bağlantı ilk açılışta açıldı, ikinci kez açılmasın (1.2'de App Links kalktı; önlem olarak durur)
         Intent acilis = getIntent();
         if (acilis != null && acilis.getData() != null
                 && (savedInstanceState != null || (acilis.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0)) {
             setIntent(new Intent(acilis).setData(null));
         }
+        // Uygulamanın kendi eklentisi (npm paketi değil): Google ile hesap koruma. Capacitor'a oyun yüklenmeden önce tanıtılır
+        registerPlugin(HBGooglePlugin.class);
         // Önce Capacitor kendi temasını (başlık çubuğu olmayan AppTheme.NoActionBar) kurar ve oyunu yükler. Kenardan kenara
         // görünüm bundan SONRA açılır: önce açılırsa pencere açılış temasıyla kurulur ve Android 12 ve sonrasında üstte
         // "Hero Block" yazan bir başlık çubuğu kalır.
