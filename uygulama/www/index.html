@@ -812,6 +812,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
   .jk-n svg { width: .8em; height: .8em; flex: none; }
   .jk[data-durum="reklam"] .jk-n { color: #041230; background: linear-gradient(180deg, #86ecff, #2b8cff); box-shadow: 0 0 10px rgba(43, 227, 255, .6), 0 0 0 1.5px var(--bg); }
+  /* Android: hakkı biten jokerin reklamı henüz yüklenmedi: rozet "▶ +1" soluk ve yavaşça yanıp söner, düğme pasif */
+  .jk[data-durum="reklamBekle"] { cursor: default; }
+  .jk[data-durum="reklamBekle"]:active { transform: none; }
+  .jk[data-durum="reklamBekle"] .jk-n { color: #041230; background: linear-gradient(180deg, #86ecff, #2b8cff); box-shadow: 0 0 0 1.5px var(--bg); animation: jkBekle 1.1s ease-in-out infinite alternate; }
+  @keyframes jkBekle { from { opacity: .3; } to { opacity: .7; } }
   .jk[data-durum="bos"] { opacity: .45; filter: saturate(.4); cursor: default; }
   .jk[data-durum="bos"]:active { transform: none; }
   .jk[data-durum="bos"] .jk-n { color: #c9d6f2; background: #2a3658; box-shadow: 0 0 0 1.5px var(--bg); }
@@ -880,6 +885,11 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   .bd-ust { display: flex; align-items: center; justify-content: center; gap: 9px; font: 700 17px/1.05 var(--ui); letter-spacing: .1em; }
   .bd-ust svg { width: 20px; height: 20px; flex: none; margin-top: -2px; }
   .bd-alt { font: 700 12px/1 var(--ui); letter-spacing: .16em; opacity: .75; }
+  /* Android: ödüllü reklam henüz yüklenmedi: düğme pasif, üst satırda "REKLAM HAZIRLANIYOR…" */
+  .bd-bekle { display: none; }
+  .btn-devam.bekle .bd-bekle { display: inline; }
+  .btn-devam.bekle [data-t="ikinciSans"] { display: none; }
+  .btn-devam.bekle:disabled { opacity: .62; filter: saturate(.55); cursor: default; }
   /* Reklam penceresi: sitede test için 2 saniyelik taklit, uygulamada reklam yüklenirken */
   #ovReklam { z-index: 30; }
   .rk-card { width: min(340px, 100%); }
@@ -1014,6 +1024,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
   }
   @media (prefers-reduced-motion: reduce) {
     .jk.on::after, #jokerBar.ikaz .jk[data-durum="var"]::after { animation: none; opacity: 1; }
+    .jk[data-durum="reklamBekle"] .jk-n { animation: none; opacity: .5; }
     #trayCv.secim, #cells.secim, .rk-ikon::after, .rk-cubuk.belirsiz i { animation: none; }
   }
   /* Takma ad penceresi */
@@ -1728,7 +1739,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     </div>
     <div id="goXp" class="go-xp" hidden><span class="pr-rozet" aria-hidden="true"><b id="goSv">1</b></span><span class="go-xp-orta" aria-hidden="true"><span class="pr-ust"><span id="goRutbe" class="pr-rutbe">ÇAYLAK</span><span id="goXpKazanc" class="go-xp-kazanc">+0 XP</span></span><span class="pr-cubuk"><i id="goCubuk"></i></span></span></div>
     <button id="goWeek" class="go-week" type="button" hidden></button>
-    <button id="goDevam" class="btn btn-devam" type="button" data-ta="ikinciSansAria" aria-label="Reklam izle — tahtayı temizle ve devam et" hidden><span class="bd-ust"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4v16l13-8z" fill="currentColor"/></svg><span data-t="ikinciSans">REKLAM İZLE</span></span><span class="bd-alt" data-t="ikinciSansAlt">TAHTAYI TEMİZLE VE DEVAM ET</span></button>
+    <button id="goDevam" class="btn btn-devam" type="button" data-ta="ikinciSansAria" aria-label="Reklam izle — tahtayı temizle ve devam et" hidden><span class="bd-ust"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4v16l13-8z" fill="currentColor"/></svg><span data-t="ikinciSans">REKLAM İZLE</span><span class="bd-bekle" data-t="ikinciSansBekle">REKLAM HAZIRLANIYOR…</span></span><span class="bd-alt" data-t="ikinciSansAlt">TAHTAYI TEMİZLE VE DEVAM ET</span></button>
     <button id="btnAgain" class="btn btn-primary" type="button" data-t="tekrarOyna">TEKRAR OYNA</button>
     <button id="goMeydan" class="btn btn-ghost btn-gap btn-ico btn-meydan" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="m8.3 10.8 7.4-4M8.3 13.2l7.4 4"/></svg><span data-t="meydanOku">ARKADAŞINA MEYDAN OKU</span></button>
     <button id="btnDuelOver" class="btn btn-ghost btn-gap btn-ico btn-duello" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.4 3-5.3 6-5.3s5.4 1.9 6 5.3"/><circle cx="17" cy="9" r="2.6"/><path d="M16.6 14.3c2.4.1 4 1.7 4.6 4.6"/></svg><span data-t="duelloOyna">ARKADAŞINLA DÜELLO</span></button>
@@ -2474,6 +2485,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     rkGecisAlt: 'Yeni oyun birazdan başlıyor.',
     rkBekle: 'Bir saniye…',
     rkYok: 'Şu an gösterilecek reklam yok. Biraz sonra tekrar dene.',
+    rkHazirlaniyor: 'Reklam hazırlanıyor. Birazdan yeniden dokun.',
     rkYarim: 'Reklam bitmeden kapandı; ödül verilmedi.',
     rkAlan: 'REKLAM ALANI · TEST',
     // Reklamsız oyun (uygulama içi satın alma); pencere başlığı ve açıklaması yönetim panelinden değişebilir
@@ -2530,7 +2542,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     grOdulAlindi: j => 'Bugünün ödülü alındı: +1 ' + j + '. Yarın yeni görevler!',
     jkOdulKazandin: j => '+1 ' + j + ' hakkı kazandın!',
     // Jokerler ve ikinci şans
-    jkAria: (a, n, d) => (d === 'reklam' ? a + ': hakkın bitti. Reklam izle, 1 hak kazan' : a + ': ' + n + ' hak'),
+    jkAria: (a, n, d) => (d === 'reklam' ? a + ': hakkın bitti. Reklam izle, 1 hak kazan' : d === 'reklamBekle' ? a + ': hakkın bitti. Reklam hazırlanıyor' : a + ': ' + n + ' hak'),
     jkIpDondur: 'DÖNDÜRMEK İÇİN PARÇAYA DOKUN',
     jkIpSil: 'SİLMEK İÇİN DOLU KAREYE DOKUN',
     jkTikandi: 'YER KALMADI · JOKER KULLAN',
@@ -2663,6 +2675,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     jkYenile: 'REROLL',
     jkSil: 'ERASE',
     ikinciSans: 'WATCH AD',
+    ikinciSansBekle: 'GETTING THE AD READY…',
     ikinciSansAlt: 'CLEAR THE BOARD & CONTINUE',
     ikinciSansAria: 'Watch an ad — clear the board and continue',
     reklamGizlilik: 'AD PRIVACY SETTINGS',
@@ -2808,6 +2821,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     rkGecisAlt: 'Your next game starts in a moment.',
     rkBekle: 'One moment…',
     rkYok: 'No ad available right now. Try again in a bit.',
+    rkHazirlaniyor: 'The ad is getting ready. Tap again in a moment.',
     rkYarim: 'The ad was closed early, so no reward this time.',
     rkAlan: 'AD SPACE · TEST',
     reklamlariKaldir: 'REMOVE ADS',
@@ -2866,7 +2880,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     grSecimAria: 'Reward power-up',
     grNot: 'Reward uses kick in once the free use per game is spent, and never expire.',
     jkOdulKazandin: j => '+1 ' + j + ' earned!',
-    jkAria: (a, n, d) => (d === 'reklam' ? a + ': none left. Watch an ad to get 1 more' : a + ': ' + n + ' left'),
+    jkAria: (a, n, d) => (d === 'reklam' ? a + ': none left. Watch an ad to get 1 more' : d === 'reklamBekle' ? a + ': none left. The ad is getting ready' : a + ': ' + n + ' left'),
     jkIpDondur: 'TAP A PIECE TO ROTATE',
     jkIpSil: 'TAP A BLOCK TO ERASE',
     jkTikandi: 'NO ROOM · USE A POWER-UP',
@@ -3113,13 +3127,25 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
      ödüllü reklamlar oyuncu isterse açılır, kalır.
      Kimlikler: bütün AdMob kimlikleri uygulama projesindeki TEK dosyada, uygulama/admob.config.json. "npx cap sync" (ve Android
      derlemesi) onun bir kopyasını (yalnızca o platformun kimlikleri) uygulamanın içine koyar; oyun reklam birimi kimliklerini
-     açılışta oradan okur. Dosya yoksa ya da bir kimlik biçime uymuyorsa o reklam türü hiç istenmez (deneme kimliğine dönülmez). */
+     açılışta oradan okur. Dosya yoksa ya da bir kimlik biçime uymuyorsa o reklam türü hiç istenmez (deneme kimliğine dönülmez).
+     Android v1.1 (yalnızca Google Play sürümü; iOS eski davranışla sürer):
+       • Açılış animasyonu sürerken izin bilgisi istenir, SDK başlatılır, geçiş ve ödüllü reklam önceden yüklenir (izin penceresi
+         ve banner açılıştan sonra). Her reklam kapanır kapanmaz yerine yenisi yüklenir; yüklenmiş reklam 50 dakikadan eskiyse yenilenir.
+       • Yüklenemeyen reklam 3, 6, 12, 24, 30, 30… sn arayla en çok V11.deneme kez yeniden istenir; sonra internet gelince, uygulamaya
+         dönünce ya da oyun bitince yeniden başlanır (Google sürekli başarısız istekten kaçınmayı önerir).
+       • Ödüllü reklam düğmeleri reklam yüklenmediyse "hazırlanıyor" durumunda ve pasif (odulluDurum()); oyuncu bekletilmez.
+       • Geçiş reklamı: son geçiş ya da sonuna kadar izlenen ödüllü reklamdan bu yana en az V11.gecisOyun oyun VE en az V11.gecisSn
+         saniye (uzaktan araSn daha büyükse o). İlk oyunlar reklamsız, herKac 0 ise geçiş reklamı yok (uzaktan ayar) kuralları sürer.
+       • Ekran dönünce (genişlik değişince) uyarlanabilir banner yeni genişliğe göre yeniden istenir. */
   // ilkOyunlar: reklamsız ilk oyun sayısı; herKac: sonra kaç TEKRAR OYNA'da bir geçiş reklamı; icerik: reklamların en yüksek içerik
   // derecesi (General / ParentalGuidance / Teen / MatureAudience); süreler milisaniye
   // araSn: iki geçiş reklamı arasında en az kaç saniye (0: sınır yok); herKac 0: geçiş reklamı yok. ilkOyunlar, herKac ve araSn
   // skor sunucusunun uzaktan ayarıyla (?a=config) değişebilir
   const REKLAM_AYAR = { ilkOyunlar: 2, herKac: 3, araSn: 0, icerik: 'ParentalGuidance', simOdul: 2000, simGecis: 1300, yukleBekle: 8000, odulBekle: 150000, gecisBekle: 90000 };
   const REKLAM_VARSAYILAN = { ilkOyunlar: REKLAM_AYAR.ilkOyunlar, herKac: REKLAM_AYAR.herKac, araSn: REKLAM_AYAR.araSn };
+  // Android v1.1: geçiş reklamı en az gecisOyun oyun ve gecisSn saniyede bir; yeniden deneme ilkBekle'den başlayıp her seferinde
+  // iki katına çıkar (en çok enUzun), en çok deneme kez; yüklenmiş reklamın ömrü (Google'da 1 saat) dolmadan omur ms'de yenilenir
+  const V11 = { gecisOyun: 2, gecisSn: 90, ilkBekle: 3000, enUzun: 30000, deneme: 8, omur: 50 * 60000 };
   const K_REKLAM = 'blokKahramani.reklam';
   const AdManager = (() => {
     let yerel = false;
@@ -3129,13 +3155,24 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     const sim = !yerel && HASHQ.has('test');
     let ios = false;
     try { ios = yerel && typeof CAP.getPlatform === 'function' && CAP.getPlatform() === 'ios'; } catch (e) { ios = false; }
+    // v1.1 iyileştirmeleri yalnızca Android'de (Google Play sürümü); iOS'ta eski davranış sürer
+    let android = false;
+    try { android = yerel && typeof CAP.getPlatform === 'function' && CAP.getPlatform() === 'android'; } catch (e) { android = false; }
     let KIM = { odullu: '', gecis: '', banner: '' };   // yalnızca admob.config.json'dan; boşsa o reklam türü istenmez
     let testCihazlari = [];   // bu cihazlarda gerçek kimliklerle de yalnızca test reklamı çıkar (admob.config.json › testDevices)
     const s0 = store.get(K_REKLAM, null) || {};
-    const sayac = { biten: Math.max(0, s0.biten | 0), tekrar: Math.max(0, s0.tekrar | 0), son: Number.isFinite(s0.son) && s0.son > 0 ? s0.son : 0 };
+    const sayac = { biten: Math.max(0, s0.biten | 0), tekrar: Math.max(0, s0.tekrar | 0), son: Number.isFinite(s0.son) && s0.son > 0 ? s0.son : 0,
+      sonBiten: Math.max(0, s0.sonBiten | 0) };
+    if (sayac.sonBiten > sayac.biten) sayac.sonBiten = sayac.biten;
+    if (sayac.son > Date.now()) sayac.son = 0;   // cihaz saati geri alındıysa
     const D = { basladi: false, izinSuruyor: false, altyapi: false, hazir: false, odullu: null, gecisHazir: false, gecisYukleniyor: false,
-      banner: 0, alan: 0, bannerIstendi: false, acik: false, kapanis: 0, gizlilik: false, izin: null };
+      banner: 0, alan: 0, bannerIstendi: false, acik: false, kapanis: 0, gizlilik: false, izin: null,
+      // Android v1.1: ödüllü reklam yüklü mü (ne zaman), yükleniyor mu; art arda başarısız deneme sayıları; geçiş reklamının yüklenme anı
+      odulluYuklu: false, odulluZaman: 0, odulluYukleniyor: false, odulluDeneme: 0, gecisZaman: 0, gecisDeneme: 0 };
     let kanca = {}, istek = null, bannerT = 0, bannerDeneme = 0, izinT = 0, odulT = 0, gecisT = 0;
+    // Android v1.1: yeniden deneme zamanlayıcısı kurulu mu; izin penceresinin açılışı bekleyeceği işlev (erkenBaslat); banner genişliği
+    let odulBekliyor = false, gecisBekliyor = false, formBekle = null, bannerGen = 0, donusT = 0;
+    const geriCekil = n => Math.min(V11.enUzun, V11.ilkBekle * Math.pow(2, n));   // 3, 6, 12, 24, 30, 30… sn
     let reklamsizMi = false;   // reklamsız oyun satın alındı: banner ve geçiş reklamı yok
     // Bu cihazın son bilinen banner boyu (Google'ın uyarlanabilir banner boyu): sonraki açılışlarda banner alanı baştan ayrılır
     const K_BANNER = 'blokKahramani.bannerBoy';
@@ -3224,12 +3261,13 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
     // Açılış: izin (UMP) → reklam altyapısı → banner ve reklamların ön yüklemesi. İzin bilgisi alınamazsa (ör. internet yok) sonra yeniden denenir
     function baslat() {
-      if (!yerel || D.hazir || D.izinSuruyor) return;
+      if (!yerel || D.hazir || D.izinSuruyor || (android && D.altyapi)) return;
       if (!D.basladi) { D.basladi = true; dinle(); }
       D.izinSuruyor = true;
       clearTimeout(izinT);
       yap('requestConsentInfo')
-        .then(b => (b && b.isConsentFormAvailable && b.status === 'REQUIRED' ? yap('showConsentForm') : b))
+        .then(b => (b && b.isConsentFormAvailable && b.status === 'REQUIRED'
+          ? (formBekle ? new Promise(r => formBekle(r)).then(() => yap('showConsentForm')) : yap('showConsentForm')) : b))
         .then(b => { D.izinSuruyor = false; izinUygula(b); }, () => { D.izinSuruyor = false; izinT = setTimeout(baslat, 60000); });
     }
     function izinUygula(b) {
@@ -3265,22 +3303,74 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     }
 
     // Ödüllü reklamın ön yüklemesi; söz "hazır mı" ile sonuçlanır. Yüklenemezse bir süre sonra yeniden denenir
+    // (iOS: 45 sn sonra; Android v1.1: 3, 6, 12, 24, 30… sn arayla en çok V11.deneme kez, durum değişince oyuna bildirilir)
     function odulluYukle() {
       if (!D.hazir || !KIM.odullu) return Promise.resolve(false);
+      if (android && D.odullu && D.odulluYuklu && Date.now() - D.odulluZaman > V11.omur) { D.odullu = null; D.odulluYuklu = false; }   // eskidi
       if (D.odullu) return D.odullu;
       clearTimeout(odulT);
       const p = yap('prepareRewardVideoAd', { adId: KIM.odullu }).then(() => true, () => false);
       D.odullu = p;
+      if (android) {
+        odulBekliyor = false;
+        D.odulluYukleniyor = true;
+        cagir('odullu');
+        p.then(ok => {
+          if (D.odullu !== p) return;
+          D.odulluYukleniyor = false;
+          if (ok) {
+            D.odulluYuklu = true; D.odulluZaman = Date.now(); D.odulluDeneme = 0;
+            // Ömrü dolmadan (uygulama açıkken) yenisi; arka plandaysa dönüşte tazele() yeniler
+            setTimeout(() => { if (D.odullu === p && D.odulluYuklu) { D.odullu = null; D.odulluYuklu = false; odulluYukle(); } }, V11.omur);
+          } else {
+            D.odullu = null;
+            if (D.odulluDeneme < V11.deneme) { odulBekliyor = true; odulT = setTimeout(odulluYukle, geriCekil(D.odulluDeneme++)); }
+          }
+          cagir('odullu');
+        });
+        return p;
+      }
       p.then(ok => { if (!ok) { if (D.odullu === p) D.odullu = null; odulT = setTimeout(odulluYukle, 45000); } });
       return p;
     }
+    // Android: yüklü ve eskimemiş bir ödüllü reklam var mı
+    const odulluHazir = () => !!(D.odullu && D.odulluYuklu && Date.now() - D.odulluZaman <= V11.omur);
     function gecisYukle() {
       if (!D.hazir || D.gecisHazir || D.gecisYukleniyor || reklamsizMi || !KIM.gecis) return;
       D.gecisYukleniyor = true;
       clearTimeout(gecisT);
+      if (android) gecisBekliyor = false;
       yap('prepareInterstitial', { adId: KIM.gecis })
-        .then(() => { D.gecisHazir = true; }, () => { gecisT = setTimeout(gecisYukle, 60000); })
+        .then(() => {
+          D.gecisHazir = true;
+          if (android) {
+            const z = D.gecisZaman = Date.now();
+            D.gecisDeneme = 0;
+            setTimeout(() => { if (D.gecisHazir && D.gecisZaman === z) { D.gecisHazir = false; gecisYukle(); } }, V11.omur);   // ömrü dolmadan yenisi
+          }
+        }, () => {
+          if (!android) gecisT = setTimeout(gecisYukle, 60000);
+          else if (D.gecisDeneme < V11.deneme) { gecisBekliyor = true; gecisT = setTimeout(gecisYukle, geriCekil(D.gecisDeneme++)); }
+        })
         .then(() => { D.gecisYukleniyor = false; });
+    }
+    // Android v1.1: yüklü reklam eskidiyse ya da denemeler durduysa yükleme yeniden başlar. hemen=true (internet geldi): deneme
+    // dizisi baştan; değilse (uygulamaya dönüş, oyun sonu) durmuş diziye yalnızca iki deneme daha (sürekli başarısız istek olmasın).
+    // Yükleme sürerken ya da yeniden deneme zamanlayıcısı kuruluyken (hemen değilse) bir şey yapılmaz
+    function tazele(hemen) {
+      if (!android || !D.hazir) return;
+      if (D.odulluYuklu && Date.now() - D.odulluZaman > V11.omur) { D.odullu = null; D.odulluYuklu = false; }
+      if (D.gecisHazir && Date.now() - D.gecisZaman > V11.omur) D.gecisHazir = false;
+      const dizi = n => (hemen ? 0 : Math.min(n, V11.deneme - 1));
+      if (KIM.odullu && !D.odullu && (hemen || !odulBekliyor)) { clearTimeout(odulT); D.odulluDeneme = dizi(D.odulluDeneme); odulluYukle(); }
+      if (KIM.gecis && !reklamsizMi && !D.gecisHazir && !D.gecisYukleniyor && (hemen || !gecisBekliyor)) { clearTimeout(gecisT); D.gecisDeneme = dizi(D.gecisDeneme); gecisYukle(); }
+    }
+    // Android v1.1: reklam altyapısı uygulama açılır açılmaz kurulur (izin bilgisi, SDK, geçiş ve ödüllü reklamın ön yüklemesi).
+    // Google'ın izin penceresi gerekiyorsa fb ile (açılış bitince) çıkar; banner açılıştan sonra initBannerAd ile istenir
+    function erkenBaslat(fb) {
+      if (!android) return;
+      formBekle = typeof fb === 'function' ? fb : null;
+      baslat();
     }
 
     function showRewardedAd(onRewardSuccess, onRewardFail) {
@@ -3289,13 +3379,20 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (D.acik) { no('mesgul'); return; }
       if (sim) { taklit('odullu', REKLAM_AYAR.simOdul, () => ok({ type: 'test', amount: 1 })); return; }
       if (!yerel || !D.hazir || !KIM.odullu) { no('yok'); return; }
+      // Android v1.1: reklam henüz yüklenmediyse oyuncu bekletilmez (düğme zaten "hazırlanıyor" durumundadır), yükleme hızlanır
+      if (android && !odulluHazir()) { odulluYukle(); no('yukleniyor'); return; }
       D.acik = true; // reklam yüklenirken ikinci bir dokunuş yeni reklam istemez
       pencere('yukleniyor');
       sinirli(odulluYukle(), REKLAM_AYAR.yukleBekle).then(hazir => {
         if (!hazir) { D.acik = false; pencereKapat(); no('yok'); return; }
         D.odullu = null; // bu reklam harcanır; kapanınca yenisi yüklenir
+        if (android) { D.odulluYuklu = false; cagir('odullu'); }
         tamEkran('odullu', () => yap('showRewardVideoAd'), (kazandi, neden) => {
-          setTimeout(odulluYukle, 1500);
+          if (android) {
+            // Sonuna kadar izlenen ödüllü reklamın hemen ardından geçiş reklamı yok: sayaç baştan (en az 2 oyun ve 90 sn)
+            if (kazandi) { sayac.tekrar = 0; sayac.sonBiten = sayac.biten; sayac.son = Date.now(); kaydet(); }
+            odulluYukle();   // kapanır kapanmaz yenisi
+          } else setTimeout(odulluYukle, 1500);
           if (kazandi) ok(); else no(neden || 'yarim');
         });
       });
@@ -3307,6 +3404,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (reklamsizMi) { son(false); return; }                            // reklamsız oyun satın alındı
       if (!REKLAM_AYAR.herKac) { son(false); return; }                    // uzaktan ayarla kapatıldı
       if (sayac.biten <= REKLAM_AYAR.ilkOyunlar) { son(false); return; } // ilk oyunlar reklamsız
+      if (android) { gecisAndroid(son); return; }
       sayac.tekrar++;
       kaydet();
       if (sayac.tekrar < REKLAM_AYAR.herKac) { son(false); return; }
@@ -3320,6 +3418,23 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       kaydet();
       D.gecisHazir = false;
       tamEkran('gecis', () => yap('showInterstitial'), () => { setTimeout(gecisYukle, 1500); son(true); });
+    }
+
+    // Android v1.1: son geçiş (ya da sonuna kadar izlenen ödüllü) reklamından bu yana en az V11.gecisOyun oyun VE en az V11.gecisSn
+    // saniye (uzaktan araSn daha büyükse o) geçtiyse geçiş reklamı. Reklam hazır değilse beklenmez: oyun hemen başlar, sayaçlar
+    // sıfırlanmaz (sonraki oyun sonunda yine denenir); reklam kapanır kapanmaz yenisi yüklenir
+    function gecisAndroid(son) {
+      const sn = Math.max(V11.gecisSn, REKLAM_AYAR.araSn || 0);
+      if (sayac.son > Date.now()) sayac.son = 0;
+      if (sayac.biten - sayac.sonBiten < V11.gecisOyun || Date.now() - sayac.son < sn * 1000) { son(false); return; }
+      if (D.gecisHazir && Date.now() - D.gecisZaman > V11.omur) D.gecisHazir = false;   // eskidi
+      if (!D.hazir || !D.gecisHazir) { gecisYukle(); son(false); return; }
+      sayac.tekrar = 0;
+      sayac.sonBiten = sayac.biten;
+      sayac.son = Date.now();
+      kaydet();
+      D.gecisHazir = false;
+      tamEkran('gecis', () => yap('showInterstitial'), () => { gecisYukle(); son(true); });
     }
 
     function initBannerAd() {
@@ -3339,6 +3454,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       clearTimeout(bannerT);
       if (reklamsizMi || !KIM.banner) return;
       if (!D.alan) alanAyarla(sonBoy || tahminiBoy());   // alan banner gelmeden ayrılır: banner yüklenince tahta yerinden oynamaz
+      if (android) bannerGen = Math.round(window.innerWidth || 0);
       yap('showBanner', { adId: KIM.banner, adSize: 'ADAPTIVE_BANNER', position: 'BOTTOM_CENTER', margin: 0 })
         .then(() => { if (reklamsizMi) bannerKaldir(); }, bannerTekrar);   // yüklenirken reklamsız olduysa hemen kaldırılır
     }
@@ -3382,6 +3498,25 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       if (!yerel) return;
       if (!D.hazir) baslat();
       else if (D.bannerIstendi && !D.banner) bannerGoster();
+      tazele(true);   // Android: durmuş reklam yüklemeleri internet gelince hemen
+    });
+    // Android v1.1: uygulamaya dönünce durmuş ya da eskimiş reklam yüklemeleri yeniden başlar
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) tazele(false); });
+    // Android v1.1: ekran dönünce (genişlik değişince) uyarlanabilir banner yeni genişlikle yeniden istenir. Alan o arada yeni
+    // genişliğin tahmini boyuyla ayrılır, gerçek boy gelince ona uyar; oyun alanı hep banner'ın üstünde kalır
+    window.addEventListener('resize', () => {
+      if (!android) return;
+      clearTimeout(donusT);
+      donusT = setTimeout(() => {
+        const w = Math.round(window.innerWidth || 0);
+        if (!w || !bannerGen || Math.abs(w - bannerGen) < 2) return;
+        if (!D.hazir || !D.bannerIstendi || reklamsizMi || !KIM.banner) return;
+        clearTimeout(bannerT);
+        yap('removeBanner').catch(() => {});
+        D.banner = 0;
+        alanAyarla(tahminiBoy());
+        bannerGoster();
+      }, 500);
     });
 
     // Reklamsız oyun (satın alındı): banner kalkar, geçiş reklamı çıkmaz; ödüllü reklamlar oyuncu isterse açılır, kalır.
@@ -3414,18 +3549,29 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       showInterstitialAd,
       initBannerAd,
       odulluVar: () => sim || (yerel && D.hazir && !!KIM.odullu),   // ödüllü reklam sunulabilir mi (sitede ya da kimlik yoksa hayır)
+      // Ödüllü reklam düğmelerinin durumu: 'hazir' (dokunulunca reklam açılır), 'yukleniyor' (Android: reklam yükleniyor ya da
+      // yeniden denenecek; düğme pasif), 'yok' (reklam sunulamaz ya da denemeler durdu: düğme gizli ya da sönük). iOS'ta yalnızca
+      // 'hazir' / 'yok' (eski davranış)
+      odulluDurum: () => (android
+        ? (odulluHazir() ? 'hazir' : D.hazir && KIM.odullu && (D.odulluYukleniyor || odulBekliyor) ? 'yukleniyor' : 'yok')
+        : (sim || (yerel && D.hazir && !!KIM.odullu)) ? 'hazir' : 'yok'),
+      erkenBaslat,
       acik: () => D.acik,                               // reklam ya da reklam penceresi açık mı
       yeniKapandi: () => Date.now() - D.kapanis < 4000,  // az önce bir reklam kapandı mı (uygulamaya dönüş reklamdan)
       bannerYuksekligi: () => D.alan,                   // banner'a ayrılan alan (banner yenilenirken de korunur)
-      oyunBitti() { if (!(yerel || sim)) return; sayac.biten = Math.min(1e6, sayac.biten + 1); kaydet(); },
+      oyunBitti() { if (!(yerel || sim)) return; sayac.biten = Math.min(1e6, sayac.biten + 1); kaydet(); tazele(false); },
       gizlilikAyarlari,
       reklamsiz,
       reklamsizMi: () => reklamsizMi,
       izinSuruyor: () => D.izinSuruyor,                 // Google'ın izin (UMP) süreci sürüyor mu
       baglan(k) { kanca = k || {}; },
-      durum: () => ({ yerel, sim, ios, reklamsiz: reklamsizMi, hazir: D.hazir, odulluHazir: !!D.odullu, gecisHazir: D.gecisHazir, banner: D.banner, alan: D.alan, acik: D.acik,
+      durum: () => ({ yerel, sim, ios, android, reklamsiz: reklamsizMi, hazir: D.hazir, odulluHazir: !!D.odullu, gecisHazir: D.gecisHazir, banner: D.banner, alan: D.alan, acik: D.acik,
+        odulluYuklu: D.odulluYuklu, odulluYukleniyor: D.odulluYukleniyor, odulluDeneme: D.odulluDeneme, gecisDeneme: D.gecisDeneme, gecisYukleniyor: D.gecisYukleniyor,
+        odulBekliyor, gecisBekliyor, bannerGen,
         sayac: Object.assign({}, sayac), izin: D.izin, takip: D.takip || '', gizlilik: D.gizlilik, ayar: D.ayar || '', kimlik: Object.assign({}, KIM), testCihazi: testCihazlari.length }),
-      sayacAyarla(o) { if (o && typeof o === 'object') { if (Number.isFinite(o.biten)) sayac.biten = Math.max(0, o.biten | 0); if (Number.isFinite(o.tekrar)) sayac.tekrar = Math.max(0, o.tekrar | 0); if (Number.isFinite(o.son)) sayac.son = Math.max(0, o.son); kaydet(); } }
+      sayacAyarla(o) { if (o && typeof o === 'object') { if (Number.isFinite(o.biten)) sayac.biten = Math.max(0, o.biten | 0); if (Number.isFinite(o.tekrar)) sayac.tekrar = Math.max(0, o.tekrar | 0); if (Number.isFinite(o.son)) sayac.son = Math.max(0, o.son); if (Number.isFinite(o.sonBiten)) sayac.sonBiten = Math.max(0, o.sonBiten | 0); kaydet(); } },
+      // Test: Android reklam yüklemelerinin sürelerini kısaltır (gerçek uygulamada çağrılmaz)
+      v11Ayarla(o) { if (o && typeof o === 'object') for (const k of Object.keys(V11)) if (Number.isFinite(o[k])) V11[k] = o[k]; }
     };
   })();
 
@@ -5322,17 +5468,17 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (jokersiz) return;
     jokerBar.classList.toggle('kapali', gameState !== 'play');
     jokerBar.classList.toggle('ikaz', tikandi && !jokerMod);
-    const reklam = AdManager.odulluVar();
+    const reklam = AdManager.odulluDurum();   // 'hazir' | 'yukleniyor' (Android: reklam henüz yüklenmedi) | 'yok'
     for (const ad of JOKER_ADLAR) {
-      const b = jkBtn[ad], n = jkToplam(ad), d = n > 0 ? 'var' : reklam ? 'reklam' : 'bos';
-      const rozet = b.querySelector('.jk-n'), icerik = d === 'reklam' ? OYNAT_SVG + '+1' : String(n);
+      const b = jkBtn[ad], n = jkToplam(ad), d = n > 0 ? 'var' : reklam === 'hazir' ? 'reklam' : reklam === 'yukleniyor' ? 'reklamBekle' : 'bos';
+      const rozet = b.querySelector('.jk-n'), icerik = d === 'reklam' || d === 'reklamBekle' ? OYNAT_SVG + '+1' : String(n);
       b.dataset.durum = d;
       if (rozet.dataset.v !== icerik) { rozet.dataset.v = icerik; rozet.innerHTML = icerik; }
       b.classList.toggle('on', jokerMod === ad);
       const etiket = yaz('jkAria', yaz(JK_ETIKET[ad]), n, d);
       b.setAttribute('aria-label', etiket);
       b.title = etiket;
-      b.setAttribute('aria-disabled', String(d === 'bos'));
+      b.setAttribute('aria-disabled', String(d === 'bos' || d === 'reklamBekle'));
       b.setAttribute('aria-pressed', String(jokerMod === ad));
     }
   }
@@ -5419,7 +5565,9 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
 
   // Hakkı biten joker: ödüllü reklam izlenirse +1 hak
   function jokerReklam(ad) {
-    if (!AdManager.odulluVar()) { Sound.bad(); return; }
+    const rd = AdManager.odulluDurum();
+    if (rd === 'yukleniyor') { Sound.bad(); toast(yaz('rkHazirlaniyor')); return; }   // Android: reklam henüz yüklenmedi, bekletilmez
+    if (rd !== 'hazir') { Sound.bad(); return; }
     jokerModBitir();
     AdManager.showRewardedAd(() => {
       jk[ad] = Math.min(99, jk[ad] + 1);
@@ -5430,7 +5578,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       Sound.joker();
       buzz(16);
       announce(yaz('jkKazandin', yaz(JK_ETIKET[ad])));
-    }, neden => { if (neden !== 'mesgul') toast(yaz(neden === 'yarim' ? 'rkYarim' : 'rkYok')); });
+    }, neden => { if (neden !== 'mesgul') toast(yaz(neden === 'yarim' ? 'rkYarim' : neden === 'yukleniyor' ? 'rkHazirlaniyor' : 'rkYok')); });
   }
 
   // Joker seçiliyken tuvale dokunuş: true dönerse dokunuş jokere gitti (parça tutulmaz)
@@ -5525,17 +5673,21 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     jokerCiz();
   }
 
-  // KAYBETTİN ekranındaki ikinci şans düğmesi: ödüllü reklam sunulabiliyorsa ve bu oyunda kullanılmadıysa
+  // KAYBETTİN ekranındaki ikinci şans düğmesi: ödüllü reklam sunulabiliyorsa ve bu oyunda kullanılmadıysa. Android'de reklam
+  // henüz yüklenmediyse düğme görünür ama pasif ("REKLAM HAZIRLANIYOR…"); yüklenince kendiliğinden açılır
   function ikinciCiz() {
-    goDevam.hidden = !(AdManager.odulluVar() && !ikinci && !duel && gameState === 'over');
-    if (!AdManager.acik()) goDevam.disabled = false;
+    const rd = AdManager.odulluDurum();
+    goDevam.hidden = !(rd !== 'yok' && !ikinci && !duel && gameState === 'over');
+    goDevam.classList.toggle('bekle', rd === 'yukleniyor');
+    if (!AdManager.acik()) goDevam.disabled = rd === 'yukleniyor';
   }
   goDevam.addEventListener('click', () => {
     if (ikinci || duel || gameState !== 'over' || AdManager.acik()) return;
     goDevam.disabled = true;
     AdManager.showRewardedAd(() => { goDevam.disabled = false; ikinciSans(); }, neden => {
       goDevam.disabled = false;
-      if (neden !== 'mesgul') toast(yaz(neden === 'yarim' ? 'rkYarim' : 'rkYok'));
+      ikinciCiz();
+      if (neden !== 'mesgul') toast(yaz(neden === 'yarim' ? 'rkYarim' : neden === 'yukleniyor' ? 'rkHazirlaniyor' : 'rkYok'));
     });
   });
 
@@ -5594,6 +5746,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     sesAc: () => Sound.uyandir(),
     banner: () => { layoutKey = ''; layout(); },
     hazir: () => { jokerCiz(); ikinciCiz(); },
+    odullu: () => { jokerCiz(); ikinciCiz(); },   // Android: ödüllü reklam yüklendi / yükleniyor / harcandı
     gizlilik: g => { $('btnReklamGizlilik').hidden = !g; }
   });
   $('btnReklamGizlilik').addEventListener('click', () => AdManager.gizlilikAyarlari());
@@ -9338,6 +9491,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
       efekt: () => ({ ghosts: ghosts.length, beams: beams.length, particles: particles.length }),
       reklam: () => AdManager.durum(),
       reklamSayac: o => AdManager.sayacAyarla(o),
+      reklamV11: o => AdManager.v11Ayarla(o),
       // Günlük bulmaca, meydan okuma, merhamet, blok temaları, konfeti
       kip: () => ({ kip, tohum: oyunTohum, kayit: ucluKayit, gunluk: gunluk && { gun: gunluk.gun, hedef: gunluk.hedef, sira: gunluk.sira },
         meydan: meydan && { hedef: meydan.hedef, ad: meydan.ad, sira: meydan.sira, uclu: meydan.uclular.length, gecti: meydan.gecti, tohum: meydan.tohum } }),
@@ -9581,6 +9735,7 @@ try { if (localStorage.getItem('blokKahramani.mod') === '"light"') document.docu
     if (booted) return;
     booted = true;
     setSound(soundOn, false);
+    AdManager.erkenBaslat(window.HBIntro ? HBIntro.sonra : null);   // Android: izin bilgisi, SDK ve reklam ön yüklemesi hemen (açılış sürerken)
     (window.HBIntro ? HBIntro.sonra : f => f())(() => AdManager.initBannerAd()); // açılış bitince; uygulamada: izin penceresi (gerekirse), reklamlar ve banner; sitede bir şey yapmaz
     layout();
     // Yazı tipleri yüklenince alt bilgi genişliği değişir: yeniden sığdır
