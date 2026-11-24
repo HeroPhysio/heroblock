@@ -29,6 +29,14 @@ on:
         type: boolean
         required: true
         default: true
+      makine:
+        description: "Mac sunucusu: macos-26 (Apple Silicon). Kuyrukta bekleyip başlamıyorsa macos-26-intel (aynı macOS 26 ve Xcode, Intel)"
+        type: choice
+        required: false
+        default: macos-26
+        options:
+          - macos-26
+          - macos-26-intel
 
 permissions:
   contents: read
@@ -40,7 +48,7 @@ concurrency:
 jobs:
   ios:
     name: Derle, imzala, yükle
-    runs-on: macos-26
+    runs-on: ${{ inputs.makine || 'macos-26' }}
     timeout-minutes: 60
     defaults:
       run:
@@ -125,7 +133,10 @@ jobs:
           echo "ASC_KEY_PATH=$RUNNER_TEMP/anahtar/AuthKey_${ASC_KEY_ID}.p8" >> "$GITHUB_ENV"
 
       - name: Xcode sürümü
-        run: xcodebuild -version
+        run: |
+          echo "Mac: $(uname -m), macOS $(sw_vers -productVersion)"
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i iphoneos
 
       - name: Arşivle (sürüm ${{ inputs.surum }}, derleme ${{ github.run_number }})
         run: |
