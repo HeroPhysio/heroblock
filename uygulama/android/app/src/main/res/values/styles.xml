@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -9,7 +9,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <!-- Oyun: başlık çubuğu yok; pencere zemini oyunun koyu rengi (durum ve gezinme çubuklarının arkası beyaz kalmaz) -->
+    <!-- Oyun (açılıştan sonraki tema, postSplashScreenTheme): başlık çubuğu yok; pencere zemini oyunun arena mavisi.
+         Capacitor SystemBars bu rengi okuyup durum ve gezinme çubuklarının arkasına da boyar (getThemeColor): bu yüzden
+         düz renk olmalı; çizim (gradient drawable) verilirse renk yerine anlamsız bir değer okunur -->
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -17,12 +19,19 @@
         <item name="android:windowBackground">@color/hbArkaPlan</item>
     </style>
 
-    <!-- Açılış: başlık çubuğu yok (Android 12 ve sonrasında da); sistem açılış ekranının zemini oyunun koyu rengi -->
+    <!-- Açılış (v1.3.1): eski koyu zemin ve logo yok; uygulamaya basıldığı andan itibaren arena mavisi. Android 12+ sistem
+         açılış ekranı yalnızca düz renk alır: arena geçişinin başlangıç rengi #1D4ED8. WebView zemini ve oyunun açılış sahnesi
+         de aynı renkle başlar; sahne, yazıdan hemen önce arena geçişine (#1D4ED8 -> #3B82F6) yumuşakça aydınlanır.
+         Simge saydam (sistem uygulama simgesini göstermez); durum ve gezinme çubuğu simgeleri mavinin üstünde açık renk -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-        <item name="android:background">@drawable/splash</item>
+        <item name="android:background">@null</item>
+        <item name="android:windowBackground">@color/hbArkaPlan</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
         <item name="windowSplashScreenBackground">@color/hbArkaPlan</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/hb_bos_simge</item>
         <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
     </style>
 </resources>

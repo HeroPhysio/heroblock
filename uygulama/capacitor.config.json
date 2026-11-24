@@ -2,15 +2,15 @@
   "appId": "tr.com.herouygulama.heroblock",
   "appName": "Hero Block",
   "webDir": "www",
-  "backgroundColor": "#050817",
+  "backgroundColor": "#1D4ED8",
   "loggingBehavior": "none",
   "android": {
-    "backgroundColor": "#050817",
+    "backgroundColor": "#1D4ED8",
     "allowMixedContent": false,
     "webContentsDebuggingEnabled": false
   },
   "ios": {
-    "backgroundColor": "#050817",
+    "backgroundColor": "#1D4ED8",
     "contentInset": "never",
     "scrollEnabled": false,
     "allowsLinkPreview": false,

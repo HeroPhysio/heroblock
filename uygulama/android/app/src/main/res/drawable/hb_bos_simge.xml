@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- v1.3.1: açılış ekranında simge yok. Android 12+ sistem açılışı windowSplashScreenAnimatedIcon verilmezse bir simge
+     gösterir; bu boş, saydam çizimle ekranda yalnızca arena mavisi kalır -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@android:color/transparent" />
+</shape>

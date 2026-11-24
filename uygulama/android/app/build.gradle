@@ -58,10 +58,11 @@ android {
         applicationId "tr.com.herouygulama.heroblock"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        // Sürüm: Google Play'e her yüklemede sürüm kodu bir öncekinden büyük olmalı (1.0.11 = 12, 1.1 = 13, 1.2 = 14). Bulut
-        // derlemesi (GitHub Actions) ya da komut satırı -PhbSurumKodu=… -PhbSurum=… ile başka bir değer verebilir
-        versionCode((project.findProperty('hbSurumKodu') ?: '14') as Integer)
-        versionName((project.findProperty('hbSurum') ?: '1.2') as String)
+        // Sürüm: Google Play'e her yüklemede sürüm kodu bir öncekinden büyük olmalı (1.0.11 = 12, 1.1 = 13, 1.2 = 14,
+        // 1.3 = 15, 1.3.1 = 16). Bulut derlemesi (GitHub Actions) ya da komut satırı -PhbSurumKodu=… -PhbSurum=… ile başka
+        // bir değer verebilir
+        versionCode((project.findProperty('hbSurumKodu') ?: '16') as Integer)
+        versionName((project.findProperty('hbSurum') ?: '1.3.1') as String)
         // Google AdMob Android uygulama kimliği (yukarıda admob.config.json'dan okunur)
         manifestPlaceholders = [admobAppId: admobAppId]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

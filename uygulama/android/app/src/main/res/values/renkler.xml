@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Oyunun zemin rengi (capacitor.config.json backgroundColor ile aynı) -->
-    <color name="hbArkaPlan">#050817</color>
+    <!-- Oyunun arena mavisi (v1.3.1; önceden koyu #050817): sistem açılış ekranı, pencere zemini, durum ve gezinme
+         çubuklarının arkası. capacitor.config.json android.backgroundColor ve oyunun html.arena zemini ile aynı -->
+    <color name="hbArkaPlan">#1D4ED8</color>
 </resources>

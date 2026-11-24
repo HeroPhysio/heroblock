@@ -5,19 +5,22 @@
     "iOS: GERÇEK kimlikler (aynı AdMob hesabı; App Store sürümü 1.0.11 ve sonrası). TestFlight'ta kendi reklamına da dokunma.",
     "appId: AdMob › Uygulamalar › uygulama ayarları (ca-app-pub-…~…). banner / interstitial / rewarded: reklam birimleri (ca-app-pub-…/…).",
     "testDevices: kendi telefonunda denerken o telefonun test cihazı kimliği (Android: Logcat'te 'setTestDeviceIds' satırı; iPhone: Xcode konsolunda 'testDeviceIdentifiers' satırı) ya da telefonu AdMob › Ayarlar › Test cihazları'na ekle. O telefonda yalnızca test reklamı çıkar.",
-    "Değiştirdikten sonra 'npx cap sync' çalıştır: Android, iOS ve oyunun içindeki kopya kendiliğinden güncellenir."
+    "Değiştirdikten sonra 'npx cap sync' çalıştır: Android, iOS ve oyunun içindeki kopya kendiliğinden güncellenir.",
+    "rewarded: AdMob'da biçimi 'Ödüllü (Rewarded)' olan birim olmalı. Oyun ödüllü reklamı prepareRewardVideoAd ile yükler; 'Ödüllü geçiş (Rewarded interstitial)' biçimli birim bu yolla hiç yüklenmez (reklam 'hazırlanıyor'da kalır).",
+    "Android rewarded (24 Kasım 2026, v1.3.1): HeroBlock_Rewarded_Video (Ödüllü). Eski HeroBlock_Rewarded (…/9410134817) 'Ödüllü geçiş' biçimindeydi, kullanılmıyor.",
+    "iOS rewarded (24 Kasım 2026, iOS 1.3.1): ios_rewarded_video (Ödüllü). Eski ios_rewarded (…/9054322260) 'Ödüllü geçiş' biçimindeydi, kullanılmıyor."
   ],
   "android": {
     "appId": "ca-app-pub-1035107027510605~7969060635",
     "banner": "ca-app-pub-1035107027510605/6686275268",
     "interstitial": "ca-app-pub-1035107027510605/3247604036",
-    "rewarded": "ca-app-pub-1035107027510605/9410134817"
+    "rewarded": "ca-app-pub-1035107027510605/7477104021"
   },
   "ios": {
     "appId": "ca-app-pub-1035107027510605~6888817214",
     "banner": "ca-app-pub-1035107027510605/8184093720",
     "interstitial": "ca-app-pub-1035107027510605/5557930385",
-    "rewarded": "ca-app-pub-1035107027510605/9054322260"
+    "rewarded": "ca-app-pub-1035107027510605/1136725255"
   },
   "testDevices": []
 }
