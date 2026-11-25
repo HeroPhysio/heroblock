@@ -3143,6 +3143,8 @@ document.documentElement.classList.add('arena');
     mkPaketSite: 'Hero Coin paketleri Google Play\'deki Hero Block uygulamasında satın alınabilir.',
     mkPaketYakinda: 'Hero Coin\'i günlük görevlerden, düello galibiyetlerinden ve isteğe bağlı reklamlardan kazanırsın.',
     mkPaketKapali: 'Hero Coin paketleri şu an satışta değil. Biraz sonra tekrar dene.',
+    mkPaketYukleniyor: 'Hero Coin paketleri yükleniyor…',
+    mkPaketBaglanti: 'Hero Coin paketlerine şu an ulaşılamıyor. İnternet bağlantını kontrol et.',
     mkReklamsizAlt: 'Banner ve geçiş reklamı bir daha çıkmaz',
     mkAlt: 'Hero Coin hesabında saklanır; gerçek paraya çevrilemez ve devredilemez.',
     mkYetersiz: n => 'Hero Coin yetersiz (' + n + ' eksik). Coin paketlerine göz at.',
@@ -3603,6 +3605,8 @@ document.documentElement.classList.add('arena');
     mkPaketSite: 'Hero Coin packs are sold in the Hero Block app on Google Play.',
     mkPaketYakinda: 'Earn Hero Coins from daily tasks, duel wins and optional ads.',
     mkPaketKapali: "Hero Coin packs aren't on sale right now. Try again in a bit.",
+    mkPaketYukleniyor: 'Loading Hero Coin packs…',
+    mkPaketBaglanti: "Can't reach the Hero Coin packs right now. Check your internet connection.",
     mkReklamsizAlt: 'No more banner or interstitial ads',
     mkAlt: "Hero Coins are kept in your account; they can't be exchanged for money or transferred.",
     mkYetersiz: n => 'Not enough Hero Coins (' + n + ' short). Check out the coin packs.',
@@ -10425,23 +10429,48 @@ document.documentElement.classList.add('arena');
     if (Hesap) Hesap.ayarla(a);
     ekonomiAyarla(a.ekonomi);
   }
-  function uzakAyarYukle() {
-    uzakAyarUygula(store.get(K_UZAK, null));
-    if (!SKOR_API) return Promise.resolve();
+  // Uzaktan ayar (reklam sıklığı, satış, düello, ekonomi) her oturumda sunucudan alınır. v1.3.1: istek olmazsa (yavaş mobil veri,
+  // açılıştaki yoğunluk, kısa kopma) 3, 6, 12, 24, 30 sn arayla yeniden istenir; internet gelince, uygulamaya dönünce ve Market'in
+  // HERO COIN sekmesi açılınca beklemeden. Önceden ilk istek 6 sn'de olmazsa oturum boyunca varsayılan ayar kalıyor, yeni
+  // oyuncuda Hero Coin paketleri "şu an satışta değil" görünüyordu. İlk istek yine en çok 6 sn bekler (açılış sırası değişmez).
+  const UZAK = { alindi: false, deneme: 0, zaman: 0, soz: null };
+  function uzakAyarIste(sure) {
+    if (!SKOR_API || UZAK.alindi) return Promise.resolve();
+    if (UZAK.soz) return UZAK.soz;
+    clearTimeout(UZAK.zaman);
     const ctl = typeof AbortController === 'function' ? new AbortController() : null;
-    const t = ctl ? setTimeout(() => ctl.abort(), 6000) : 0;
-    return fetch(SKOR_API + '?a=config', ctl ? { signal: ctl.signal } : {})
+    const t = ctl ? setTimeout(() => ctl.abort(), sure || 10000) : 0;
+    const soz = fetch(SKOR_API + '?a=config', ctl ? { signal: ctl.signal } : {})
       .then(r => (r.ok ? r.json() : null))
       .then(a => {
-        if (!a || a.ok !== true) return;
+        if (!a || a.ok !== true) throw new Error('ayar yok');
         const sakla = { reklam: a.reklam, duyuru: a.duyuru || null, satis: a.satis || null, duello: a.duello || null, google_istemci: a.google_istemci || null,
           ekonomi: a.ekonomi || null, alindi: Date.now() };
         store.set(K_UZAK, sakla);
+        UZAK.alindi = true;
+        UZAK.deneme = 0;
         uzakAyarUygula(sakla);
       })
-      .catch(() => {})
-      .then(() => clearTimeout(t));
+      .catch(() => {
+        if (UZAK.alindi) return;
+        UZAK.deneme++;
+        UZAK.zaman = setTimeout(() => uzakAyarIste(), Math.min(30000, 3000 * Math.pow(2, UZAK.deneme - 1)));
+      })
+      .then(() => { clearTimeout(t); if (UZAK.soz === soz) UZAK.soz = null; marketAyarDegisti(); });
+    UZAK.soz = soz;
+    return soz;
   }
+  function uzakAyarYukle() {
+    uzakAyarUygula(store.get(K_UZAK, null));
+    return uzakAyarIste(6000);
+  }
+  // Sıradaki yeniden deneme beklenmeden hemen istenir (ayar bu oturumda henüz gelmediyse)
+  function uzakAyarTazele() {
+    if (UZAK.alindi || UZAK.soz) return;
+    uzakAyarIste();
+  }
+  window.addEventListener('online', uzakAyarTazele);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) uzakAyarTazele(); });
   $('dyKapat').addEventListener('click', () => {
     if (!duyuru) return;
     const l = store.get(K_DUYURU_KAPALI, []);
@@ -10562,8 +10591,13 @@ document.documentElement.classList.add('arena');
     const iap = CoinSatin.acik(), pl = $('mkPaketListe'), not = $('mkPaketNot');
     pl.hidden = !iap;
     not.hidden = iap;
-    if (!iap) not.textContent = yaz(CoinSatin.neden());
-    else {
+    if (!iap) {
+      // Android: sunucu ayarı bu oturumda henüz gelmediyse "satışta değil" denmez; istek sürerken ya da sıradaki denemeyi
+      // beklerken "yükleniyor", üç deneme olmadıysa bağlantı uyarısı
+      let n = CoinSatin.neden();
+      if (n === 'mkPaketKapali' && SKOR_API && !UZAK.alindi) n = !UZAK.soz && UZAK.deneme >= 3 ? 'mkPaketBaglanti' : 'mkPaketYukleniyor';
+      not.textContent = yaz(n);
+    } else {
       pl.querySelectorAll('li').forEach(li => {
         const id = li.dataset.paket, n = EKONOMI.paketler[id], u = CoinSatin.urun(id);
         li.hidden = !n;
@@ -10583,9 +10617,15 @@ document.documentElement.classList.add('arena');
     if (!rsz.hidden) $('mkReklamsizFiyat').textContent = ($('rsFiyat').textContent || '').trim() || '›';
     if (MK.durumAnahtar) mkDurum(MK.durumAnahtar, MK.durumArg, MK.durumTur);
   }
+  // Uzaktan ayar geldi ya da istek olmadı: açık Market yeniden çizilir; HERO COIN sekmesindeyse paket fiyatları istenir
+  function marketAyarDegisti() {
+    if (ovMarket.hidden) return;
+    if (MK.sekme === 'coin') CoinSatin.urunYukle();
+    marketCiz();
+  }
   function marketSekme(s, odakla) {
     MK.sekme = s === 'coin' ? 'coin' : 'joker';
-    if (MK.sekme === 'coin') CoinSatin.urunYukle();
+    if (MK.sekme === 'coin') { CoinSatin.urunYukle(); uzakAyarTazele(); }
     marketCiz();
     if (odakla) { try { $(MK.sekme === 'coin' ? 'mkSekCoin' : 'mkSekJoker').focus({ preventScroll: true }); } catch (e) { /* odak yok */ } }
   }
@@ -10598,7 +10638,7 @@ document.documentElement.classList.add('arena');
     ovMarket.hidden = false;
     setModal();
     marketCiz();
-    if (MK.sekme === 'coin') CoinSatin.urunYukle();
+    if (MK.sekme === 'coin') { CoinSatin.urunYukle(); uzakAyarTazele(); }
     Cuzdan.yenile();
     CoinSatin.bekleyenleriSor();
     focusDialog(MK.sekme === 'coin' ? 'mkSekCoin' : 'mkSekJoker', 'mkCard');
