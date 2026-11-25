@@ -2,6 +2,7 @@ package tr.com.herouygulama.heroblock;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Display;
@@ -10,6 +11,7 @@ import android.view.WindowManager;
 import android.webkit.WebView;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.SystemBarStyle;
+import androidx.core.content.ContextCompat;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
@@ -31,6 +33,16 @@ public class MainActivity extends BridgeActivity {
         // Kenardan kenara: oyun durum ve gezinme çubuklarının arkasına uzanır (koyu zemin, açık simgeler); güvenli alanları
         // oyun kendisi bırakır
         EdgeToEdge.enable(this, SystemBarStyle.dark(Color.TRANSPARENT), SystemBarStyle.dark(Color.TRANSPARENT));
+        // v1.3.1 canlı açılış: açılış sahnesi derin lacivert-mavi geçiş (#0B1120 -> #1E3A8A). Eski WebView'larda (sürüm < 140)
+        // Capacitor SystemBars oyunu durum ve gezinme çubuklarının arasına yerleştirir ve çubukların arkası pencere zemini olur
+        // (temadan oyunun mavisi). Açılış sürerken çubukların arkası da sahnenin geçişiyle boyanır; oyun açılış bitince
+        // SystemBars.setStyle ile temanın mavi zeminini geri yükler. Yeni WebView'larda oyun çubukların altına uzandığından bu
+        // zemin görünmez. SystemBars kendi zeminini ana iş parçacığı kuyruğuna koyar: bu da kuyruğa, ondan sonra konur
+        if (getBridge() != null) {
+            getBridge().executeOnMainThread(() -> getWindow().getDecorView().setBackground(new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[] { ContextCompat.getColor(this, R.color.hbAcilis), ContextCompat.getColor(this, R.color.hbAcilisAlt) })));
+        }
         // Web sitesi gibi esneme ya da kaydırma çubuğu yok: oyun ekrana sabit
         WebView webView = getBridge() != null ? getBridge().getWebView() : null;
         if (webView != null) {

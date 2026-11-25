@@ -19,18 +19,18 @@
         <item name="android:windowBackground">@color/hbArkaPlan</item>
     </style>
 
-    <!-- Açılış (v1.3.1): eski koyu zemin ve logo yok; uygulamaya basıldığı andan itibaren arena mavisi. Android 12+ sistem
-         açılış ekranı yalnızca düz renk alır: arena geçişinin başlangıç rengi #1D4ED8. WebView zemini ve oyunun açılış sahnesi
-         de aynı renkle başlar; sahne, yazıdan hemen önce arena geçişine (#1D4ED8 -> #3B82F6) yumuşakça aydınlanır.
-         Simge saydam (sistem uygulama simgesini göstermez); durum ve gezinme çubuğu simgeleri mavinin üstünde açık renk -->
+    <!-- Açılış (v1.3.1 canlı açılış): logo yok; uygulamaya basıldığı andan itibaren derin lacivert (hbAcilis #0B1120).
+         Android 12+ sistem açılış ekranı yalnızca düz renk alır: oyunun açılış sahnesinin başlangıç rengi. WebView zemini ve
+         sahne de aynı renkle başlar; sahne, yazıdan hemen önce lacivert-mavi geçişe (#0B1120 -> #1E3A8A) yumuşakça aydınlanır.
+         Simge saydam (sistem uygulama simgesini göstermez); durum ve gezinme çubuğu simgeleri koyu zeminde açık renk -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="android:background">@null</item>
-        <item name="android:windowBackground">@color/hbArkaPlan</item>
+        <item name="android:windowBackground">@color/hbAcilis</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
-        <item name="windowSplashScreenBackground">@color/hbArkaPlan</item>
+        <item name="windowSplashScreenBackground">@color/hbAcilis</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/hb_bos_simge</item>
         <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
     </style>

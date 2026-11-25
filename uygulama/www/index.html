@@ -1742,73 +1742,114 @@ document.documentElement.classList.add('arena');
     .float { animation: floatFade .95s linear both; }
   }
 
-  /* ================= Açılış: el yazısıyla "Hero Block" =================
-     Ana menüden önce arena ışığı yanar, görünmez bir kalem "Hero Block" yazar (SVG stroke-dashoffset), yazı parlar,
-     altın ve beyaz ışıltılar saçılır, ekran ana menüye yumuşakça açılır. Video yok: hafif SVG; ışık, parıltı, ışıltılar ve
-     kararma yalnızca opaklık ve dönüşüm (GPU). Toplam ~2,5 saniye; dokununca hemen geçilir. Betik çalışmazsa 6 saniyede
-     kendiliğinden kalkar. */
+  /* ================= Açılış (v1.3.1 canlı açılış): el yazısıyla "Hero Block" =================
+     Derin lacivert-mavi arena (#0B1120 -> #1E3A8A), arkada düşük opaklıkta yavaşça süzülen renkli tetromino blokları ve
+     parıltılar; görünmez kalem "Hero Block" yazar (2,6 sn), kalemin ucunda kıvılcımlar; yazı bitince "Hero" altın-turuncuya,
+     "Block" turkuaz-beyaz neona döner ve esneyerek oturur, logo 0,8 sn tam parlak bekler. Logonun altındaki ince çubuk gerçek
+     yüklemeyle (oyun verisi, yazı tipleri, sunucu ayarı, hesap, reklam ön yüklemesi) dolar. Video yok: hafif SVG; zemin, bloklar,
+     kıvılcımlar ve geçişler yalnızca opaklık ve dönüşüm (GPU). Betik çalışmazsa 10 saniyede kendiliğinden kalkar. */
   #intro {
     position: fixed;
     inset: 0;
     z-index: 999;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
-    background-color: #1d4ed8;   /* v1.3.1: Android açılış ekranı, WebView ve sayfa zemini ile aynı düz arena mavisi */
-    color-scheme: light;
+    background-color: #0b1120;   /* Android açılış ekranı ve WebView zemini ile aynı derin lacivert: sıçrama yok */
+    color-scheme: dark;
     touch-action: none;
     -webkit-user-select: none;
     user-select: none;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
-    cursor: pointer;
     contain: strict;
+    overflow: hidden;
     will-change: opacity;
-    animation: introYedek .4s ease 6s forwards;
+    animation: introYedek .4s ease 10s forwards;
   }
   #intro.calisiyor { animation: none; }
-  /* v1.3.1 arena ışığı: açılış, sistem açılış ekranıyla aynı düz maviyle (#1D4ED8) başlar; oyun hazır olunca (basla) yazıdan
-     önceki bekleme süresinde arena geçişi (#1D4ED8 -> #3B82F6) ve parıltılar yumuşakça yanar (yalnızca opaklık). Android 12+
-     sistem açılışı yalnızca düz renk alabildiği için geçiş sıçramasız olur */
+  /* Arena: açılış ekranının düz lacivertinden lacivert-mavi gradyana ve logonun arkasındaki mavi ışığa yumuşakça yanar */
   #intro::before {
     content: '';
     position: absolute;
     left: 0; top: 0; right: 0; bottom: 0;
     background:
-      radial-gradient(75% 42% at 50% 46%, rgba(255, 255, 255, .2), transparent 70%),
-      radial-gradient(90% 40% at 50% 110%, rgba(147, 197, 253, .38), transparent 70%),
-      radial-gradient(60% 34% at 50% -8%, rgba(255, 255, 255, .16), transparent 70%),
-      linear-gradient(165deg, #1d4ed8 0%, #2563eb 52%, #3b82f6 100%);
+      radial-gradient(62% 36% at 50% 45%, rgba(59, 130, 246, .34), transparent 72%),
+      radial-gradient(95% 42% at 50% 112%, rgba(34, 211, 238, .18), transparent 70%),
+      radial-gradient(70% 30% at 50% -10%, rgba(99, 102, 241, .16), transparent 70%),
+      linear-gradient(180deg, #0b1120 0%, #142456 58%, #1e3a8a 100%);
     opacity: 0;
     pointer-events: none;
     will-change: opacity;
   }
-  #intro.isik::before { animation: introIsik .42s cubic-bezier(.25, .6, .35, 1) forwards; }
+  #intro.isik::before { animation: introIsik .34s cubic-bezier(.25, .6, .35, 1) forwards; }
   #intro.isik-tam::before { animation: none; opacity: 1; }
   @keyframes introIsik { to { opacity: 1; } }
-  /* Yazı sürerken açılışın arkasındaki oyun (menünün bulanık zemini, tahta katmanları) ekrana bileştirilmez: kalem her karede
-     yalnızca kendi katmanını çizer. Yazı bitince (kararmadan önce) oyun yeniden görünür; odak ve erişilebilirlik etkilenmez */
+  /* Açılış sürerken arkasındaki oyun (menünün bulanık zemini, tahta katmanları) ekrana bileştirilmez; açılış kalkmadan hemen
+     önce yeniden görünür. Odak ve erişilebilirlik etkilenmez */
   html.intro-yaziyor body > :not(#intro) { opacity: 0 !important; }
   @keyframes introYedek { to { opacity: 0; visibility: hidden; } }
+  /* Süzülen tetromino blokları (düşük opaklık) ve parıltılar */
+  #introArka { position: absolute; left: 0; top: 0; right: 0; bottom: 0; pointer-events: none; opacity: 0; transition: opacity .7s ease; }
+  #intro.isik #introArka { opacity: 1; }
+  #introArka .tb { position: absolute; left: var(--x); top: var(--y); width: var(--w); height: var(--h); margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2);
+    animation: introSuzul var(--d) linear var(--g) infinite; will-change: transform, opacity; }
+  #introArka .tb svg { display: block; width: 100%; height: 100%; opacity: var(--o); }
+  @keyframes introSuzul {
+    0% { transform: translate3d(0, 15vh, 0) rotate(var(--r0)); opacity: 0; }
+    14% { opacity: 1; }
+    86% { opacity: 1; }
+    100% { transform: translate3d(var(--dx), -15vh, 0) rotate(var(--r1)); opacity: 0; }
+  }
+  #introArka .pz { position: absolute; left: var(--x); top: var(--y); width: var(--s); height: var(--s); border-radius: 50%; background: var(--c);
+    box-shadow: 0 0 calc(var(--s) * 3) calc(var(--s) * .7) var(--c); opacity: 0; animation: introPz var(--d) ease-in-out var(--g) infinite; will-change: transform, opacity; }
+  @keyframes introPz { 0%, 100% { opacity: 0; transform: translate3d(0, 0, 0) scale(.5); } 50% { opacity: var(--o); transform: translate3d(0, -2.4vh, 0) scale(1); } }
   #introSahne {
     position: relative;
-    width: min(88vw, 900px, 150vh);
-    margin-top: -3vh;
+    width: min(88vw, 900px, 140vh);
+    margin-top: -2vh;
     will-change: transform;
   }
   #introSahne::before { content: ''; display: block; padding-top: 17.407%; }   /* en-boy oranı */
-  #intro.cift #introSahne { width: min(84vw, 560px, 87.1vh); }
+  #intro.cift #introSahne { width: min(82vw, 540px, 76vh); }
   #intro.cift #introSahne::before { padding-top: 57.409%; }
   #introSahne svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; opacity: 0; }
   #intro.hazir #introSvg { opacity: 1; }
-  #intro use { fill: none; stroke: url(#introRenk); stroke-linecap: round; stroke-linejoin: round; }
-  #intro .kor use { stroke-width: 44; }
-  #introParilti { will-change: opacity; filter: blur(calc(var(--kalem, 4px) * 1.6)); }
-  #introParilti use { stroke-width: 88; stroke: #ffe08a; }
+  #intro use { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  #introSvg use { stroke: url(#introRenk); stroke-width: 44; }
+  #introRenkli use { stroke-width: 46; }
+  #introRenkli use.h { stroke: url(#introHeroRenk); }
+  #introRenkli use.b { stroke: url(#introBlockRenk); }
+  #introParilti { will-change: opacity; filter: blur(calc(var(--kalem, 4px) * 1.7)); }
+  #introParilti use { stroke-width: 96; }
+  #introParilti use.h { stroke: #ffa424; }
+  #introParilti use.b { stroke: #22e3ff; }
+  /* Yükleme çubuğu: gerçek ilerlemeyle dolar (yalnızca dönüşüm) */
+  #introCubuk { position: relative; width: min(58vw, 300px); height: 5px; margin-top: clamp(26px, 6vh, 56px); border-radius: 99px;
+    background: rgba(148, 197, 255, .14); box-shadow: inset 0 0 0 1px rgba(148, 197, 255, .1); opacity: 0; transition: opacity .5s ease .2s; }
+  #intro.tek #introCubuk { margin-top: clamp(22px, 7vh, 64px); }
+  #intro.isik #introCubuk { opacity: 1; }
+  #introCubukDolu { position: absolute; left: 0; top: 0; width: 100%; height: 100%; border-radius: inherit; overflow: hidden; transform-origin: 0 50%;
+    transform: scaleX(0); transition: transform .42s cubic-bezier(.3, .7, .3, 1); will-change: transform;
+    background: linear-gradient(90deg, #22d3ee, #e6fdff 58%, #ffd36b);
+    box-shadow: 0 0 10px rgba(94, 234, 255, .9), 0 0 22px rgba(94, 234, 255, .4); }
+  #introCubukDolu::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 34%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .9), transparent); animation: introCubukIsik 1.15s linear infinite; }
+  @keyframes introCubukIsik { from { transform: translateX(-110%); } to { transform: translateX(310%); } }
+  /* Kalemin ucu ve kıvılcımlar, yazı bitince saçılan ışıltılar */
   #introBloklar { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
   #introBloklar i { position: absolute; left: 0; top: 0; border-radius: 50%; opacity: 0; will-change: transform, opacity; }
   #introBloklar i.yildiz { border-radius: 0; clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%); }
+  #introUc { position: absolute; left: 0; top: 0; width: var(--u, 26px); height: var(--u, 26px); margin: calc(var(--u, 26px) / -2) 0 0 calc(var(--u, 26px) / -2);
+    border-radius: 50%; opacity: 0; will-change: transform, opacity;
+    background: radial-gradient(circle, #fff 0 20%, rgba(255, 240, 190, .95) 32%, rgba(255, 196, 80, .42) 56%, transparent 72%); }
+  @media (prefers-reduced-motion: reduce) {
+    #introArka .tb, #introArka .pz, #introCubukDolu::after { animation: none; }
+    #introArka .tb { opacity: 1; }
+    #introArka .pz { opacity: .45; }
+  }
   /* ===== v1.3 Arena görünümü ===== (aydınlık kart kurallarından sonra: onları ezer) */
   html.arena { --bg: #1d4ed8; --muted: #d6e4ff; --line: rgba(255, 255, 255, .42); --zumrut: #10b981; --zumrut2: #059669; color-scheme: light; }
   html.arena, html.arena body { background: #1d4ed8; }
@@ -2024,22 +2065,28 @@ document.documentElement.classList.add('arena');
   </div>
 </noscript>
 <div id="intro" aria-hidden="true">
+  <div id="introArka"></div>
   <div id="introSahne">
-    <svg id="introSvg" viewBox="-7 -732 4613 803" data-tek="-7 -732 4613 803" data-cift="-7 -732 2740 1573" data-kayma="-1872 770" data-kalem="44" data-hava="80,271,134,69" preserveAspectRatio="xMidYMid meet" focusable="false"><defs><linearGradient id="introRenk" gradientUnits="userSpaceOnUse" x1="63" y1="0" x2="4535" y2="0"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#ffffff"/><stop offset=".56" stop-color="#fff8dc"/><stop offset=".8" stop-color="#ffefb0"/><stop offset="1" stop-color="#ffe28a"/></linearGradient><path id="iy0" data-l="1254.0" d="M252 -441L211 -462 192 -478 174 -502 160 -539 159 -559 169 -589 183 -615 204 -636 237 -654 265 -662 286 -658 321 -643 344 -625 361 -600 374 -569 377 -553 378 -534 374 -499 365 -453 349 -394 324 -312 301 -244 282 -192 262 -146 242 -107 214 -62 187 -30 160 -9 148 -4 132 0 113 -1 97 -4 84 -11 74 -21 69 -31 64 -47 63 -94"/><path id="iy1" data-l="5274.1" d="M252 -284L465 -355 555 -388 615 -421 681 -466 718 -498 748 -530 769 -561 784 -596 788 -617 781 -635 763 -654 753 -659 743 -662 735 -661 725 -657 699 -636 672 -604 648 -568 624 -523 600 -469 581 -418 558 -349 538 -282 521 -210 510 -146 504 -94 505 -60 511 -30 519 -17 529 -8 539 -3 555 0 579 -7 615 -25 641 -42 664 -69 723 -155 730 -162 736 -161 744 -153 786 -83 797 -70 807 -63 815 -62 829 -68 864 -86 888 -101 909 -123 929 -156 940 -183 945 -215 942 -244 934 -263 925 -273 915 -280 905 -283 895 -284 874 -278 845 -265 827 -252 813 -237 800 -214 793 -192 789 -167 788 -139 789 -111 794 -87 802 -65 816 -43 831 -28 849 -17 872 -7 900 -1 931 -1 963 -10 1000 -29 1027 -50 1058 -91 1150 -230 1174 -269 1197 -315 1197 -278 1201 -268 1207 -261 1226 -253 1268 -251 1292 -245 1306 -237 1317 -221 1323 -195 1321 -166 1315 -136 1294 -69 1291 -44 1294 -32 1304 -19 1318 -7 1332 -1 1349 -1 1373 -10 1406 -27 1430 -44 1457 -77 1518 -166 1541 -186 1558 -196 1578 -203 1657 -222 1672 -229 1683 -237 1690 -245 1696 -256 1701 -284 1664 -284 1641 -280 1621 -274 1598 -263 1575 -249 1559 -235 1545 -218 1531 -195 1521 -172 1515 -152 1512 -128 1514 -104 1519 -85 1529 -61 1538 -47 1552 -31 1570 -19 1589 -10 1617 -2 1644 0 1672 -4 1703 -17 1733 -34 1752 -50 1770 -75 1787 -108 1794 -136 1796 -167 1789 -199 1777 -226 1762 -247 1739 -265 1713 -275 1704 -276 1693 -274 1686 -269 1679 -260 1672 -240 1670 -211 1675 -183 1686 -156 1698 -138 1716 -120 1739 -107 1766 -99 1798 -95 1832 -95 1862 -100 1884 -107 1913 -123 1932 -137 1953 -158"/><path id="iy2" data-l="2865.6" d="M2741 -598L2761 -577 2769 -557 2772 -522 2769 -472 2757 -413 2732 -320 2711 -258 2689 -210 2652 -150 2617 -101 2582 -61 2546 -31 2507 -10 2489 -3 2474 0 2463 -2 2451 -8 2439 -19 2433 -30 2427 -60 2427 -101 2433 -154 2447 -229 2463 -295 2478 -345 2498 -395 2520 -438 2554 -491 2582 -529 2613 -565 2640 -590 2668 -609 2706 -627 2760 -647 2801 -658 2836 -662 2871 -661 2902 -656 2928 -647 2950 -633 2967 -615 2980 -593 2990 -565 2993 -534 2988 -498 2980 -478 2971 -459 2959 -441 2947 -426 2922 -407 2884 -387 2840 -369 2772 -346 2834 -326 2861 -314 2882 -300 2897 -281 2917 -246 2923 -228 2927 -209 2930 -164 2924 -123 2917 -101 2903 -75 2889 -55 2875 -40 2852 -25 2825 -11 2803 -4 2777 -1 2743 0 2716 -3 2693 -10 2672 -19 2655 -31 2641 -47 2615 -94"/><path id="iy3" data-l="3113.3" d="M3056 -158L3120 -256 3190 -372 3228 -439 3249 -489 3270 -555 3275 -584 3276 -604 3273 -622 3266 -638 3255 -650 3242 -654 3226 -652 3204 -641 3187 -628 3171 -608 3161 -588 3149 -556 3127 -474 3116 -412 3102 -324 3094 -256 3089 -192 3087 -132 3089 -70 3094 -36 3098 -23 3104 -15 3121 -3 3137 0 3162 -7 3198 -25 3221 -40 3236 -56 3259 -86 3312 -163 3332 -183 3347 -192 3365 -200 3448 -221 3463 -227 3475 -234 3485 -244 3490 -255 3494 -267 3496 -284 3459 -284 3440 -281 3420 -276 3396 -265 3373 -251 3356 -237 3342 -221 3326 -195 3316 -172 3310 -152 3308 -128 3309 -104 3314 -85 3324 -61 3333 -47 3347 -31 3365 -19 3384 -10 3412 -2 3439 0 3467 -4 3498 -17 3528 -34 3547 -50 3565 -75 3582 -108 3589 -136 3591 -167 3584 -199 3572 -226 3557 -247 3534 -265 3508 -275 3499 -276 3488 -274 3481 -269 3474 -260 3467 -240 3465 -211 3470 -183 3481 -156 3493 -138 3511 -120 3534 -107 3561 -99 3593 -95 3627 -95 3657 -100 3679 -107 3708 -123 3727 -137 3748 -158"/><path id="iy4" data-l="3246.6" d="M3969 -220L3967 -247 3962 -257 3954 -267 3945 -274 3935 -280 3908 -284 3877 -280 3841 -267 3806 -245 3795 -235 3783 -221 3765 -191 3755 -168 3750 -144 3749 -116 3754 -89 3765 -61 3780 -40 3798 -23 3822 -11 3849 -3 3881 0 3911 -1 3934 -7 3964 -19 3987 -33 4015 -55 4035 -75 4057 -102 4136 -220 4224 -363 4256 -420 4274 -455 4290 -494 4304 -534 4312 -565 4315 -592 4314 -615 4308 -633 4298 -647 4291 -652 4284 -654 4272 -653 4254 -647 4236 -636 4220 -622 4210 -608 4202 -592 4182 -537 4160 -448 4139 -329 4119 -194 4094 0 4117 -67 4133 -107 4149 -141 4173 -180 4199 -219 4223 -246 4246 -265 4270 -276 4285 -280 4305 -284 4325 -284 4338 -281 4350 -277 4362 -269 4369 -260 4375 -247 4378 -222 4376 -204 4367 -189 4352 -177 4332 -167 4304 -161 4277 -158 4221 -158 4258 -139 4278 -120 4291 -98 4308 -55 4320 -30 4332 -15 4348 -3 4363 0 4387 -6 4423 -23 4449 -40 4462 -53 4478 -73 4535 -158"/></defs><g class="kor"><use href="#iy0" data-i="0"/><use href="#iy1" data-i="1"/><use href="#iy2" data-i="2" class="k2"/><use href="#iy3" data-i="3" class="k2"/><use href="#iy4" data-i="4" class="k2"/></g></svg>
-    <svg id="introParilti" viewBox="-7 -732 4613 803" preserveAspectRatio="xMidYMid meet" focusable="false"><use href="#iy0"/><use href="#iy1"/><use href="#iy2" class="k2"/><use href="#iy3" class="k2"/><use href="#iy4" class="k2"/></svg>
+    <svg id="introParilti" viewBox="-7 -732 4613 803" preserveAspectRatio="xMidYMid meet" focusable="false"><use href="#iy0" class="h"/><use href="#iy1" class="h"/><use href="#iy2" class="b k2"/><use href="#iy3" class="b k2"/><use href="#iy4" class="b k2"/></svg>
+    <svg id="introSvg" viewBox="-7 -732 4613 803" data-tek="-7 -732 4613 803" data-cift="-7 -732 2740 1573" data-kayma="-1872 770" data-kalem="44" data-hava="80,271,134,69" preserveAspectRatio="xMidYMid meet" focusable="false"><defs><linearGradient id="introRenk" gradientUnits="userSpaceOnUse" x1="63" y1="0" x2="4535" y2="0"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#ffffff"/><stop offset=".56" stop-color="#fff8dc"/><stop offset=".8" stop-color="#ffefb0"/><stop offset="1" stop-color="#ffe28a"/></linearGradient><path id="iy0" data-l="1254.0" d="M252 -441L211 -462 192 -478 174 -502 160 -539 159 -559 169 -589 183 -615 204 -636 237 -654 265 -662 286 -658 321 -643 344 -625 361 -600 374 -569 377 -553 378 -534 374 -499 365 -453 349 -394 324 -312 301 -244 282 -192 262 -146 242 -107 214 -62 187 -30 160 -9 148 -4 132 0 113 -1 97 -4 84 -11 74 -21 69 -31 64 -47 63 -94"/><path id="iy1" data-l="5274.1" d="M252 -284L465 -355 555 -388 615 -421 681 -466 718 -498 748 -530 769 -561 784 -596 788 -617 781 -635 763 -654 753 -659 743 -662 735 -661 725 -657 699 -636 672 -604 648 -568 624 -523 600 -469 581 -418 558 -349 538 -282 521 -210 510 -146 504 -94 505 -60 511 -30 519 -17 529 -8 539 -3 555 0 579 -7 615 -25 641 -42 664 -69 723 -155 730 -162 736 -161 744 -153 786 -83 797 -70 807 -63 815 -62 829 -68 864 -86 888 -101 909 -123 929 -156 940 -183 945 -215 942 -244 934 -263 925 -273 915 -280 905 -283 895 -284 874 -278 845 -265 827 -252 813 -237 800 -214 793 -192 789 -167 788 -139 789 -111 794 -87 802 -65 816 -43 831 -28 849 -17 872 -7 900 -1 931 -1 963 -10 1000 -29 1027 -50 1058 -91 1150 -230 1174 -269 1197 -315 1197 -278 1201 -268 1207 -261 1226 -253 1268 -251 1292 -245 1306 -237 1317 -221 1323 -195 1321 -166 1315 -136 1294 -69 1291 -44 1294 -32 1304 -19 1318 -7 1332 -1 1349 -1 1373 -10 1406 -27 1430 -44 1457 -77 1518 -166 1541 -186 1558 -196 1578 -203 1657 -222 1672 -229 1683 -237 1690 -245 1696 -256 1701 -284 1664 -284 1641 -280 1621 -274 1598 -263 1575 -249 1559 -235 1545 -218 1531 -195 1521 -172 1515 -152 1512 -128 1514 -104 1519 -85 1529 -61 1538 -47 1552 -31 1570 -19 1589 -10 1617 -2 1644 0 1672 -4 1703 -17 1733 -34 1752 -50 1770 -75 1787 -108 1794 -136 1796 -167 1789 -199 1777 -226 1762 -247 1739 -265 1713 -275 1704 -276 1693 -274 1686 -269 1679 -260 1672 -240 1670 -211 1675 -183 1686 -156 1698 -138 1716 -120 1739 -107 1766 -99 1798 -95 1832 -95 1862 -100 1884 -107 1913 -123 1932 -137 1953 -158"/><path id="iy2" data-l="2865.6" d="M2741 -598L2761 -577 2769 -557 2772 -522 2769 -472 2757 -413 2732 -320 2711 -258 2689 -210 2652 -150 2617 -101 2582 -61 2546 -31 2507 -10 2489 -3 2474 0 2463 -2 2451 -8 2439 -19 2433 -30 2427 -60 2427 -101 2433 -154 2447 -229 2463 -295 2478 -345 2498 -395 2520 -438 2554 -491 2582 -529 2613 -565 2640 -590 2668 -609 2706 -627 2760 -647 2801 -658 2836 -662 2871 -661 2902 -656 2928 -647 2950 -633 2967 -615 2980 -593 2990 -565 2993 -534 2988 -498 2980 -478 2971 -459 2959 -441 2947 -426 2922 -407 2884 -387 2840 -369 2772 -346 2834 -326 2861 -314 2882 -300 2897 -281 2917 -246 2923 -228 2927 -209 2930 -164 2924 -123 2917 -101 2903 -75 2889 -55 2875 -40 2852 -25 2825 -11 2803 -4 2777 -1 2743 0 2716 -3 2693 -10 2672 -19 2655 -31 2641 -47 2615 -94"/><path id="iy3" data-l="3113.3" d="M3056 -158L3120 -256 3190 -372 3228 -439 3249 -489 3270 -555 3275 -584 3276 -604 3273 -622 3266 -638 3255 -650 3242 -654 3226 -652 3204 -641 3187 -628 3171 -608 3161 -588 3149 -556 3127 -474 3116 -412 3102 -324 3094 -256 3089 -192 3087 -132 3089 -70 3094 -36 3098 -23 3104 -15 3121 -3 3137 0 3162 -7 3198 -25 3221 -40 3236 -56 3259 -86 3312 -163 3332 -183 3347 -192 3365 -200 3448 -221 3463 -227 3475 -234 3485 -244 3490 -255 3494 -267 3496 -284 3459 -284 3440 -281 3420 -276 3396 -265 3373 -251 3356 -237 3342 -221 3326 -195 3316 -172 3310 -152 3308 -128 3309 -104 3314 -85 3324 -61 3333 -47 3347 -31 3365 -19 3384 -10 3412 -2 3439 0 3467 -4 3498 -17 3528 -34 3547 -50 3565 -75 3582 -108 3589 -136 3591 -167 3584 -199 3572 -226 3557 -247 3534 -265 3508 -275 3499 -276 3488 -274 3481 -269 3474 -260 3467 -240 3465 -211 3470 -183 3481 -156 3493 -138 3511 -120 3534 -107 3561 -99 3593 -95 3627 -95 3657 -100 3679 -107 3708 -123 3727 -137 3748 -158"/><path id="iy4" data-l="3246.6" d="M3969 -220L3967 -247 3962 -257 3954 -267 3945 -274 3935 -280 3908 -284 3877 -280 3841 -267 3806 -245 3795 -235 3783 -221 3765 -191 3755 -168 3750 -144 3749 -116 3754 -89 3765 -61 3780 -40 3798 -23 3822 -11 3849 -3 3881 0 3911 -1 3934 -7 3964 -19 3987 -33 4015 -55 4035 -75 4057 -102 4136 -220 4224 -363 4256 -420 4274 -455 4290 -494 4304 -534 4312 -565 4315 -592 4314 -615 4308 -633 4298 -647 4291 -652 4284 -654 4272 -653 4254 -647 4236 -636 4220 -622 4210 -608 4202 -592 4182 -537 4160 -448 4139 -329 4119 -194 4094 0 4117 -67 4133 -107 4149 -141 4173 -180 4199 -219 4223 -246 4246 -265 4270 -276 4285 -280 4305 -284 4325 -284 4338 -281 4350 -277 4362 -269 4369 -260 4375 -247 4378 -222 4376 -204 4367 -189 4352 -177 4332 -167 4304 -161 4277 -158 4221 -158 4258 -139 4278 -120 4291 -98 4308 -55 4320 -30 4332 -15 4348 -3 4363 0 4387 -6 4423 -23 4449 -40 4462 -53 4478 -73 4535 -158"/><linearGradient id="introHeroRenk" gradientUnits="userSpaceOnUse" x1="0" y1="-662" x2="0" y2="0"><stop offset="0" stop-color="#fff4b8"/><stop offset=".42" stop-color="#ffc83a"/><stop offset="1" stop-color="#ff8a1a"/></linearGradient><linearGradient id="introBlockRenk" gradientUnits="userSpaceOnUse" x1="0" y1="-662" x2="0" y2="0"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#d4fdff"/><stop offset="1" stop-color="#3ee8ff"/></linearGradient></defs><g class="kor"><use href="#iy0" data-i="0"/><use href="#iy1" data-i="1"/><use href="#iy2" data-i="2" class="k2"/><use href="#iy3" data-i="3" class="k2"/><use href="#iy4" data-i="4" class="k2"/></g></svg>
+    <svg id="introRenkli" viewBox="-7 -732 4613 803" preserveAspectRatio="xMidYMid meet" focusable="false"><use href="#iy0" class="h"/><use href="#iy1" class="h"/><use href="#iy2" class="b k2"/><use href="#iy3" class="b k2"/><use href="#iy4" class="b k2"/></svg>
   </div>
+  <div id="introCubuk"><i id="introCubukDolu"></i></div>
   <div id="introBloklar"></div>
 </div>
 <script>(() => {
   'use strict'; // açılış
-  /* Açılış (#intro): arena ışığı yanar, görünmez kalem "Hero Block" yazar, yazı parlar, ışıltılar saçılır, ana menü açılır.
-     Oyun hazır olunca (boot) HBIntro.basla() çağrılır: yazı ana iş parçacığı boşken başlar, ilk karede takılmaz.
-     Dokunuş, tuş ya da Android geri tuşu hemen geçer. HBIntro.sonra(f): açılış bitince f (bildirim, reklam izni ve
-     banner açılışın üstünde görünmesin diye bekler). Otomatik testlerde (navigator.webdriver) açılış yok; adreste
-     "intro" varsa (#intro, ?intro=1) testte de oynar. "Hareketi azalt" açıksa yazı çizilmeden belirir ve solar. */
+  /* v1.3.1 canlı açılış (#intro). Oyun hazır olunca (boot) HBIntro.yukleme(adımlar) ve HBIntro.basla() çağrılır: arena
+     yanar, 0,3 sn sonra görünmez kalem "Hero Block" yazar (2,6 sn; kalemin ucunda kıvılcımlar), yazı renklenip esneyerek oturur
+     ve logo 0,8 sn tam parlak bekler. Logonun altındaki çubuk yükleme adımlarıyla dolar (ağırlıklı; her adım sözü sonuçlanınca
+     ya da bak() doğru dönünce biter, başarısızlık da bitmiş sayılır). Açılış hem animasyon hem yükleme bitince kalkar; yükleme
+     uzarsa (yavaş internet) en çok EN_COK ms (basla'dan) bekler, gerisi arka planda sürer. Dokunuş ve tuşlar açılışı geçmez,
+     oyuna da gitmez. HBIntro.sonra(f): açılış bitince f (bildirim, izin penceresi ve banner açılışın üstünde görünmesin diye
+     bekler). Otomatik testlerde (navigator.webdriver) açılış yok; adreste "intro" varsa (#intro, ?intro=1) oynar.
+     "Hareketi azalt" açıksa yazı çizilmeden renkli belirir, bloklar durur; yükleme yine beklenir. */
   const kok = document.getElementById('intro');
   const bekleyen = [];
-  let bitti = !kok, kapaniyor = false, basladi = false, raf = 0, t0 = 0, yedekT = 0, solma = null, basili = false, kapatBekliyor = false;
+  let bitti = !kok, kapaniyor = false, basladi = false, raf = 0, t0 = 0, basT = 0, basili = false, kapatBekliyor = false, denetT = 0, dondu = false;
   const calistir = f => { try { f(); } catch (e) { setTimeout(() => { throw e; }); } };
   const sonra = f => { if (bitti) calistir(f); else bekleyen.push(f); };
   const H = document.documentElement;
@@ -2051,36 +2098,91 @@ document.documentElement.classList.add('arena');
     if (basili) { kapatBekliyor = true; return; }
     bitti = true;
     cancelAnimationFrame(raf);
+    clearInterval(denetT);
     removeEventListener('keydown', tus, true);
     removeEventListener('pointerup', birak, true);
     removeEventListener('pointercancel', birak, true);
     if (kok && kok.parentNode) kok.parentNode.removeChild(kok);
     bekleyen.splice(0).forEach(calistir);
   }
-  const tus = e => { if (!bitti) { e.preventDefault(); e.stopImmediatePropagation(); gec(); } };
+  const tus = e => { if (!bitti) { e.preventDefault(); e.stopImmediatePropagation(); } };   // açılış sürerken tuşlar oyuna gitmez
   const birak = () => { if (!basili) return; basili = false; if (kapatBekliyor) setTimeout(kapat, 60); };
   const anims = [];
-  const BEKLE = 380;   // v1.3.1: sistem açılış geçişi bitmeden yazı başlamasın
-  function gec() {
+  const anim = (el, kf, o) => {
+    if (!el || typeof el.animate !== 'function') return null;
+    try { const a = el.animate(kf, Object.assign({ fill: 'both' }, o)); anims.push(a); return a; } catch (e) { return null; }
+  };
+  const BEKLE = 300;     // sistem açılış ekranının geçişi bitmeden yazı başlamasın
+  const YAZ = 2600;      // el yazısının süresi (ms)
+  const PARLA = 800;     // yazı bitince logonun tam parlak bekleyişi (ms)
+  const EN_COK = 8000;   // yükleme bitmese de açılış en geç bu sürede (basla'dan) kalkar
+  const AZ = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const ANIM_SON = AZ ? 1200 : BEKLE + YAZ + PARLA;
+
+  // ---- Yükleme ----
+  const Y = { adimlar: [], var: false, p: 0 };
+  let cubukEl = null;
+  function yukleme(liste) {
+    if (!Array.isArray(liste)) return;
+    Y.var = true;
+    for (const a of liste) {
+      if (!a) continue;
+      const adim = { ad: String(a.ad || ''), w: Math.max(1, Number(a.agirlik) || 1), bitti: !!a.tamam, bak: typeof a.bak === 'function' ? a.bak : null, sure: 0 };
+      if (!adim.bitti) {
+        if (a.soz && typeof a.soz.then === 'function') a.soz.then(() => { adim.bitti = true; }, () => { adim.bitti = true; });
+        else if (!adim.bak) adim.bitti = true;
+      }
+      Y.adimlar.push(adim);
+    }
+    denetle();
+  }
+  function ilerleme() {
+    if (!Y.var) return 1;
+    let w = 0, b = 0;
+    const simdi = performance.now();
+    for (const a of Y.adimlar) {
+      if (!a.bitti && a.bak) { try { if (a.bak()) a.bitti = true; } catch (e) { a.bitti = true; } }
+      if (a.bitti && !a.sure) a.sure = Math.round(simdi - (basT || simdi)) || 1;
+      w += a.w;
+      if (a.bitti) b += a.w;
+    }
+    return w ? b / w : 1;
+  }
+  function cubuk(p) {
+    if (!(p > Y.p)) return;   // çubuk yalnızca ilerler
+    Y.p = Math.min(1, p);
+    if (cubukEl) cubukEl.style.transform = 'scaleX(' + Y.p.toFixed(3) + ')';
+  }
+  function denetle() {
+    if (bitti || kapaniyor || !basladi || dondu) return;   // dondu: önizleme/test (_an) zamanı devraldı
+    const p = ilerleme(), gecen = performance.now() - basT;
+    cubuk(p);
+    if (gecen >= ANIM_SON && (p >= 1 || gecen >= EN_COK)) cik();
+  }
+  // Çıkış: çubuk dolar (doluysa beklenmez), menü arkada çizilir, açılış söner
+  function cik() {
     if (bitti || kapaniyor) return;
     kapaniyor = true;
-    cancelAnimationFrame(raf);
+    clearInterval(denetT);
+    const dolu = Y.p >= 1;
+    cubuk(1);
     alttakiler();
-    let op = 1;
-    try { op = Math.min(1, parseFloat(getComputedStyle(kok).opacity)); } catch (e) { /* stil yok */ }
-    if (!(op >= 0)) op = 1;
-    anims.forEach(a => { try { a.cancel(); } catch (e) { /* bitti */ } });
-    kok.style.opacity = String(op);
-    if (typeof kok.animate === 'function') {
-      try { kok.animate([{ opacity: op }, { opacity: 0 }], { duration: 160, easing: 'ease-out', fill: 'forwards' }).onfinish = kapat; } catch (e) { /* yok */ }
-    }
-    setTimeout(kapat, 320);
+    setTimeout(() => {
+      const a = anim(kok, [{ opacity: 1 }, { opacity: 0 }], { duration: AZ ? 280 : 420, easing: 'ease-in-out' });
+      if (a) a.onfinish = kapat;
+      setTimeout(kapat, 900);   // yedek: animasyon bitiş olayı gelmezse
+    }, dolu ? 60 : 320);
   }
+  // Programatik kapatma (testler ve önizleme); oyuncunun dokunuşu ve geri tuşu açılışı geçmez
+  function gec() { cik(); }
   function basla() {
     if (basladi || bitti || kapaniyor) return;
     basladi = true;
-    kok.classList.add('calisiyor', 'isik');   // v1.3.1: arena ışığı bekleme süresince yanar
-    setTimeout(() => { if (!t0 && !bitti) kapat(); }, 2500 + BEKLE);   // yedek: ekran kare çizmiyorsa
+    basT = performance.now();
+    kok.classList.add('calisiyor', 'isik');
+    denetT = setInterval(denetle, 100);
+    setTimeout(denetle, ANIM_SON + 5);   // animasyon biter bitmez (yükleme bittiyse) çıkış
+    if (AZ) { duragan(); return; }
     setTimeout(() => requestAnimationFrame(() => requestAnimationFrame(now => {
       if (bitti || kapaniyor || t0) return;   // önizleme/test (_an) zamanı zaten devraldıysa
       t0 = now;
@@ -2088,21 +2190,54 @@ document.documentElement.classList.add('arena');
       tik(now);
     })), BEKLE);
   }
-  window.HBIntro = { acik: () => !bitti, gec, basla, sonra, _an: () => {} };
+  window.HBIntro = { acik: () => !bitti, gec, basla, sonra, yukleme, ilerleme: () => Y.p,
+    adimlar: () => Y.adimlar.map(a => ({ ad: a.ad, agirlik: a.w, bitti: a.bitti, ms: a.sure })), _an: () => {} };
   if (!kok) return;
   if (window.__hbYonlen || (navigator.webdriver && !/[?&#]intro\b/.test(location.href))) { kapat(); return; }
   H.classList.add('intro-yaziyor');
-  setTimeout(() => { if (!basladi && !bitti) kapat(); }, 6000);   // yedek: oyun hiç başlamazsa açılış kalkar
+  setTimeout(() => { if (!basladi && !bitti) kapat(); }, 10000);   // yedek: oyun hiç başlamazsa açılış kalkar
 
-  const AZ = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const $i = id => document.getElementById(id);
-  const svg = $i('introSvg'), par = $i('introParilti'), sahne = $i('introSahne'), bloklar = $i('introBloklar');
+  const svg = $i('introSvg'), renkli = $i('introRenkli'), par = $i('introParilti'), sahne = $i('introSahne'), bloklar = $i('introBloklar'), arka = $i('introArka');
+  cubukEl = $i('introCubukDolu');
+  let tohum = 20261125;
+  const rnd = () => (tohum = (tohum * 16807) % 2147483647) / 2147483647;
+
+  // Arka plan: düşük opaklıkta renkli tetromino blokları yavaşça süzülür, parıltılar yanıp söner (CSS; GPU)
+  (function arkaKur() {
+    if (!arka) return;
+    const TET = [[[0, 0], [1, 0], [2, 0], [3, 0]], [[0, 0], [1, 0], [0, 1], [1, 1]], [[0, 0], [1, 0], [2, 0], [1, 1]], [[0, 0], [0, 1], [0, 2], [1, 2]],
+      [[1, 0], [1, 1], [1, 2], [0, 2]], [[1, 0], [2, 0], [0, 1], [1, 1]], [[0, 0], [1, 0], [1, 1], [2, 1]]];
+    const RK = ['#38bdf8', '#facc15', '#a78bfa', '#fb923c', '#22d3ee', '#34d399', '#f472b6', '#60a5fa'];
+    let html = '';
+    for (let k = 0; k < 12; k++) {
+      const sek = TET[(k * 5) % TET.length], renk = RK[k % RK.length];
+      const gw = Math.max.apply(null, sek.map(c => c[0])) + 1, gh = Math.max.apply(null, sek.map(c => c[1])) + 1, hucre = 3.4 + rnd() * 2.8;
+      let r = '';
+      for (const c of sek) {
+        r += '<rect x="' + (c[0] * 10 + 0.7) + '" y="' + (c[1] * 10 + 0.7) + '" width="8.6" height="8.6" rx="2.2" fill="' + renk + '"/>' +
+          '<rect x="' + (c[0] * 10 + 1.7) + '" y="' + (c[1] * 10 + 1.5) + '" width="6.6" height="2.3" rx="1.1" fill="#fff" fill-opacity=".4"/>';
+      }
+      const sx = ((k % 4) + 0.15 + rnd() * 0.7) * 25, sy = (Math.floor(k / 4) + 0.12 + rnd() * 0.76) * 33.3, sure = 16 + rnd() * 12;
+      html += '<div class="tb" style="--x:' + sx.toFixed(1) + '%;--y:' + sy.toFixed(1) + '%;--w:' + (gw * hucre).toFixed(2) + 'vmin;--h:' + (gh * hucre).toFixed(2) +
+        'vmin;--o:' + (0.12 + rnd() * 0.1).toFixed(2) + ';--d:' + sure.toFixed(1) + 's;--g:' + (-rnd() * sure).toFixed(1) + 's;--r0:' + ((rnd() - 0.5) * 50).toFixed(0) +
+        'deg;--r1:' + ((rnd() - 0.5) * 130).toFixed(0) + 'deg;--dx:' + ((rnd() - 0.5) * 12).toFixed(1) + 'vw"><svg viewBox="0 0 ' + gw * 10 + ' ' + gh * 10 +
+        '" aria-hidden="true" focusable="false">' + r + '</svg></div>';
+    }
+    const PR = ['255,255,255', '125,231,255', '255,214,107', '191,219,254'];
+    for (let k = 0; k < 18; k++) {
+      const s = 1.6 + rnd() * 2.6;
+      html += '<i class="pz" style="--x:' + (rnd() * 100).toFixed(1) + '%;--y:' + (rnd() * 100).toFixed(1) + '%;--s:' + s.toFixed(1) + 'px;--c:rgb(' + PR[k % PR.length] +
+        ');--o:' + (0.45 + rnd() * 0.5).toFixed(2) + ';--d:' + (2.4 + rnd() * 2.8).toFixed(1) + 's;--g:' + (-rnd() * 4).toFixed(1) + 's"></i>';
+    }
+    arka.innerHTML = html;
+  })();
+
   // Yerleşim: dikey ekranda iki satır (Hero üstte, Block altta içeriden), yatayda tek satır
   const dik = innerHeight > innerWidth * 1.15;
   kok.classList.add(dik ? 'cift' : 'tek');
   const vb = svg.getAttribute(dik ? 'data-cift' : 'data-tek');
-  svg.setAttribute('viewBox', vb);
-  par.setAttribute('viewBox', vb);
+  for (const s of [svg, renkli, par]) s.setAttribute('viewBox', vb);
   if (dik) kok.querySelectorAll('.k2').forEach(u => u.setAttribute('transform', 'translate(' + svg.getAttribute('data-kayma') + ')'));
   // Çizgiler: her biri yazılmamış hâlde (kesik çizgi deseninin boşluğunda) başlar
   const hava = (svg.getAttribute('data-hava') || '').split(',').map(Number);
@@ -2123,10 +2258,10 @@ document.documentElement.classList.add('arena');
   kok.classList.add('hazir');
 
   const KALEM = +svg.getAttribute('data-kalem') || 44;           // kalem kalınlığı (yazı biriminde)
-  const YAZ = 1600;                                              // yazının süresi (ms; v1.3.1: 1350'den biraz uzun)
   const hiz = u => u - 0.55 * Math.sin(2 * Math.PI * u) / (2 * Math.PI);   // kalem yumuşak başlar, ortada hızlanır, yavaşlayarak biter
+  const uzunluk = t => hiz(Math.min(1, Math.max(0, t / YAZ))) * toplam;
   function yazi(t) {
-    const u = AZ ? 1 : Math.min(1, Math.max(0, t / YAZ)), D = hiz(u) * toplam;
+    const D = uzunluk(t);
     for (const s of iz) {
       const v = Math.min(s.L, Math.max(0, D - s.bas));
       if (v === s.son) continue;
@@ -2134,28 +2269,73 @@ document.documentElement.classList.add('arena');
       const off = String(v > 0 ? s.L - v : s.L + 1);
       for (const u2 of s.els) u2.style.strokeDashoffset = off;
     }
-    return u >= 1;
+    return t >= YAZ;
+  }
+  // Kalemin ucu (ekran koordinatı); çizgiler arasında (kalem havadayken) yok
+  function kalemUcu(D) {
+    for (const s of iz) {
+      if (D < s.bas) return null;
+      if (D <= s.bas + s.L) {
+        let q;
+        try { q = s.p.getPointAtLength(Math.max(0, D - s.bas)); } catch (e) { return null; }
+        const m = s.m || (s.m = s.els[s.els.length - 1].getScreenCTM());   // yazı sürerken sahne yerinde durur: bir kez okunur
+        return m ? { x: m.a * q.x + m.c * q.y + m.e, y: m.b * q.x + m.d * q.y + m.f } : null;
+      }
+    }
+    return null;
+  }
+  let ucEl = null, olcek = 1, sonKiv = 0;
+  const KIV = ['#ffffff', '#fff3c4', '#ffd36b', '#ffe9a6', '#c4f6ff'];
+  function kivilcim(x, y, n, durgun) {
+    for (let k = 0; k < n; k++) {
+      const el = document.createElement('i'), s = (2.2 + rnd() * 3.2) * olcek, c = KIV[(rnd() * KIV.length) | 0];
+      el.className = 'kv';
+      el.style.cssText = 'width:' + s.toFixed(1) + 'px;height:' + s.toFixed(1) + 'px;margin:' + (-s / 2).toFixed(1) + 'px 0 0 ' + (-s / 2).toFixed(1) + 'px;background:' + c +
+        ';box-shadow:0 0 ' + (s * 2.2).toFixed(1) + 'px ' + (s * 0.5).toFixed(1) + 'px ' + c;
+      bloklar.appendChild(el);
+      const ac = rnd() * Math.PI * 2, uz = (10 + rnd() * 26) * olcek;
+      const dx = Math.cos(ac) * uz, dy = Math.sin(ac) * uz + (6 + rnd() * 10) * olcek;   // kıvılcım hafifçe aşağı düşer
+      if (durgun) {   // önizleme: kıvılcım yolunun bir anı
+        const f = 0.2 + rnd() * 0.6;
+        el.style.transform = 'translate3d(' + (x + dx * f).toFixed(1) + 'px,' + (y + dy * f).toFixed(1) + 'px,0) scale(' + (1 - f * 0.8).toFixed(2) + ')';
+        el.style.opacity = String(1 - f);
+        continue;
+      }
+      let a = null;
+      try {
+        a = el.animate([
+          { transform: 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) scale(1)', opacity: 1 },
+          { transform: 'translate3d(' + (x + dx).toFixed(1) + 'px,' + (y + dy).toFixed(1) + 'px,0) scale(.15)', opacity: 0 }
+        ], { duration: 360 + rnd() * 320, easing: 'cubic-bezier(.2,.65,.35,1)', fill: 'forwards' });
+      } catch (e) { a = null; }
+      if (a) a.onfinish = () => el.remove(); else setTimeout(() => el.remove(), 700);
+    }
+  }
+  function kalem(t, now, durgun) {
+    const u = kalemUcu(uzunluk(t));
+    if (!ucEl) { ucEl = document.createElement('b'); ucEl.id = 'introUc'; bloklar.appendChild(ucEl); }
+    if (!u || t >= YAZ) { ucEl.style.opacity = '0'; return; }
+    ucEl.style.setProperty('--u', (22 * olcek).toFixed(1) + 'px');
+    ucEl.style.transform = 'translate3d(' + u.x.toFixed(1) + 'px,' + u.y.toFixed(1) + 'px,0)';
+    ucEl.style.opacity = '1';
+    if (durgun) { kivilcim(u.x, u.y, 9, true); return; }
+    if (now - sonKiv >= 34) { sonKiv = now; kivilcim(u.x, u.y, 2, false); }
   }
   function tik(now) {
     raf = 0;
     if (bitti || kapaniyor) return;
-    if (!yazi(now - t0)) raf = requestAnimationFrame(tik);
-    else alttakiler();   // yazı bitti: oyun kararmadan önce arkada yeniden çizilir
+    const t = now - t0, son = yazi(t);
+    kalem(t, now, false);
+    if (!son) raf = requestAnimationFrame(tik);
+    else alttakiler();   // yazı bitti: oyun, açılış sönmeden önce arkada yeniden çizilir
   }
-  const anim = (el, kf, o) => {
-    if (typeof el.animate !== 'function') return null;
-    try { const a = el.animate(kf, Object.assign({ fill: 'both' }, o)); anims.push(a); return a; } catch (e) { return null; }
-  };
-  // v1.3.1: altın ve beyaz ışıltılar (iç renk, dış renk, parıltı)
-  const RENK = [['#ffffff', '#fff3c4', '255,255,255'], ['#fff1b0', '#ffc531', '255,197,49'], ['#ffffff', '#ffe08a', '255,236,170'],
-    ['#ffe27a', '#f5a800', '255,197,49'], ['#ffffff', '#dbeafe', '255,255,255']];
-  let tohum = 20261119;
-  const rnd = () => (tohum = (tohum * 16807) % 2147483647) / 2147483647;
+  // Yazı bitince saçılan ışıltılar: beyaz, altın ve turkuaz (iç renk, dış renk, parıltı)
+  const RENK = [['#ffffff', '#fff3c4', '255,255,255'], ['#fff1b0', '#ffc531', '255,197,49'], ['#ffffff', '#c4f6ff', '125,231,255'],
+    ['#ffe27a', '#f5a800', '255,197,49'], ['#e6fdff', '#22e3ff', '34,227,255']];
   function bloklariAt(gecikme) {
     const m0 = svg.getScreenCTM(), r = sahne.getBoundingClientRect();
     if (!m0 || !r.width) return;
-    const kalem = KALEM * m0.a, b = Math.max(7, Math.min(18, kalem * 2.6));
-    kok.style.setProperty('--kalem', kalem.toFixed(2) + 'px');
+    const kalemPx = KALEM * m0.a, b = Math.max(7, Math.min(18, kalemPx * 2.6));
     const cx = r.left + r.width / 2, cy = r.top + r.height / 2, n = 20;
     for (let k = 0; k < n; k++) {
       const hedef = (k + 0.5) / n * toplam;
@@ -2177,33 +2357,45 @@ document.documentElement.classList.add('arena');
         { opacity: 0, transform: 'translate3d(0,0,0) rotate(0deg) scale(.25)' },
         { opacity: 1, transform: 'translate3d(' + (dx * 0.42).toFixed(1) + 'px,' + (dy * 0.42).toFixed(1) + 'px,0) rotate(' + (don * 0.45).toFixed(0) + 'deg) scale(1)', offset: 0.28 },
         { opacity: 0, transform: 'translate3d(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px,0) rotate(' + don.toFixed(0) + 'deg) scale(.5)' }
-      ], { delay: gecikme + k * 14, duration: 660, easing: 'cubic-bezier(.2,.6,.35,1)' });
+      ], { delay: gecikme + k * 14, duration: 700, easing: 'cubic-bezier(.2,.6,.35,1)' });
     }
   }
-  // Yazı bitince: parlama, hafif büyüme, bloklar; sonra ekran ana menüye açılır. Hepsi baştan zamanlanır (GPU'da sürer)
+  // Yazı bitince: beyaz yazı renklenir (Hero altın-turuncu, Block turkuaz-beyaz neon), neon parıltı yanıp sabitlenir, sahne
+  // esneyerek büyüyüp oturur, ışıltılar saçılır; logo bekleyiş boyunca hafifçe nefes alır. Hepsi baştan zamanlanır (GPU'da sürer)
   function bitis() {
-    if (AZ) alttakiler();
-    if (!AZ) {
-      anim(par, [{ opacity: 0 }, { opacity: 0.95, offset: 0.3 }, { opacity: 0.5 }], { delay: YAZ - 150, duration: 700, easing: 'ease-out' });
-      anim(sahne, [{ transform: 'scale(1)' }, { transform: 'scale(1.045)' }], { delay: YAZ - 90, duration: 800, easing: 'cubic-bezier(.2,.7,.3,1)' });
-      bloklariAt(YAZ - 70);
-    }
-    solma = anim(kok, [{ opacity: 1 }, { opacity: 0 }], { delay: AZ ? 900 : YAZ + 280, duration: AZ ? 300 : 390, easing: 'ease-in-out' });
-    if (solma) solma.onfinish = kapat;
-    yedekT = setTimeout(kapat, (AZ ? 1200 : YAZ + 670) + 700);   // yedek: animasyon bitiş olayı gelmezse
+    const m0 = svg.getScreenCTM();
+    if (m0) { const k = KALEM * m0.a; kok.style.setProperty('--kalem', k.toFixed(2) + 'px'); olcek = Math.max(0.6, Math.min(2.2, k / 5.5)); }
+    // Renkli yazı beyazın üstünde belirir (biraz daha kalın, onu tam örter); beyaz ancak renkli tam görününce kalkar: geçişte
+    // parlaklık düşmez
+    anim(renkli, [{ opacity: 0 }, { opacity: 1 }], { delay: YAZ - 20, duration: 380, easing: 'ease-out' });
+    anim(svg, [{ opacity: 1 }, { opacity: 0 }], { delay: YAZ + 380, duration: 160, easing: 'linear' });
+    anim(par, [{ opacity: 0 }, { opacity: 1, offset: 0.35 }, { opacity: 0.72 }], { delay: YAZ - 20, duration: 800, easing: 'ease-out' });
+    anim(par, [{ opacity: 0.72 }, { opacity: 1 }, { opacity: 0.72 }], { delay: YAZ + 780, duration: 1500, iterations: Infinity, easing: 'ease-in-out', fill: 'none' });
+    anim(sahne, [{ transform: 'scale(1)' }, { transform: 'scale(1.09)', offset: 0.32 }, { transform: 'scale(.97)', offset: 0.6 }, { transform: 'scale(1.02)', offset: 0.8 },
+      { transform: 'scale(1)' }], { delay: YAZ - 10, duration: 640, easing: 'ease-out' });
+    bloklariAt(YAZ - 20);
   }
-  // Önizleme ve testler için: animasyonu t anında (ms) dondurur
-  window.HBIntro._an = t => {
-    if (!t0) { basladi = true; kok.classList.add('calisiyor'); t0 = 1; bitis(); }
-    kok.classList.add('isik', 'isik-tam');   // önizleme ve testler: arena ışığı tam yanık
-    clearTimeout(yedekT);
-    if (solma) solma.onfinish = null;
+  // Hareketi azalt: yazı çizilmeden renkli belirir
+  function duragan() {
+    svg.style.opacity = '0';
+    renkli.style.opacity = '1';
+    par.style.opacity = '0.7';
+  }
+  // Önizleme ve testler için: animasyonu t anında (ms, yazının başından) dondurur; p verilirse çubuk o ilerlemede
+  window.HBIntro._an = (t, p) => {
+    if (!t0) { basladi = true; basT = performance.now(); kok.classList.add('calisiyor'); t0 = 1; bitis(); }
+    dondu = true;
+    kok.classList.add('isik', 'isik-tam');
+    clearInterval(denetT);
     cancelAnimationFrame(raf);
     H.classList.toggle('intro-yaziyor', !AZ && t < YAZ);
     yazi(t);
+    bloklar.querySelectorAll('i.kv').forEach(e => e.remove());
+    kalem(t, 0, true);
     anims.forEach(a => { try { a.pause(); a.currentTime = t; } catch (e) { /* yok */ } });
+    if (p != null && cubukEl) { cubukEl.style.transition = 'none'; Y.p = 0; cubuk(Math.max(0.001, Math.min(1, p))); }
   };
-  kok.addEventListener('pointerdown', e => { e.preventDefault(); basili = true; gec(); });
+  kok.addEventListener('pointerdown', e => { e.preventDefault(); basili = true; });
   addEventListener('pointerup', birak, true);
   addEventListener('pointercancel', birak, true);
   addEventListener('keydown', tus, true);
@@ -4235,7 +4427,8 @@ document.documentElement.classList.add('arena');
       clearTimeout(izinT);
       yap('requestConsentInfo')
         .then(b => (b && b.isConsentFormAvailable && b.status === 'REQUIRED'
-          ? (formBekle ? new Promise(r => formBekle(r)).then(() => yap('showConsentForm')) : yap('showConsentForm')) : b))
+          ? (formBekle ? (D.formBekliyor = true, new Promise(r => formBekle(r)).then(() => { D.formBekliyor = false; return yap('showConsentForm'); }))
+            : yap('showConsentForm')) : b))
         .then(b => { D.izinSuruyor = false; izinUygula(b); }, () => { D.izinSuruyor = false; izinT = setTimeout(baslat, 60000); });
     }
     function izinUygula(b) {
@@ -4553,6 +4746,22 @@ document.documentElement.classList.add('arena');
         ? (odulluHazir() ? 'hazir' : D.hazir && KIM.odullu ? 'yukleniyor' : 'yok')
         : (sim || (yerel && D.hazir && !!KIM.odullu)) ? 'hazir' : 'yok'),
       erkenBaslat,
+      // v1.3.1 canlı açılış: ödüllü ve geçiş reklamının ön yükleme durumu (yalnızca okur; yükleme kurallarına dokunmaz).
+      // 'hazir' yüklendi · 'bekliyor' izin bilgisi, SDK ya da yükleme sürüyor · 'yok' bu açılışta beklenmez (Android değil, kimlik
+      // yok, reklamsız, Google'ın izin penceresi açılışın bitmesini bekliyor, izin reklam istemeye izin vermiyor, izin bilgisi
+      // alınamadı ya da yükleme olmadı ve yeniden denemeye kaldı)
+      onYukleme() {
+        const yok = { odullu: 'yok', gecis: 'yok' };
+        if (!yerel || !android || !D.basladi || D.formBekliyor) return yok;
+        if (D.izin && !D.izin.reklamIstenebilir) return yok;
+        const sur = !D.hazir && (D.izinSuruyor || D.altyapi);
+        if (!D.hazir && !sur) return yok;
+        if (D.ayar === undefined) return { odullu: 'bekliyor', gecis: reklamsizMi ? 'yok' : 'bekliyor' };   // kimlikler henüz okunmadı
+        return {
+          odullu: !KIM.odullu ? 'yok' : sur ? 'bekliyor' : odulluHazir() ? 'hazir' : D.odulluYukleniyor ? 'bekliyor' : 'yok',
+          gecis: !KIM.gecis || reklamsizMi ? 'yok' : sur ? 'bekliyor' : D.gecisHazir ? 'hazir' : D.gecisYukleniyor ? 'bekliyor' : 'yok'
+        };
+      },
       odulluYenile,   // v1.3.1: reklam hazır değilken dokunuldu: yükleme hemen ve baştan
       acik: () => D.acik,                               // reklam ya da reklam penceresi açık mı
       yeniKapandi: () => Date.now() - D.kapanis < 4000,  // az önce bir reklam kapandı mı (uygulamaya dönüş reklamdan)
@@ -11043,6 +11252,7 @@ document.documentElement.classList.add('arena');
       // Mağazanın yanıtı da beklenir: yeni kurulumda daha önce satın almış oyuncuya pencere bir an bile görünmesin
       if (!NP || D.sahip || !D.urun || !D.ayar.acik || !D.ayar.pencere || D.mesgul || !D.ayarGeldi || !D.denetlendi) return false;
       if (document.hidden || duel || ustPencereAcik() || AdManager.acik() || AdManager.izinSuruyor()) return false;
+      if (window.HBIntro && HBIntro.acik()) return false;   // v1.3.1: açılış kalktıktan sonra
       return !ovStart.hidden || (!!donus && gameState === 'play' && kip === 'klasik' && !drag && !jokerMod);
     }
     // Her açılışta bir kez: ürün fiyatı ve sunucunun ayarı gelince, ana menü açıkken; en çok 1 dakika beklenir
@@ -12434,7 +12644,11 @@ document.documentElement.classList.add('arena');
   if (UYGULAMA) {
     $('btnTablo').hidden = !SKOR_API;
     document.documentElement.classList.add('uygulama');
-    sistemCubugu();
+    // v1.3.1 canlı açılış (Android): durum çubuğu biçemi açılış bitince uygulanır (biçem zaten uygulama ayarında koyu).
+    // SystemBars.setStyle pencere zeminini temanın mavisine boyar: eski WebView'larda (sürüm < 140, oyun çubukların arasında
+    // kalır) çubukların arkası açılış sürerken MainActivity'nin lacivert geçişinde kalır, açılış bitince oyunun mavisine döner
+    if (window.HBIntro && typeof CAP.getPlatform === 'function' && CAP.getPlatform() === 'android') HBIntro.sonra(sistemCubugu);
+    else sistemCubugu();
     // Dış bağlantılar (gizlilik, koşullar, destek, e-posta) uygulamanın içinde değil telefonun tarayıcısında açılır:
     // yeni pencere istemeyen bağlantıları uygulama kabuğu kendisi tarayıcıya gönderir
     document.querySelectorAll('a[target="_blank"]').forEach(a => a.removeAttribute('target'));
@@ -12445,7 +12659,7 @@ document.documentElement.classList.add('arena');
     if (AppEk && typeof AppEk.addListener === 'function') {
       try {
         AppEk.addListener('backButton', () => {
-          if (window.HBIntro && HBIntro.acik()) { HBIntro.gec(); return; }   // açılış sürüyorsa geçer
+          if (window.HBIntro && HBIntro.acik()) return;   // v1.3.1: açılış yükleme bitene dek sürer (geri tuşu geçmez)
           if (!ovReklam.hidden || AdManager.acik()) return; // reklam penceresi kendiliğinden kapanır
           if (!ovSatin.hidden) Satin.kapat();
           else if (!ovGorev.hidden) gorevKapat();
@@ -12503,6 +12717,18 @@ document.documentElement.classList.add('arena');
     const ayarSozu = uzakAyarYukle();
     Satin.basla(ayarSozu);
     wake();
+    // v1.3.1 canlı açılış: açılış, oyun verisi, yazı tipleri, sunucu ayarı, hesap ve (Android) ödüllü/geçiş reklamının ön
+    // yüklemesi bitmeden ana menüye geçmez; yükleme uzarsa açılış en çok 8 sn bekler, gerisi arka planda sürer
+    if (window.HBIntro && HBIntro.yukleme) {
+      HBIntro.yukleme([
+        { ad: 'oyun', agirlik: 15, tamam: true },
+        { ad: 'yazi', agirlik: 10, soz: document.fonts && document.fonts.ready },
+        { ad: 'ayar', agirlik: 15, soz: ayarSozu },
+        { ad: 'hesap', agirlik: 20, soz: Hesap.acik() ? Hesap.hazirla() : null },
+        { ad: 'odullu', agirlik: 20, bak: () => AdManager.onYukleme().odullu !== 'bekliyor' },
+        { ad: 'gecis', agirlik: 20, bak: () => AdManager.onYukleme().gecis !== 'bekliyor' }
+      ]);
+    }
     // Açılış: oyun hazır, el yazısı şimdi başlar (ana iş parçacığı boşken ilk karede takılmaz)
     if (window.HBIntro) HBIntro.basla();
   }

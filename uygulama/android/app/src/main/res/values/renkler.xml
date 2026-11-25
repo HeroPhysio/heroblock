@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Oyunun arena mavisi (v1.3.1; önceden koyu #050817): sistem açılış ekranı, pencere zemini, durum ve gezinme
-         çubuklarının arkası. capacitor.config.json android.backgroundColor ve oyunun html.arena zemini ile aynı -->
+    <!-- Oyunun arena mavisi (v1.3.1; önceden koyu #050817): oyunun pencere zemini, durum ve gezinme çubuklarının arkası
+         (SystemBars bu rengi temadan okur). Oyunun html.arena zemini ile aynı -->
     <color name="hbArkaPlan">#1D4ED8</color>
+    <!-- Canlı açılış (v1.3.1): açılış sahnesinin derin lacivert-mavi geçişinin üst ve alt rengi. Sistem açılış ekranı, açılış
+         temasının pencere zemini ve WebView zemini (capacitor.config.json android.backgroundColor) hbAcilis ile başlar;
+         eski WebView'larda açılış sürerken çubukların arkası hbAcilis -> hbAcilisAlt geçişidir (MainActivity) -->
+    <color name="hbAcilis">#0B1120</color>
+    <color name="hbAcilisAlt">#1E3A8A</color>
 </resources>

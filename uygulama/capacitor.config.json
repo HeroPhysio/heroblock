@@ -5,7 +5,7 @@
   "backgroundColor": "#1D4ED8",
   "loggingBehavior": "none",
   "android": {
-    "backgroundColor": "#1D4ED8",
+    "backgroundColor": "#0B1120",
     "allowMixedContent": false,
     "webContentsDebuggingEnabled": false
   },
